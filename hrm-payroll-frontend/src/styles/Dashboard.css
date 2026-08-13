@@ -1,0 +1,2624 @@
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+.dashboard-page {
+  min-height: 100vh;
+  display: flex;
+
+  background: #f5f7fb;
+  color: #172033;
+
+  font-family: "Manrope", sans-serif;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.dashboard-sidebar {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+  bottom: 0;
+
+  width: 255px;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 26px 18px;
+
+  background: #111827;
+
+  border-right: 1px solid #202a3b;
+
+  z-index: 20;
+}
+
+
+/* BRAND */
+
+.dashboard-brand {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 4px 8px 28px;
+
+  border-bottom: 1px solid
+    rgba(255, 255, 255, 0.07);
+}
+
+.dashboard-brand-logo {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #4777ff,
+      #315bd0
+    );
+
+  color: white;
+
+  font-size: 17px;
+
+  font-weight: 800;
+
+  box-shadow:
+    0 8px 25px
+    rgba(71, 119, 255, 0.25);
+}
+
+.dashboard-brand strong {
+  display: block;
+
+  color: #ffffff;
+
+  font-size: 17px;
+
+  letter-spacing: -0.3px;
+}
+
+.dashboard-brand span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #718097;
+
+  font-size: 7px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.2px;
+}
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+.dashboard-menu {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+
+  margin-top: 25px;
+}
+
+.dashboard-menu-item {
+  width: 100%;
+
+  min-height: 45px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  padding: 0 13px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  background: transparent;
+
+  color: #91a0b5;
+
+  font-family: inherit;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.dashboard-menu-item span {
+  width: 21px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #718097;
+
+  font-size: 16px;
+}
+
+.dashboard-menu-item:hover {
+  background: #192235;
+
+  color: #ffffff;
+
+  transform: translateX(2px);
+}
+
+.dashboard-menu-item:hover span {
+  color: #7898ff;
+}
+
+.dashboard-menu-item.active {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(71, 119, 255, 0.20),
+      rgba(71, 119, 255, 0.06)
+    );
+
+  color: #ffffff;
+}
+
+.dashboard-menu-item.active span {
+  color: #6f91ff;
+}
+
+
+/* =========================================================
+   SIDEBAR FOOTER
+========================================================= */
+
+.dashboard-sidebar-footer {
+  margin-top: auto;
+
+  padding-top: 18px;
+
+  border-top: 1px solid
+    rgba(255, 255, 255, 0.07);
+}
+
+.dashboard-user {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 7px;
+}
+
+.dashboard-avatar {
+  width: 36px;
+  height: 36px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #e9efff;
+
+  color: #4777ff;
+
+  font-size: 11px;
+
+  font-weight: 800;
+}
+
+.dashboard-sidebar .dashboard-avatar {
+  background:
+    rgba(71, 119, 255, 0.18);
+
+  color: #89a4ff;
+}
+
+.dashboard-user strong {
+  display: block;
+
+  color: #e9edf4;
+
+  font-size: 11px;
+}
+
+.dashboard-user span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #69778d;
+
+  font-size: 9px;
+
+  font-weight: 600;
+}
+
+.logout-button {
+  width: 100%;
+
+  height: 40px;
+
+  margin-top: 9px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 0 12px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: transparent;
+
+  color: #7d899c;
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.logout-button:hover {
+  background: rgba(239, 68, 68, 0.08);
+
+  color: #f08080;
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.dashboard-main {
+  width: calc(100% - 255px);
+
+  margin-left: 255px;
+
+  padding: 0 42px 50px;
+}
+
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.dashboard-topbar {
+  min-height: 92px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #e4e8ef;
+}
+
+.dashboard-overline,
+.dashboard-topbar .dashboard-overline {
+  display: block;
+
+  color: #718097;
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.8px;
+}
+
+.dashboard-topbar h1 {
+  margin: 5px 0 0;
+
+  color: #172033;
+
+  font-size: 25px;
+
+  line-height: 1.1;
+
+  letter-spacing: -0.8px;
+}
+
+.dashboard-top-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+}
+
+.dashboard-search {
+  width: 190px;
+  height: 38px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 0 12px;
+
+  border: 1px solid #e1e6ee;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  color: #98a3b4;
+
+  font-family: inherit;
+
+  font-size: 10px;
+
+  cursor: pointer;
+}
+
+.dashboard-search span {
+  font-size: 16px;
+}
+
+.notification-button {
+  position: relative;
+
+  width: 38px;
+  height: 38px;
+
+  border: 1px solid #e1e6ee;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  color: #68768a;
+
+  cursor: pointer;
+}
+
+.notification-button b {
+  position: absolute;
+
+  top: -4px;
+  right: -4px;
+
+  min-width: 15px;
+  height: 15px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #4777ff;
+
+  color: #ffffff;
+
+  font-size: 8px;
+}
+
+
+/* TOP USER */
+
+.topbar-user {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  padding-left: 7px;
+}
+
+.topbar-user strong {
+  display: block;
+
+  color: #273247;
+
+  font-size: 10px;
+}
+
+.topbar-user span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #8b96a7;
+
+  font-size: 8px;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   WELCOME
+========================================================= */
+
+.dashboard-welcome {
+  margin-top: 28px;
+
+  padding: 28px 30px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  border: 1px solid #e3e8f0;
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      120deg,
+      #ffffff,
+      #f7f9ff
+    );
+
+  box-shadow:
+    0 8px 30px
+    rgba(24, 36, 58, 0.04);
+}
+
+.dashboard-welcome > div > span {
+  color: #4777ff;
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.6px;
+}
+
+.dashboard-welcome h2 {
+  margin: 8px 0 0;
+
+  color: #182238;
+
+  font-size: 24px;
+
+  letter-spacing: -0.8px;
+}
+
+.dashboard-welcome p {
+  margin: 7px 0 0;
+
+  color: #78859a;
+
+  font-size: 11px;
+
+  line-height: 1.6;
+}
+
+.dashboard-primary-button {
+  height: 43px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 0 18px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #527dff,
+      #3e63d7
+    );
+
+  color: #ffffff;
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 25px
+    rgba(71, 119, 255, 0.20);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.dashboard-primary-button:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 14px 30px
+    rgba(71, 119, 255, 0.27);
+}
+
+.dashboard-primary-button span {
+  font-size: 16px;
+}
+
+
+/* =========================================================
+   STAT GRID
+========================================================= */
+
+.dashboard-stat-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 16px;
+
+  margin-top: 18px;
+}
+
+.dashboard-stat-card {
+  min-height: 145px;
+
+  padding: 19px;
+
+  border: 1px solid #e3e8f0;
+
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 5px 20px
+    rgba(24, 36, 58, 0.03);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.dashboard-stat-card:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 12px 30px
+    rgba(24, 36, 58, 0.07);
+}
+
+.stat-card-top {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-card-top > span {
+  color: #8a96a8;
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.1px;
+}
+
+.dashboard-stat-icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  font-size: 15px;
+
+  font-weight: 800;
+}
+
+.dashboard-stat-icon.blue,
+.quick-action-icon.blue {
+  background: #edf2ff;
+
+  color: #4777ff;
+}
+
+.dashboard-stat-icon.green,
+.quick-action-icon.green {
+  background: #eaf9f3;
+
+  color: #22a873;
+}
+
+.dashboard-stat-icon.yellow,
+.quick-action-icon.yellow {
+  background: #fff7df;
+
+  color: #c99214;
+}
+
+.dashboard-stat-icon.purple,
+.quick-action-icon.purple {
+  background: #f1edff;
+
+  color: #7659d8;
+}
+
+.dashboard-stat-card > strong {
+  display: block;
+
+  margin-top: 17px;
+
+  color: #172033;
+
+  font-size: 26px;
+
+  letter-spacing: -1px;
+}
+
+.dashboard-stat-card small {
+  display: block;
+
+  margin-top: 5px;
+
+  color: #8b96a7;
+
+  font-size: 9px;
+}
+
+.stat-positive {
+  color: #20a873 !important;
+}
+
+
+/* =========================================================
+   CONTENT GRID
+========================================================= */
+
+.dashboard-content-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.65fr)
+    minmax(280px, 0.9fr);
+
+  gap: 18px;
+
+  margin-top: 18px;
+}
+
+.dashboard-panel {
+  border: 1px solid #e3e8f0;
+
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 5px 20px
+    rgba(24, 36, 58, 0.03);
+}
+
+.dashboard-panel-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 21px 22px 0;
+}
+
+.dashboard-panel-header > div > span {
+  color: #8a96a8;
+
+  font-size: 7px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
+}
+
+.dashboard-panel-header h3 {
+  margin: 5px 0 0;
+
+  color: #202b3e;
+
+  font-size: 14px;
+
+  letter-spacing: -0.2px;
+}
+
+.dashboard-panel-header select {
+  height: 32px;
+
+  padding: 0 9px;
+
+  border: 1px solid #e2e7ef;
+
+  border-radius: 7px;
+
+  background: #ffffff;
+
+  color: #647186;
+
+  font-family: inherit;
+
+  font-size: 9px;
+
+  outline: none;
+}
+
+.dashboard-panel-header button {
+  border: none;
+
+  background: transparent;
+
+  color: #4777ff;
+
+  font-family: inherit;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   PAYROLL
+========================================================= */
+
+.payroll-summary {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 1px;
+
+  margin: 20px 22px 0;
+
+  background: #e9edf3;
+
+  border: 1px solid #e9edf3;
+
+  border-radius: 8px;
+
+  overflow: hidden;
+}
+
+.payroll-summary > div {
+  padding: 12px;
+
+  background: #fafbfd;
+}
+
+.payroll-summary span {
+  display: block;
+
+  color: #8b96a7;
+
+  font-size: 8px;
+}
+
+.payroll-summary strong {
+  display: block;
+
+  margin-top: 5px;
+
+  color: #263147;
+
+  font-size: 12px;
+}
+
+.payroll-chart {
+  position: relative;
+
+  height: 150px;
+
+  margin: 22px 22px 0;
+
+  display: flex;
+
+  align-items: flex-end;
+}
+
+.chart-grid-line {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+
+  height: 1px;
+
+  background: #eef1f5;
+}
+
+.chart-grid-line:nth-child(1) {
+  top: 20%;
+}
+
+.chart-grid-line:nth-child(2) {
+  top: 50%;
+}
+
+.chart-grid-line:nth-child(3) {
+  top: 80%;
+}
+
+.chart-bars {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: space-between;
+
+  gap: 8px;
+
+  position: relative;
+
+  z-index: 2;
+}
+
+.chart-bars div {
+  flex: 1;
+
+  min-width: 5px;
+
+  max-width: 30px;
+
+  border-radius:
+    5px 5px 2px 2px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #7195ff,
+      #4777ff
+    );
+
+  opacity: 0.9;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.chart-bars div:hover {
+  transform:
+    scaleY(1.04);
+
+  opacity: 1;
+}
+
+.chart-months {
+  display: flex;
+
+  justify-content: space-between;
+
+  padding: 7px 22px 18px;
+
+  color: #a0a9b7;
+
+  font-size: 8px;
+}
+
+
+/* =========================================================
+   LEAVE
+========================================================= */
+
+.leave-overview {
+  padding-bottom: 16px;
+}
+
+.leave-stat {
+  margin: 21px 22px 0;
+}
+
+.leave-stat > div:first-child {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+}
+
+.leave-stat span {
+  color: #68768a;
+
+  font-size: 9px;
+}
+
+.leave-stat strong {
+  color: #29344a;
+
+  font-size: 9px;
+}
+
+.leave-progress {
+  height: 5px;
+
+  margin-top: 8px;
+
+  overflow: hidden;
+
+  border-radius: 10px;
+
+  background: #edf0f4;
+}
+
+.leave-progress span {
+  display: block;
+
+  height: 100%;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      #4777ff,
+      #7293ff
+    );
+}
+
+.yellow-progress span {
+  background:
+    linear-gradient(
+      90deg,
+      #e4b13d,
+      #f2c65e
+    );
+}
+
+
+/* =========================================================
+   QUICK ACTIONS
+========================================================= */
+
+.quick-actions-section {
+  margin-top: 25px;
+}
+
+.dashboard-section-heading > div > span {
+  color: #8a96a8;
+
+  font-size: 7px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
+}
+
+.dashboard-section-heading h3 {
+  margin: 5px 0 0;
+
+  color: #202b3e;
+
+  font-size: 15px;
+}
+
+.quick-actions-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 14px;
+
+  margin-top: 14px;
+}
+
+.quick-actions-grid button {
+  min-height: 92px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  padding: 14px;
+
+  border: 1px solid #e3e8f0;
+
+  border-radius: 11px;
+
+  background: #ffffff;
+
+  text-align: left;
+
+  font-family: inherit;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 4px 16px
+    rgba(24, 36, 58, 0.025);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.quick-actions-grid button:hover {
+  transform: translateY(-3px);
+
+  border-color: #d3dcf4;
+
+  box-shadow:
+    0 12px 25px
+    rgba(24, 36, 58, 0.07);
+}
+
+.quick-action-icon {
+  width: 37px;
+  height: 37px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  font-size: 14px;
+
+  font-weight: 800;
+}
+
+.quick-actions-grid strong {
+  display: block;
+
+  color: #263147;
+
+  font-size: 10px;
+}
+
+.quick-actions-grid button span {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #929dad;
+
+  font-size: 8px;
+
+  line-height: 1.4;
+}
+
+.quick-actions-grid b {
+  margin-left: auto;
+
+  color: #a2adbd;
+
+  font-size: 14px;
+
+  transition:
+    transform 0.2s ease;
+}
+
+.quick-actions-grid button:hover b {
+  transform: translateX(3px);
+
+  color: #4777ff;
+}
+
+
+/* =========================================================
+   RECENT ACTIVITY
+========================================================= */
+
+.recent-activity {
+  margin-top: 18px;
+
+  padding-bottom: 8px;
+}
+
+.activity-table {
+  margin-top: 18px;
+}
+
+.activity-table-header,
+.activity-table-row {
+  display: grid;
+
+  grid-template-columns:
+    1.5fr
+    1fr
+    0.9fr
+    0.9fr
+    0.6fr;
+
+  align-items: center;
+
+  gap: 15px;
+
+  padding: 13px 22px;
+}
+
+.activity-table-header {
+  border-top: 1px solid #edf0f4;
+
+  border-bottom: 1px solid #edf0f4;
+
+  background: #fafbfd;
+
+  color: #929dad;
+
+  font-size: 7px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.8px;
+
+  text-transform: uppercase;
+}
+
+.activity-table-row {
+  border-bottom: 1px solid #edf0f4;
+
+  color: #68768a;
+
+  font-size: 9px;
+}
+
+.employee-cell {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+}
+
+.employee-cell strong {
+  color: #2c374b;
+
+  font-size: 9px;
+}
+
+.employee-avatar {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: #edf2ff;
+
+  color: #4777ff;
+
+  font-size: 8px;
+
+  font-weight: 800;
+}
+
+.employee-avatar.purple {
+  background: #f1edff;
+
+  color: #7659d8;
+}
+
+.employee-avatar.orange {
+  background: #fff1e8;
+
+  color: #d8793c;
+}
+
+.status-paid {
+  justify-self: start;
+
+  padding: 5px 8px;
+
+  border-radius: 5px;
+
+  background: #eaf9f3;
+
+  color: #1da06d;
+
+  font-size: 7px;
+
+  letter-spacing: 0.4px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1200px) {
+
+  .dashboard-main {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  .dashboard-stat-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .quick-actions-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+}
+
+
+@media (max-width: 950px) {
+
+  .dashboard-sidebar {
+    width: 78px;
+
+    padding:
+      22px 10px;
+  }
+
+  .dashboard-brand {
+    justify-content: center;
+
+    padding:
+      0 0 25px;
+  }
+
+  .dashboard-brand > div:last-child,
+  .dashboard-menu-item:not(.active)::after,
+  .dashboard-menu-item {
+    font-size: 0;
+  }
+
+  .dashboard-menu-item {
+    justify-content: center;
+
+    padding: 0;
+  }
+
+  .dashboard-menu-item span {
+    font-size: 17px;
+  }
+
+  .dashboard-user > div:last-child,
+  .logout-button {
+    font-size: 0;
+  }
+
+  .dashboard-user {
+    justify-content: center;
+  }
+
+  .logout-button {
+    justify-content: center;
+  }
+
+  .dashboard-main {
+    width: calc(100% - 78px);
+
+    margin-left: 78px;
+  }
+
+  .dashboard-content-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+@media (max-width: 700px) {
+
+  .dashboard-main {
+    padding:
+      0 16px 35px;
+  }
+
+  .dashboard-topbar {
+    min-height: 75px;
+  }
+
+  .dashboard-search,
+  .topbar-user > div:last-child {
+    display: none;
+  }
+
+  .dashboard-welcome {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 20px;
+  }
+
+  .dashboard-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-table {
+    overflow-x: auto;
+  }
+
+  .activity-table-header,
+  .activity-table-row {
+    min-width: 650px;
+  }
+
+}
+
+
+@media (max-width: 480px) {
+
+  .dashboard-sidebar {
+    width: 62px;
+
+    padding:
+      18px 7px;
+  }
+
+  .dashboard-main {
+    width: calc(100% - 62px);
+
+    margin-left: 62px;
+
+    padding:
+      0 12px 25px;
+  }
+
+  .dashboard-welcome {
+    padding: 21px;
+  }
+
+  .dashboard-welcome h2 {
+    font-size: 20px;
+  }
+
+  .dashboard-topbar h1 {
+    font-size: 21px;
+  }
+
+}
+/* =========================================
+   SIDEBAR NAVIGATION
+========================================= */
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+}
+
+
+/* =========================================
+   SIDEBAR ITEM
+========================================= */
+
+.sidebar-item {
+  min-height: 44px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  padding: 0 14px;
+
+  border-radius: 8px;
+
+  color: #9aa8bc;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  line-height: 1.2;
+
+  white-space: normal;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+/* =========================================
+   SIDEBAR ICON
+========================================= */
+
+.sidebar-item svg,
+.sidebar-item .sidebar-icon {
+  flex-shrink: 0;
+
+  width: 18px;
+  height: 18px;
+
+  color: #8291a8;
+}
+
+
+/* =========================================
+   SIDEBAR TEXT
+========================================= */
+
+.sidebar-item span {
+  color: #aebbd0;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  line-height: 1.25;
+}
+
+
+/* =========================================
+   HOVER
+========================================= */
+
+.sidebar-item:hover {
+  background: rgba(71, 119, 255, 0.08);
+
+  color: #ffffff;
+}
+
+
+.sidebar-item:hover span {
+  color: #ffffff;
+}
+
+
+.sidebar-item:hover svg,
+.sidebar-item:hover .sidebar-icon {
+  color: #5b86ff;
+}
+
+
+/* =========================================
+   ACTIVE ITEM
+========================================= */
+
+.sidebar-item.active {
+  background: #152342;
+
+  color: #ffffff;
+}
+
+
+.sidebar-item.active span {
+  color: #ffffff;
+
+  font-weight: 700;
+}
+
+
+.sidebar-item.active svg,
+.sidebar-item.active .sidebar-icon {
+  color: #5b86ff;
+}
+
+
+/* =========================================
+   SIDEBAR ITEM WITH LONG TEXT
+========================================= */
+
+.sidebar-item span {
+  overflow: visible;
+
+  text-overflow: unset;
+}
+
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar {
+  width: 188px;
+
+  min-width: 188px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  padding: 28px 13px;
+
+  background: #070d17;
+
+  border-right: 1px solid
+    rgba(255, 255, 255, 0.06);
+}
+
+
+/* =========================================================
+   FINAL DASHBOARD UI POLISH
+   ========================================================= */
+
+/* ---------- SIDEBAR ---------- */
+.dashboard-sidebar {
+  width: 255px;
+  padding: 24px 16px;
+}
+
+.dashboard-menu {
+  gap: 3px;
+  margin-top: 22px;
+}
+
+.dashboard-menu-item {
+  min-height: 43px;
+  gap: 12px;
+  padding: 0 12px;
+  color: #a8b4c7;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.dashboard-menu-item span {
+  width: 22px;
+  font-size: 17px;
+  color: #8291a8;
+}
+
+.dashboard-menu-item:hover {
+  background: #19253a;
+  color: #ffffff;
+  transform: translateX(1px);
+}
+
+.dashboard-menu-item.active {
+  background: linear-gradient(
+    90deg,
+    rgba(71, 119, 255, 0.24),
+    rgba(71, 119, 255, 0.08)
+  );
+  color: #ffffff;
+}
+
+.dashboard-menu-item.active span {
+  color: #7da0ff;
+}
+
+/* Make the sidebar footer easier to read */
+.dashboard-user {
+  padding: 8px 6px;
+}
+
+.dashboard-user strong {
+  font-size: 12px;
+}
+
+.dashboard-user span {
+  font-size: 10px;
+}
+
+.logout-button {
+  height: 41px;
+  font-size: 12px;
+}
+
+/* ---------- MAIN ---------- */
+.dashboard-main {
+  padding: 0 44px 55px;
+}
+
+/* ---------- TOPBAR ---------- */
+.dashboard-topbar {
+  min-height: 96px;
+}
+
+.dashboard-overline,
+.dashboard-topbar .dashboard-overline {
+  font-size: 9px;
+  letter-spacing: 1.7px;
+}
+
+.dashboard-topbar h1 {
+  margin-top: 6px;
+  font-size: 30px;
+  letter-spacing: -1px;
+}
+
+.dashboard-search {
+  width: 205px;
+  height: 40px;
+  font-size: 11px;
+}
+
+.notification-button {
+  width: 40px;
+  height: 40px;
+}
+
+.topbar-user strong {
+  font-size: 11px;
+}
+
+.topbar-user span {
+  font-size: 9px;
+}
+
+/* ---------- WELCOME ---------- */
+.dashboard-welcome {
+  margin-top: 24px;
+  padding: 30px 32px;
+  border-radius: 15px;
+}
+
+.dashboard-welcome > div > span {
+  font-size: 9px;
+  letter-spacing: 1.7px;
+}
+
+.dashboard-welcome h2 {
+  margin-top: 9px;
+  font-size: 28px;
+  letter-spacing: -1px;
+}
+
+.dashboard-welcome p {
+  margin-top: 9px;
+  color: #69778c;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.dashboard-primary-button {
+  height: 45px;
+  padding: 0 19px;
+  font-size: 12px;
+}
+
+/* ---------- STAT CARDS ---------- */
+.dashboard-stat-grid {
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.dashboard-stat-card {
+  min-height: 150px;
+  padding: 21px;
+  border-radius: 13px;
+}
+
+.stat-card-top > span {
+  color: #718097;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+.dashboard-stat-icon {
+  width: 36px;
+  height: 36px;
+  font-size: 16px;
+}
+
+.dashboard-stat-card > strong {
+  margin-top: 18px;
+  font-size: 29px;
+  letter-spacing: -1.1px;
+}
+
+.dashboard-stat-card small {
+  margin-top: 6px;
+  font-size: 10px;
+}
+
+/* ---------- PANELS ---------- */
+.dashboard-content-grid {
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.dashboard-panel {
+  border-radius: 13px;
+}
+
+.dashboard-panel-header {
+  padding: 22px 23px 0;
+}
+
+.dashboard-panel-header > div > span {
+  font-size: 8px;
+}
+
+.dashboard-panel-header h3 {
+  margin-top: 6px;
+  font-size: 16px;
+}
+
+.dashboard-panel-header select {
+  height: 34px;
+  font-size: 10px;
+}
+
+/* ---------- PAYROLL SUMMARY ---------- */
+.payroll-summary {
+  margin: 21px 23px 0;
+}
+
+.payroll-summary > div {
+  padding: 14px;
+}
+
+.payroll-summary span {
+  font-size: 9px;
+}
+
+.payroll-summary strong {
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.payroll-chart {
+  height: 158px;
+  margin: 23px 23px 0;
+}
+
+.chart-months {
+  padding: 8px 23px 19px;
+  font-size: 9px;
+}
+
+/* ---------- LEAVE BALANCE ---------- */
+.leave-stat {
+  margin: 22px 23px 0;
+}
+
+.leave-stat span {
+  color: #59677c;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.leave-stat strong {
+  color: #273247;
+  font-size: 10px;
+}
+
+.leave-progress {
+  height: 6px;
+  margin-top: 9px;
+}
+
+/* ---------- QUICK ACTIONS ---------- */
+.quick-actions-section {
+  margin-top: 27px;
+}
+
+.dashboard-section-heading > div > span {
+  font-size: 8px;
+}
+
+.dashboard-section-heading h3 {
+  margin-top: 6px;
+  font-size: 17px;
+}
+
+.quick-actions-grid {
+  gap: 14px;
+  margin-top: 15px;
+}
+
+.quick-actions-grid button {
+  min-height: 96px;
+  gap: 12px;
+  padding: 15px;
+  border-radius: 12px;
+}
+
+.quick-action-icon {
+  width: 40px;
+  height: 40px;
+  font-size: 15px;
+}
+
+.quick-actions-grid strong {
+  font-size: 11px;
+}
+
+.quick-actions-grid button span {
+  margin-top: 5px;
+  color: #7b8799;
+  font-size: 9px;
+}
+
+.quick-actions-grid b {
+  font-size: 15px;
+}
+
+/* ---------- RECENT ACTIVITY ---------- */
+.recent-activity {
+  margin-top: 19px;
+  padding-bottom: 10px;
+}
+
+.activity-table {
+  margin-top: 19px;
+}
+
+.activity-table-header,
+.activity-table-row {
+  padding: 14px 23px;
+  gap: 16px;
+}
+
+.activity-table-header {
+  font-size: 8px;
+  letter-spacing: 0.85px;
+}
+
+.activity-table-row {
+  font-size: 10px;
+}
+
+.employee-cell {
+  gap: 10px;
+}
+
+.employee-cell strong {
+  font-size: 10px;
+}
+
+.employee-avatar {
+  width: 32px;
+  height: 32px;
+  font-size: 9px;
+}
+
+.status-paid {
+  padding: 6px 9px;
+  font-size: 8px;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 1200px) {
+  .dashboard-main {
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+
+  .dashboard-welcome h2 {
+    font-size: 25px;
+  }
+}
+
+@media (max-width: 950px) {
+  .dashboard-sidebar {
+    width: 78px;
+    padding: 22px 10px;
+  }
+
+  .dashboard-main {
+    width: calc(100% - 78px);
+    margin-left: 78px;
+  }
+
+  .dashboard-topbar h1 {
+    font-size: 27px;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard-main {
+    padding: 0 16px 35px;
+  }
+
+  .dashboard-topbar h1 {
+    font-size: 24px;
+  }
+
+  .dashboard-welcome h2 {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-topbar h1 {
+    font-size: 21px;
+  }
+
+  .dashboard-welcome h2 {
+    font-size: 20px;
+  }
+}
+/* =========================================================
+   FINAL LAYOUT FIX
+   REMOVE EMPTY SPACE BETWEEN SIDEBAR AND MAIN CONTENT
+   ========================================================= */
+
+.dashboard-page {
+    display: block !important;
+    width: 100% !important;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.dashboard-sidebar {
+    position: fixed !important;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+
+    width: 208px !important;
+
+    margin: 0 !important;
+
+    padding: 24px 12px !important;
+
+    z-index: 100;
+}
+
+
+/* =========================
+   MAIN CONTENT
+========================= */
+
+.dashboard-main {
+    position: relative !important;
+
+    width: calc(100% - 208px) !important;
+
+    margin-left: 208px !important;
+    margin-right: 0 !important;
+
+    padding: 0 28px 50px !important;
+
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+}
+
+
+/* =========================
+   TOP BAR
+========================= */
+
+.dashboard-topbar {
+    width: 100% !important;
+}
+
+
+/* =========================
+   WELCOME
+========================= */
+
+.dashboard-welcome {
+    width: 100% !important;
+}
+
+
+/* =========================
+   STAT CARDS
+========================= */
+
+.dashboard-stat-grid {
+    width: 100% !important;
+}
+
+
+/* =========================
+   CONTENT GRID
+========================= */
+
+.dashboard-content-grid {
+    width: 100% !important;
+}
+
+
+/* =========================
+   QUICK ACTIONS
+========================= */
+
+.quick-actions-section {
+    width: 100% !important;
+}
+
+
+/* =========================
+   RECENT ACTIVITY
+========================= */
+
+.recent-activity {
+    width: 100% !important;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    .dashboard-sidebar {
+        width: 208px !important;
+    }
+
+    .dashboard-main {
+        width: calc(100% - 208px) !important;
+        margin-left: 208px !important;
+
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+}
+
+
+/* =========================================================
+   SMALL SCREEN
+========================================================= */
+
+@media (max-width: 950px) {
+
+    .dashboard-sidebar {
+        width: 78px !important;
+        padding: 22px 10px !important;
+    }
+
+    .dashboard-main {
+        width: calc(100% - 78px) !important;
+        margin-left: 78px !important;
+
+        padding-left: 18px !important;
+        padding-right: 18px !important;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .dashboard-sidebar {
+        width: 62px !important;
+        padding: 18px 7px !important;
+    }
+
+    .dashboard-main {
+        width: calc(100% - 62px) !important;
+        margin-left: 62px !important;
+
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+}
+/* =====================================================
+   SIDEBAR CLICK FIX
+   ===================================================== */
+
+.dashboard-sidebar {
+    position: relative;
+    z-index: 100;
+}
+
+.dashboard-menu {
+    position: relative;
+    z-index: 101;
+}
+
+.dashboard-menu-item {
+    position: relative;
+    z-index: 102;
+    pointer-events: auto;
+}
+.dashboard-primary-button,
+.quick-actions-grid button {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+}
+/* =====================================================
+   DASHBOARD SIDEBAR
+===================================================== */
+
+.dashboard-sidebar {
+    width: 252px;
+    min-width: 252px;
+    box-sizing: border-box;
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+.dashboard-menu-item {
+    width: 100%;
+    min-height: 48px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 0 14px;
+
+    box-sizing: border-box;
+
+    border: none;
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: #aebbd0;
+
+    font-family: inherit;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+
+/* =====================================================
+   ICON
+===================================================== */
+
+.dashboard-menu-icon {
+    width: 22px;
+    min-width: 22px;
+
+    height: 22px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    color: inherit;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+
+/* =====================================================
+   TEXT
+===================================================== */
+
+.dashboard-menu-text {
+    flex: 1;
+
+    min-width: 0;
+
+    display: block;
+
+    color: inherit;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    line-height: 1.2;
+
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   HOVER
+===================================================== */
+
+.dashboard-menu-item:hover {
+    background: #111f35;
+
+    color: #ffffff;
+}
+
+
+/* =====================================================
+   ACTIVE
+===================================================== */
+
+.dashboard-menu-item.active {
+    background: #15264a;
+
+    color: #ffffff;
+
+    box-shadow:
+        inset 3px 0 0 #4d7cff;
+}
+
+
+/* =====================================================
+   NAVIGATION SPACING
+===================================================== */
+
+.dashboard-navigation {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+/* =====================================================
+   SIDEBAR NAVIGATION
+===================================================== */
+
+.dashboard-navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    margin-top: 24px;
+}
+
+
+/* =====================================================
+   MENU ITEM
+===================================================== */
+
+.dashboard-menu-item {
+    width: 100%;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 14px;
+    margin: 0;
+
+    box-sizing: border-box;
+
+    border: none;
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: #aebbd0;
+
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition: background 0.2s ease,
+                color 0.2s ease;
+}
+
+
+/* =====================================================
+   ICON
+===================================================== */
+
+.dashboard-menu-icon {
+    width: 22px;
+    min-width: 22px;
+    height: 22px;
+
+    flex: 0 0 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0;
+    padding: 0;
+
+    color: inherit;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+
+/* =====================================================
+   TEXT
+===================================================== */
+
+.dashboard-menu-text {
+    flex: 1;
+
+    margin: 0;
+    padding: 0;
+
+    color: inherit;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    line-height: 1;
+
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   HOVER
+===================================================== */
+
+.dashboard-menu-item:hover {
+    background: #111f35;
+    color: #ffffff;
+}
+
+
+/* =====================================================
+   ACTIVE
+===================================================== */
+
+.dashboard-menu-item.active {
+    background: #15264a;
+    color: #ffffff;
+
+    box-shadow:
+        inset 3px 0 0 #4d7cff;
+}
+/* =====================================================
+   FINAL SIDEBAR FIX
+   ===================================================== */
+
+.dashboard-sidebar {
+    width: 252px !important;
+    min-width: 252px !important;
+    padding: 24px 14px !important;
+    box-sizing: border-box;
+}
+
+/* Navigation */
+.dashboard-menu,
+.dashboard-navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 24px;
+}
+
+/* Every menu item */
+.dashboard-menu-item {
+    width: 100% !important;
+    height: 48px !important;
+    min-height: 48px !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 12px !important;
+    padding: 0 14px !important;
+    margin: 0 !important;
+
+    box-sizing: border-box;
+
+    border: none;
+    border-radius: 9px;
+
+    background: transparent;
+
+    color: #aebbd0;
+
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+/* =====================================================
+   ICON
+   ===================================================== */
+
+.dashboard-menu-item > .dashboard-menu-icon {
+    width: 22px !important;
+    min-width: 22px !important;
+    max-width: 22px !important;
+
+    height: 22px !important;
+
+    flex: 0 0 22px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    color: #8291a8;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+
+/* =====================================================
+   TEXT
+   ===================================================== */
+
+.dashboard-menu-item > .dashboard-menu-text {
+    width: auto !important;
+    min-width: 0 !important;
+
+    flex: 1 !important;
+
+    display: block !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    color: inherit;
+
+    font-size: 15px !important;
+    font-weight: 600 !important;
+
+    line-height: 1.2 !important;
+
+    white-space: nowrap !important;
+
+    overflow: visible !important;
+}
+
+
+/* =====================================================
+   IMPORTANT FIX
+   Removes old generic span styling
+   ===================================================== */
+
+.dashboard-menu-item > span:not(.dashboard-menu-icon) {
+    width: auto !important;
+    min-width: 0 !important;
+}
+
+
+/* =====================================================
+   HOVER
+   ===================================================== */
+
+.dashboard-menu-item:hover {
+    background: #19253a !important;
+    color: #ffffff !important;
+
+    transform: none !important;
+}
+
+.dashboard-menu-item:hover .dashboard-menu-icon {
+    color: #6f91ff !important;
+}
+
+
+/* =====================================================
+   ACTIVE
+   ===================================================== */
+
+.dashboard-menu-item.active {
+    background: #15264a !important;
+    color: #ffffff !important;
+
+    box-shadow:
+        inset 3px 0 0 #4d7cff;
+}
+
+.dashboard-menu-item.active .dashboard-menu-icon {
+    color: #7da0ff !important;
+}
+
+
+/* =====================================================
+   REMOVE OLD SPAN WIDTH PROBLEM
+   ===================================================== */
+
+.dashboard-menu-item span {
+    box-sizing: border-box;
+}
+
+
+/* =====================================================
+   SIDEBAR FOOTER
+   ===================================================== */
+
+.dashboard-sidebar-footer {
+    margin-top: auto;
+}
+
+
+/* =====================================================
+   MAIN CONTENT
+   ===================================================== */
+
+.dashboard-main {
+    width: calc(100% - 252px) !important;
+    margin-left: 252px !important;
+    box-sizing: border-box;
+}

@@ -449,6 +449,44 @@
 
     font-size: 14px;
 }
+/* =====================================================
+   EXPORT EXCEL BUTTON
+===================================================== */
+
+.payroll-export-btn {
+    margin-top: 14px;
+
+    padding: 10px 16px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #4169e1;
+    color: white;
+
+    font-family: inherit;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.payroll-export-btn:hover {
+    background: #3155c7;
+
+    transform: translateY(-1px);
+}
+
+
+.payroll-export-btn:active {
+    transform: translateY(0);
+}
 
 
 /* =====================================================
@@ -611,5 +649,1279 @@
     .payroll-section-header {
         flex-direction: column;
         align-items: flex-start;
+    }
+}
+/* =========================================================
+   AUTOMATIC PAYROLL & PAYSLIP SCHEDULER
+   ========================================================= */
+
+.payroll-scheduler-card {
+    background: #ffffff;
+    border: 1px solid #e4e7ec;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 28px;
+    box-shadow: 0 4px 14px rgba(16, 24, 40, 0.06);
+}
+
+
+.payroll-scheduler-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+
+.payroll-scheduler-header h2 {
+    margin: 6px 0 8px;
+    font-size: 22px;
+    color: #101828;
+}
+
+
+.payroll-scheduler-header p {
+    margin: 0;
+    color: #667085;
+    font-size: 14px;
+    max-width: 700px;
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.payroll-scheduler-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 13px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+.payroll-scheduler-status span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+
+.payroll-scheduler-status.active {
+    background: #ecfdf3;
+    color: #067647;
+}
+
+
+.payroll-scheduler-status.active span {
+    background: #12b76a;
+}
+
+
+.payroll-scheduler-status.inactive {
+    background: #f2f4f7;
+    color: #667085;
+}
+
+
+.payroll-scheduler-status.inactive span {
+    background: #98a2b3;
+}
+
+
+/* =========================================================
+   SUCCESS / ERROR
+   ========================================================= */
+
+.payroll-scheduler-success {
+    padding: 12px 15px;
+    margin-bottom: 18px;
+    border-radius: 8px;
+    background: #ecfdf3;
+    border: 1px solid #abefc6;
+    color: #067647;
+    font-size: 14px;
+}
+
+
+.payroll-scheduler-error {
+    padding: 12px 15px;
+    margin-bottom: 18px;
+    border-radius: 8px;
+    background: #fef3f2;
+    border: 1px solid #fecdca;
+    color: #b42318;
+    font-size: 14px;
+}
+
+
+.payroll-scheduler-loading {
+    padding: 20px 0;
+    color: #667085;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   SETTINGS
+   ========================================================= */
+
+.payroll-scheduler-settings {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+
+.payroll-scheduler-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+
+.payroll-scheduler-field label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #344054;
+}
+
+
+.payroll-scheduler-field select,
+.payroll-scheduler-field input[type="time"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 12px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #101828;
+    font-size: 14px;
+    outline: none;
+}
+
+
+.payroll-scheduler-field select:focus,
+.payroll-scheduler-field input[type="time"]:focus {
+    border-color: #667085;
+}
+
+
+.payroll-scheduler-field select:disabled,
+.payroll-scheduler-field input[type="time"]:disabled {
+    background: #f2f4f7;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   TOGGLE
+   ========================================================= */
+
+.payroll-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 42px;
+}
+
+
+.payroll-toggle {
+    width: 46px;
+    height: 26px;
+    padding: 3px;
+    border: none;
+    border-radius: 999px;
+    background: #d0d5dd;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+
+.payroll-toggle span {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ffffff;
+    transition: 0.2s ease;
+}
+
+
+.payroll-toggle.active {
+    background: #12b76a;
+}
+
+
+.payroll-toggle.active span {
+    transform: translateX(20px);
+}
+
+
+/* =========================================================
+   INFORMATION
+   ========================================================= */
+
+.payroll-scheduler-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 10px;
+    margin-bottom: 18px;
+}
+
+
+.payroll-scheduler-info div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+
+.payroll-scheduler-info span {
+    font-size: 12px;
+    color: #667085;
+}
+
+
+.payroll-scheduler-info strong {
+    font-size: 14px;
+    color: #101828;
+}
+
+
+/* =========================================================
+   FEATURES
+   ========================================================= */
+
+.payroll-scheduler-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    margin-bottom: 22px;
+    color: #475467;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.payroll-scheduler-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+.payroll-save-schedule-btn,
+.payroll-run-now-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 11px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+.payroll-save-schedule-btn {
+    background: #101828;
+    color: #ffffff;
+}
+
+
+.payroll-run-now-btn {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+
+.payroll-save-schedule-btn:hover,
+.payroll-run-now-btn:hover {
+    opacity: 0.9;
+}
+
+
+.payroll-save-schedule-btn:disabled,
+.payroll-run-now-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   INTERVIEW DEMO NOTE
+   ========================================================= */
+
+.payroll-scheduler-demo-note {
+    display: flex;
+    gap: 8px;
+    margin-top: 18px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #475467;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+.payroll-scheduler-demo-note strong {
+    color: #101828;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .payroll-scheduler-settings {
+        grid-template-columns: 1fr;
+    }
+
+
+    .payroll-scheduler-info {
+        grid-template-columns: 1fr;
+    }
+
+
+    .payroll-scheduler-header {
+        flex-direction: column;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .payroll-scheduler-card {
+        padding: 18px;
+    }
+
+
+    .payroll-scheduler-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+
+    .payroll-save-schedule-btn,
+    .payroll-run-now-btn {
+        width: 100%;
+    }
+
+}
+/* =========================================================
+   AUTOMATIC PAYROLL & PAYSLIP SCHEDULER
+   ========================================================= */
+
+.payroll-scheduler-card {
+    background: #ffffff;
+    border: 1px solid #e4e7ec;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 28px;
+    box-shadow: 0 4px 14px rgba(16, 24, 40, 0.06);
+}
+
+
+/* =========================================================
+   SCHEDULER HEADER
+   ========================================================= */
+
+.payroll-scheduler-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+
+.payroll-scheduler-header h2 {
+    margin: 6px 0 8px;
+    font-size: 22px;
+    color: #101828;
+}
+
+
+.payroll-scheduler-header p {
+    margin: 0;
+    color: #667085;
+    font-size: 14px;
+    max-width: 700px;
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.payroll-scheduler-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 13px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+.payroll-scheduler-status span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+
+.payroll-scheduler-status.active {
+    background: #ecfdf3;
+    color: #067647;
+}
+
+
+.payroll-scheduler-status.active span {
+    background: #12b76a;
+}
+
+
+.payroll-scheduler-status.inactive {
+    background: #f2f4f7;
+    color: #667085;
+}
+
+
+.payroll-scheduler-status.inactive span {
+    background: #98a2b3;
+}
+
+
+/* =========================================================
+   SUCCESS MESSAGE
+   ========================================================= */
+
+.payroll-scheduler-success {
+    padding: 12px 15px;
+    margin-bottom: 18px;
+    border-radius: 8px;
+    background: #ecfdf3;
+    border: 1px solid #abefc6;
+    color: #067647;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   ERROR MESSAGE
+   ========================================================= */
+
+.payroll-scheduler-error {
+    padding: 12px 15px;
+    margin-bottom: 18px;
+    border-radius: 8px;
+    background: #fef3f2;
+    border: 1px solid #fecdca;
+    color: #b42318;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.payroll-scheduler-loading {
+    padding: 20px 0;
+    color: #667085;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   SCHEDULER SETTINGS
+   ========================================================= */
+
+.payroll-scheduler-settings {
+    display: grid;
+
+    /*
+     * Four fields:
+     *
+     * Automatic Processing
+     * Schedule
+     * Payroll Month
+     * Execution Time
+     */
+    grid-template-columns:
+        1.1fr
+        1.4fr
+        1.2fr
+        1fr;
+
+    gap: 18px;
+
+    margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   FIELD
+   ========================================================= */
+
+.payroll-scheduler-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+
+.payroll-scheduler-field label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #344054;
+}
+
+
+/* =========================================================
+   SELECT
+   ========================================================= */
+
+.payroll-scheduler-field select {
+
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 11px 12px;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #101828;
+
+    font-size: 14px;
+
+    outline: none;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   TIME INPUT
+   ========================================================= */
+
+.payroll-scheduler-field input[type="time"] {
+
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 10px 12px;
+
+    min-height: 42px;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #101828;
+
+    font-size: 14px;
+
+    outline: none;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   MONTH INPUT
+   ========================================================= */
+
+.payroll-scheduler-field input[type="month"] {
+
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 10px 12px;
+
+    min-height: 42px;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #101828;
+
+    font-size: 14px;
+
+    outline: none;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   FOCUS
+   ========================================================= */
+
+.payroll-scheduler-field select:focus,
+.payroll-scheduler-field input[type="time"]:focus,
+.payroll-scheduler-field input[type="month"]:focus {
+
+    border-color: #667085;
+
+    box-shadow:
+        0 0 0 3px rgba(102, 112, 133, 0.10);
+}
+
+
+/* =========================================================
+   DISABLED
+   ========================================================= */
+
+.payroll-scheduler-field select:disabled,
+.payroll-scheduler-field input[type="time"]:disabled,
+.payroll-scheduler-field input[type="month"]:disabled {
+
+    background: #f2f4f7;
+
+    color: #98a2b3;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   TOGGLE
+   ========================================================= */
+
+.payroll-toggle-wrapper {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    min-height: 42px;
+}
+
+
+.payroll-toggle {
+
+    width: 46px;
+
+    height: 26px;
+
+    padding: 3px;
+
+    border: none;
+
+    border-radius: 999px;
+
+    background: #d0d5dd;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+
+.payroll-toggle span {
+
+    display: block;
+
+    width: 20px;
+
+    height: 20px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    transition: 0.2s ease;
+}
+
+
+.payroll-toggle.active {
+
+    background: #12b76a;
+}
+
+
+.payroll-toggle.active span {
+
+    transform: translateX(20px);
+}
+
+
+/* =========================================================
+   CURRENT CONFIGURATION
+   ========================================================= */
+
+.payroll-scheduler-info {
+
+    display: grid;
+
+    /*
+     * Four information blocks now:
+     *
+     * Schedule
+     * Payroll Month
+     * Execution Time
+     * Last Execution
+     */
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 14px;
+
+    padding: 16px;
+
+    background: #f8fafc;
+
+    border-radius: 10px;
+
+    margin-bottom: 18px;
+}
+
+
+.payroll-scheduler-info div {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+.payroll-scheduler-info span {
+
+    font-size: 12px;
+
+    color: #667085;
+}
+
+
+.payroll-scheduler-info strong {
+
+    font-size: 14px;
+
+    color: #101828;
+}
+
+
+/* =========================================================
+   FEATURES
+   ========================================================= */
+
+.payroll-scheduler-features {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 10px 20px;
+
+    margin-bottom: 22px;
+
+    color: #475467;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.payroll-scheduler-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.payroll-save-schedule-btn,
+.payroll-run-now-btn {
+
+    border: none;
+
+    border-radius: 8px;
+
+    padding: 11px 18px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+
+.payroll-save-schedule-btn {
+
+    background: #101828;
+
+    color: #ffffff;
+}
+
+
+.payroll-run-now-btn {
+
+    background: #2563eb;
+
+    color: #ffffff;
+}
+
+
+.payroll-save-schedule-btn:hover,
+.payroll-run-now-btn:hover {
+
+    opacity: 0.9;
+
+    transform: translateY(-1px);
+}
+
+
+.payroll-save-schedule-btn:disabled,
+.payroll-run-now-btn:disabled {
+
+    opacity: 0.6;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .payroll-scheduler-settings {
+
+        grid-template-columns:
+            1fr
+            1fr;
+    }
+
+
+    .payroll-scheduler-info {
+
+        grid-template-columns:
+            1fr
+            1fr;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .payroll-scheduler-card {
+
+        padding: 18px;
+    }
+
+
+    .payroll-scheduler-header {
+
+        flex-direction: column;
+    }
+
+
+    .payroll-scheduler-settings {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    .payroll-scheduler-info {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    .payroll-scheduler-actions {
+
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+
+    .payroll-save-schedule-btn,
+    .payroll-run-now-btn {
+
+        width: 100%;
+    }
+}
+
+
+/* =========================================================
+   PAYROLL PROCESSING RESULT
+   Generated / Skipped / Failed summary
+   ========================================================= */
+
+.payroll-processing-result {
+    margin-bottom: 22px;
+    padding: 20px;
+    background: #ffffff;
+    border: 1px solid #e4e7ec;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(16, 24, 40, 0.04);
+}
+
+.payroll-processing-result-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 14px;
+}
+
+.payroll-processing-result-header h3 {
+    margin: 4px 0 5px;
+    color: #101828;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.payroll-processing-result-header p {
+    margin: 0;
+    color: #667085;
+    font-size: 13px;
+}
+
+.payroll-processing-result-header p strong {
+    color: #344054;
+}
+
+/* =========================================================
+   PROCESSING MESSAGE
+   ========================================================= */
+
+.payroll-processing-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 13px 15px;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.payroll-processing-message-icon {
+    flex: 0 0 auto;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.payroll-processing-message.success {
+    background: #ecfdf3;
+    border: 1px solid #abefc6;
+    color: #067647;
+}
+
+.payroll-processing-message.warning {
+    background: #fffaeb;
+    border: 1px solid #fedf89;
+    color: #b54708;
+}
+
+.payroll-processing-message.failed {
+    background: #fef3f2;
+    border: 1px solid #fecdca;
+    color: #b42318;
+}
+
+/* =========================================================
+   PROCESSING STATS
+   ========================================================= */
+
+.payroll-processing-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.payroll-processing-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 92px;
+    padding: 16px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    border: 1px solid #e4e7ec;
+}
+
+.payroll-processing-stat span {
+    font-size: 12px;
+    font-weight: 700;
+    color: #667085;
+}
+
+.payroll-processing-stat strong {
+    font-size: 28px;
+    line-height: 1.1;
+    font-weight: 800;
+}
+
+.payroll-processing-stat small {
+    font-size: 11px;
+    color: #98a2b3;
+}
+
+.payroll-processing-stat.success {
+    background: #f6fef9;
+    border-color: #abefc6;
+}
+
+.payroll-processing-stat.success strong {
+    color: #067647;
+}
+
+.payroll-processing-stat.skipped {
+    background: #fffcf5;
+    border-color: #fedf89;
+}
+
+.payroll-processing-stat.skipped strong {
+    color: #b54708;
+}
+
+.payroll-processing-stat.failed {
+    background: #fff8f7;
+    border-color: #fecdca;
+}
+
+.payroll-processing-stat.failed strong {
+    color: #b42318;
+}
+
+/* =========================================================
+   FAILED EMPLOYEES
+   ========================================================= */
+
+.payroll-failed-employees {
+    overflow: hidden;
+    margin-top: 4px;
+    border: 1px solid #fecdca;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.payroll-failed-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 16px;
+    background: #fff8f7;
+    border-bottom: 1px solid #fecdca;
+}
+
+.payroll-failed-header h4 {
+    margin: 0;
+    color: #b42318;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.payroll-failed-header p {
+    margin: 4px 0 0;
+    color: #7a271a;
+    font-size: 12px;
+}
+
+.payroll-failed-header > span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 8px;
+    box-sizing: border-box;
+    border-radius: 999px;
+    background: #fee4e2;
+    color: #b42318;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.payroll-failed-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.payroll-failed-item {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 2fr;
+    gap: 18px;
+    padding: 15px 16px;
+    border-bottom: 1px solid #f2f4f7;
+}
+
+.payroll-failed-item:last-child {
+    border-bottom: none;
+}
+
+.payroll-failed-item > div {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.payroll-failed-item > div > span {
+    color: #667085;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.payroll-failed-item strong {
+    overflow-wrap: anywhere;
+    color: #344054;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.payroll-failed-employee strong {
+    color: #b42318;
+}
+
+.payroll-failed-employee small {
+    color: #667085;
+    font-size: 12px;
+}
+
+.payroll-failed-email strong {
+    color: #344054;
+}
+
+.payroll-failed-reason strong {
+    color: #b42318;
+}
+
+/* =========================================================
+   FAILED EMPLOYEE IDS
+   ========================================================= */
+
+.payroll-failed-ids {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 14px;
+    padding: 11px 13px;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #475467;
+    font-size: 12px;
+}
+
+.payroll-failed-ids strong {
+    color: #344054;
+}
+
+.payroll-failed-ids span {
+    color: #b42318;
+    font-weight: 700;
+}
+
+/* =========================================================
+   RESPONSIVE - PROCESSING RESULT
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .payroll-processing-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .payroll-failed-item {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .payroll-failed-reason {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .payroll-processing-result {
+        padding: 16px;
+    }
+
+    .payroll-processing-result-header {
+        flex-direction: column;
+    }
+
+    .payroll-processing-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .payroll-failed-item {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .payroll-failed-reason {
+        grid-column: auto;
+    }
+
+    .payroll-failed-ids {
+        align-items: flex-start;
+        flex-direction: column;
     }
 }

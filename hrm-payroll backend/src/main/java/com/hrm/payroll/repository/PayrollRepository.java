@@ -17,4 +17,17 @@ public interface PayrollRepository
     );
 
     long countByStatus(String status);
+    long countByPayPeriodAndStatusIgnoreCase(
+            String payPeriod,
+            String status
+    );
+
+    List<Payroll> findByPayPeriod(
+            String payPeriod
+    );
+
+    List<Payroll> findByPayPeriodOrderByProcessedAtDesc(
+            String payPeriod
+    );
+    List<Payroll> findTop5ByOrderByProcessedAtDesc();
 }

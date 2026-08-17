@@ -1,61 +1,39 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/Employees.css";
 
-
-const API_URL =
-  "http://localhost:8090/api/employees";
-
+const API_URL = "http://localhost:8090/api/employees";
 
 function Employees() {
-
-  const navigate = useNavigate();
-
 
   /* =====================================================
      STATE
   ===================================================== */
 
-  const [employees, setEmployees] =
-    useState([]);
+  const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const [submitting, setSubmitting] =
-    useState(false);
-
-  const [error, setError] =
-    useState("");
-
-  const [success, setSuccess] =
-    useState("");
-
-  const [search, setSearch] =
-    useState("");
-
-  const [statusFilter, setStatusFilter] =
-    useState("ALL");
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
 
 
   /* =====================================================
-     MODAL
+     ADD / EDIT MODAL
   ===================================================== */
 
-  const [showModal, setShowModal] =
-    useState(false);
-
-  const [editingEmployee, setEditingEmployee] =
-    useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [editingEmployee, setEditingEmployee] = useState(null);
 
 
   /* =====================================================
      VIEW MODAL
   ===================================================== */
 
-  const [viewEmployee, setViewEmployee] =
-    useState(null);
+  const [viewEmployee, setViewEmployee] = useState(null);
 
 
   /* =====================================================
@@ -71,9 +49,7 @@ function Employees() {
     joiningDate: "",
   };
 
-
-  const [formData, setFormData] =
-    useState(emptyForm);
+  const [formData, setFormData] = useState(emptyForm);
 
 
   /* =====================================================
@@ -82,17 +58,48 @@ function Employees() {
 
   const getConfig = () => {
 
-    const token =
-      localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     return {
       headers: {
-        Authorization:
-          `Bearer ${token}`,
-        "Content-Type":
-          "application/json",
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
     };
+  };
+
+
+  /* =====================================================
+     SORT EMPLOYEES BY EMPLOYEE CODE
+     
+     HRMEMP001
+     HRMEMP002
+     HRMEMP003
+     HRMEMP004
+     ...
+  ===================================================== */
+
+  const sortEmployeesByCode = (employeeList) => {
+
+    return [...employeeList].sort(
+      (a, b) => {
+
+        const codeA =
+          a?.employeeCode || "";
+
+        const codeB =
+          b?.employeeCode || "";
+
+        return codeA.localeCompare(
+          codeB,
+          undefined,
+          {
+            numeric: true,
+            sensitivity: "base",
+          }
+        );
+      }
+    );
   };
 
 
@@ -107,17 +114,32 @@ function Employees() {
       setLoading(true);
       setError("");
 
-      const response =
-        await axios.get(
-          API_URL,
-          getConfig()
-        );
+      const response = await axios.get(
+        API_URL,
+        getConfig()
+      );
 
-      setEmployees(
+
+      /* -------------------------------------------------
+         SORT BY EMPLOYEE CODE ASCENDING
+      ------------------------------------------------- */
+
+      const employeeData =
         Array.isArray(response.data)
           ? response.data
-          : []
+          : [];
+
+
+      const sortedEmployees =
+        sortEmployeesByCode(
+          employeeData
+        );
+
+
+      setEmployees(
+        sortedEmployees
       );
+
 
     } catch (err) {
 
@@ -173,12 +195,10 @@ function Employees() {
       value
     } = e.target;
 
-    setFormData(
-      previous => ({
-        ...previous,
-        [name]: value,
-      })
-    );
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value,
+    }));
 
     setError("");
     setSuccess("");
@@ -248,9 +268,7 @@ function Employees() {
     }
 
     setShowModal(false);
-
     setEditingEmployee(null);
-
     setFormData(emptyForm);
 
     setError("");
@@ -258,7 +276,7 @@ function Employees() {
 
 
   /* =====================================================
-     CREATE / UPDATE
+     CREATE / UPDATE EMPLOYEE
   ===================================================== */
 
   const handleSubmit = async (e) => {
@@ -269,9 +287,9 @@ function Employees() {
     setSuccess("");
 
 
-    /* -----------------------------------------------
+    /* -------------------------------------------------
        FRONTEND VALIDATION
-    ----------------------------------------------- */
+    ------------------------------------------------- */
 
     if (
       !formData.employeeCode.trim() ||
@@ -314,6 +332,7 @@ function Employees() {
 
 
       const payload = {
+
         employeeCode:
           formData.employeeCode.trim(),
 
@@ -329,42 +348,40 @@ function Employees() {
         designation:
           formData.designation.trim(),
 
-        joiningDate: formData.joiningDate
+        joiningDate:
+          formData.joiningDate,
       };
 
 
       let response;
 
 
-      /* =================================================
+      /* -------------------------------------------------
          UPDATE
-      ================================================= */
+      ------------------------------------------------- */
 
       if (editingEmployee) {
 
-        response =
-          await axios.put(
-            `${API_URL}/${editingEmployee.id}`,
-            payload,
-            getConfig()
-          );
+        response = await axios.put(
+          `${API_URL}/${editingEmployee.id}`,
+          payload,
+          getConfig()
+        );
 
       }
 
 
-      /* =================================================
+      /* -------------------------------------------------
          CREATE
-      ================================================= */
+      ------------------------------------------------- */
 
       else {
 
-        response =
-          await axios.post(
-            API_URL,
-            payload,
-            getConfig()
-          );
-
+        response = await axios.post(
+          API_URL,
+          payload,
+          getConfig()
+        );
       }
 
 
@@ -372,34 +389,56 @@ function Employees() {
         response.data;
 
 
-      /* =================================================
+      /* -------------------------------------------------
          UPDATE LOCAL LIST
-      ================================================= */
+         
+         ALWAYS SORT AFTER UPDATE
+      ------------------------------------------------- */
 
       if (editingEmployee) {
 
-        setEmployees(
-          previous =>
-            previous.map(employee =>
-              employee.id ===
-              editingEmployee.id
+        setEmployees((previous) => {
+
+          const updatedList =
+            previous.map((employee) =>
+              employee.id === editingEmployee.id
                 ? updatedEmployee
                 : employee
-            )
-        );
+            );
+
+          return sortEmployeesByCode(
+            updatedList
+          );
+        });
+
 
         setSuccess(
           "Employee updated successfully."
         );
 
-      } else {
+      }
 
-        setEmployees(
-          previous => [
-            updatedEmployee,
+
+      /* -------------------------------------------------
+         CREATE
+         
+         ALWAYS SORT AFTER ADD
+      ------------------------------------------------- */
+
+      else {
+
+        setEmployees((previous) => {
+
+          const updatedList = [
             ...previous,
-          ]
-        );
+            updatedEmployee,
+          ];
+
+          return sortEmployeesByCode(
+            updatedList
+          );
+        });
+
 
         setSuccess(
           "Employee added successfully."
@@ -407,22 +446,18 @@ function Employees() {
       }
 
 
-      /* =================================================
+      /* -------------------------------------------------
          CLOSE AFTER SHORT DELAY
-      ================================================= */
+      ------------------------------------------------- */
 
       setTimeout(() => {
 
         setShowModal(false);
-
         setEditingEmployee(null);
-
         setFormData(emptyForm);
-
         setSuccess("");
 
       }, 900);
-
 
     } catch (err) {
 
@@ -430,7 +465,6 @@ function Employees() {
         "Employee save error:",
         err
       );
-
 
       if (
         err.response?.status === 401 ||
@@ -447,7 +481,6 @@ function Employees() {
           err.response?.data?.message ||
           "Unable to save employee."
         );
-
       }
 
     } finally {
@@ -462,15 +495,12 @@ function Employees() {
      DEACTIVATE EMPLOYEE
   ===================================================== */
 
-  const handleDeactivate = async (
-    employee
-  ) => {
+  const handleDeactivate = async (employee) => {
 
     const confirmed =
       window.confirm(
         `Deactivate ${employee.name}?`
       );
-
 
     if (!confirmed) {
       return;
@@ -482,25 +512,24 @@ function Employees() {
       setError("");
       setSuccess("");
 
-
       await axios.delete(
         `${API_URL}/${employee.id}`,
         getConfig()
       );
 
 
-      /* Soft delete on backend */
-
-      setEmployees(
-        previous =>
-          previous.map(item =>
+      setEmployees((previous) =>
+        sortEmployeesByCode(
+          previous.map((item) =>
             item.id === employee.id
               ? {
                   ...item,
                   active: false,
+                  status: "APPROVED",
                 }
               : item
           )
+        )
       );
 
 
@@ -513,14 +542,12 @@ function Employees() {
         setSuccess("");
       }, 2500);
 
-
     } catch (err) {
 
       console.error(
         "Employee deactivate error:",
         err
       );
-
 
       setError(
         err.response?.data?.message ||
@@ -531,62 +558,339 @@ function Employees() {
 
 
   /* =====================================================
+     REACTIVATE EMPLOYEE
+  ===================================================== */
+
+  const handleReactivate = async (employee) => {
+
+    const confirmed =
+      window.confirm(
+        `Reactivate ${employee.name}?`
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    try {
+
+      setError("");
+      setSuccess("");
+
+      const response = await axios.put(
+        `${API_URL}/${employee.id}/reactivate`,
+        {},
+        getConfig()
+      );
+
+
+      const updatedEmployee =
+        response.data;
+
+
+      setEmployees((previous) => {
+
+        const updatedList =
+          previous.map((item) =>
+            item.id === employee.id
+              ? updatedEmployee
+              : item
+          );
+
+        return sortEmployeesByCode(
+          updatedList
+        );
+      });
+
+
+      setSuccess(
+        `${employee.name} has been reactivated.`
+      );
+
+
+      setTimeout(() => {
+        setSuccess("");
+      }, 2500);
+
+    } catch (err) {
+
+      console.error(
+        "Employee reactivate error:",
+        err
+      );
+
+      setError(
+        err.response?.data?.message ||
+        "Unable to reactivate employee."
+      );
+    }
+  };
+
+
+  /* =====================================================
+     APPROVE EMPLOYEE
+  ===================================================== */
+
+  const handleApprove = async (employee) => {
+
+    // -------------------------------------------------
+    // PENDING EMPLOYEES MUST HAVE HR DETAILS
+    // -------------------------------------------------
+
+    if (employee.status === "PENDING") {
+
+      const missingDetails =
+        !employee.department?.trim() ||
+        employee.department.trim().toLowerCase() === "not assigned" ||
+        !employee.designation?.trim() ||
+        employee.designation.trim().toLowerCase() === "not assigned" ||
+        !employee.joiningDate;
+
+      if (missingDetails) {
+
+        setError(
+          "Please edit the employee and provide department, designation and joining date before approval."
+        );
+
+        setSuccess("");
+
+        openEditModal(employee);
+
+        return;
+      }
+    }
+
+
+    const confirmed =
+      window.confirm(
+        `Approve ${employee.name}'s employee access request?`
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    try {
+
+      setError("");
+      setSuccess("");
+
+      const response = await axios.put(
+        `${API_URL}/${employee.id}/approve`,
+        {},
+        getConfig()
+      );
+
+
+      const approvedEmployee =
+        response.data;
+
+
+      setEmployees((previous) => {
+
+        const updatedList =
+          previous.map((item) =>
+            item.id === employee.id
+              ? approvedEmployee
+              : item
+          );
+
+        return sortEmployeesByCode(
+          updatedList
+        );
+      });
+
+
+      setSuccess(
+        `${employee.name} has been approved successfully.`
+      );
+
+
+      setTimeout(() => {
+        setSuccess("");
+      }, 2500);
+
+    } catch (err) {
+
+      console.error(
+        "Employee approval error:",
+        err
+      );
+
+      setError(
+        err.response?.data?.message ||
+        "Unable to approve employee."
+      );
+    }
+  };
+
+
+  /* =====================================================
+     REJECT EMPLOYEE
+  ===================================================== */
+
+  const handleReject = async (employee) => {
+
+    const confirmed =
+      window.confirm(
+        `Reject ${employee.name}'s employee access request?`
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    try {
+
+      setError("");
+      setSuccess("");
+
+      const response = await axios.put(
+        `${API_URL}/${employee.id}/reject`,
+        {},
+        getConfig()
+      );
+
+
+      const rejectedEmployee =
+        response.data;
+
+
+      setEmployees((previous) => {
+
+        const updatedList =
+          previous.map((item) =>
+            item.id === employee.id
+              ? rejectedEmployee
+              : item
+          );
+
+        return sortEmployeesByCode(
+          updatedList
+        );
+      });
+
+
+      setSuccess(
+        `${employee.name}'s access request has been rejected.`
+      );
+
+
+      setTimeout(() => {
+        setSuccess("");
+      }, 2500);
+
+    } catch (err) {
+
+      console.error(
+        "Employee rejection error:",
+        err
+      );
+
+      setError(
+        err.response?.data?.message ||
+        "Unable to reject employee."
+      );
+    }
+  };
+
+
+  /* =====================================================
      SEARCH + FILTER
   ===================================================== */
 
-  const filteredEmployees =
-    useMemo(() => {
+  const filteredEmployees = useMemo(() => {
 
-      const searchValue =
-        search.trim().toLowerCase();
-
-
-      return employees.filter(
-        employee => {
-
-          const matchesSearch =
-            !searchValue ||
-            employee.name
-              ?.toLowerCase()
-              .includes(searchValue) ||
-            employee.employeeCode
-              ?.toLowerCase()
-              .includes(searchValue) ||
-            employee.email
-              ?.toLowerCase()
-              .includes(searchValue) ||
-            employee.department
-              ?.toLowerCase()
-              .includes(searchValue) ||
-            employee.designation
-              ?.toLowerCase()
-              .includes(searchValue);
+    const searchValue =
+      search.trim().toLowerCase();
 
 
-          const matchesStatus =
-            statusFilter === "ALL" ||
-            (
-              statusFilter === "ACTIVE" &&
-              employee.active
-            ) ||
-            (
-              statusFilter === "INACTIVE" &&
-              !employee.active
-            );
+    /*
+     * SORT FIRST
+     * 
+     * This ensures that search and status filters
+     * still display employees in Employee Code order.
+     */
 
-
-          return (
-            matchesSearch &&
-            matchesStatus
-          );
-        }
+    const sortedEmployees =
+      sortEmployeesByCode(
+        employees
       );
 
-    }, [
-      employees,
-      search,
-      statusFilter,
-    ]);
+
+    return sortedEmployees.filter(
+      (employee) => {
+
+        const matchesSearch =
+          !searchValue ||
+
+          employee.name
+            ?.toLowerCase()
+            .includes(searchValue) ||
+
+          employee.employeeCode
+            ?.toLowerCase()
+            .includes(searchValue) ||
+
+          employee.email
+            ?.toLowerCase()
+            .includes(searchValue) ||
+
+          employee.department
+            ?.toLowerCase()
+            .includes(searchValue) ||
+
+          employee.designation
+            ?.toLowerCase()
+            .includes(searchValue);
+
+
+        /* =================================================
+           STATUS FILTER
+        ================================================= */
+
+        const matchesStatus =
+          statusFilter === "ALL" ||
+
+          (
+            statusFilter === "PENDING" &&
+            employee.status === "PENDING"
+          ) ||
+
+          (
+            statusFilter === "ACTIVE" &&
+            employee.status === "APPROVED" &&
+            employee.active === true
+          ) ||
+
+          (
+            statusFilter === "INACTIVE" &&
+            employee.status === "APPROVED" &&
+            employee.active === false
+          ) ||
+
+          (
+            statusFilter === "REJECTED" &&
+            employee.status === "REJECTED"
+          );
+
+
+        return (
+          matchesSearch &&
+          matchesStatus
+        );
+
+      }
+    );
+
+  }, [
+    employees,
+    search,
+    statusFilter,
+  ]);
 
 
   /* =====================================================
@@ -596,14 +900,34 @@ function Employees() {
   const totalEmployees =
     employees.length;
 
+
+  const pendingEmployees =
+    employees.filter(
+      (employee) =>
+        employee.status === "PENDING"
+    ).length;
+
+
   const activeEmployees =
     employees.filter(
-      employee => employee.active
+      (employee) =>
+        employee.status === "APPROVED" &&
+        employee.active === true
     ).length;
+
 
   const inactiveEmployees =
     employees.filter(
-      employee => !employee.active
+      (employee) =>
+        employee.status === "APPROVED" &&
+        employee.active === false
+    ).length;
+
+
+  const rejectedEmployees =
+    employees.filter(
+      (employee) =>
+        employee.status === "REJECTED"
     ).length;
 
 
@@ -617,31 +941,14 @@ function Employees() {
       return "—";
     }
 
-
     const parts =
       date.split("-");
-
 
     if (parts.length !== 3) {
       return date;
     }
 
-
     return `${parts[2]}-${parts[1]}-${parts[0]}`;
-  };
-
-
-  /* =====================================================
-     LOGOUT
-  ===================================================== */
-
-  const handleLogout = () => {
-
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    localStorage.removeItem("role");
-
-    navigate("/login");
   };
 
 
@@ -653,178 +960,16 @@ function Employees() {
 
     <div className="employees-page">
 
-
       {/* =================================================
-          SIDEBAR
-      ================================================= */}
-
-      <aside className="employees-sidebar">
-
-        <div className="employees-brand">
-
-          <div className="employees-logo">
-            H
-          </div>
-
-          <div>
-
-            <strong>
-              HRM
-            </strong>
-
-            <span>
-              PAYROLL
-            </span>
-
-          </div>
-
-        </div>
-
-
-       <nav className="employees-nav">
-
-  {/* DASHBOARD */}
-  <button
-    type="button"
-    onClick={() => navigate("/dashboard")}
-  >
-    <span>⌂</span>
-    Dashboard
-  </button>
-
-
-  {/* EMPLOYEES */}
-  <button
-    type="button"
-    className="active"
-    onClick={() => navigate("/employees")}
-  >
-    <span>♙</span>
-    Employees
-  </button>
-
-
-  {/* SALARY STRUCTURES */}
-  <button
-    type="button"
-    onClick={() => navigate("/salary-structures")}
-  >
-    <span>₹</span>
-    Salary Structures
-  </button>
-
-
-  {/* LEAVE MANAGEMENT */}
-  <button
-    type="button"
-    onClick={() => navigate("/leave-management")}
-  >
-    <span>◷</span>
-    Leave Management
-  </button>
-
-
-  {/* PAYROLL */}
-  <button
-    type="button"
-    onClick={() => navigate("/payroll")}
-  >
-    <span>▣</span>
-    Payroll
-  </button>
-
-
-  {/* PAYSLIPS */}
-  <button
-    type="button"
-    onClick={() => navigate("/payslips")}
-  >
-    <span>▤</span>
-    Payslips
-  </button>
-
-
-  {/* EMAIL LOGS */}
-  <button
-    type="button"
-    onClick={() => navigate("/email-logs")}
-  >
-    <span>✉</span>
-    Email Logs
-  </button>
-
-
-  {/* REPORTS */}
-  <button
-    type="button"
-    onClick={() => navigate("/reports")}
-  >
-    <span>▥</span>
-    Reports
-  </button>
-
-
-  {/* SETTINGS */}
-  <button
-    type="button"
-    onClick={() => navigate("/settings")}
-  >
-    <span>⚙</span>
-    Settings
-  </button>
-
-</nav>
-
-
-        <div className="employees-sidebar-footer">
-
-          <div className="employees-user">
-
-            <div className="employees-avatar">
-              {(localStorage.getItem("username") || "U")
-                .charAt(0)
-                .toUpperCase()}
-            </div>
-
-            <div>
-
-              <strong>
-                {localStorage.getItem("username") ||
-                  "User"}
-              </strong>
-
-              <span>
-                {localStorage.getItem("role") ||
-                  "USER"}
-              </span>
-
-            </div>
-
-          </div>
-
-
-          <button
-            type="button"
-            className="employees-logout"
-            onClick={handleLogout}
-          >
-            ↪
-            Logout
-          </button>
-
-        </div>
-
-      </aside>
-
-
-      {/* =================================================
-          MAIN
+          MAIN EMPLOYEES CONTENT
       ================================================= */}
 
       <main className="employees-main">
 
 
-        {/* HEADER */}
+        {/* =================================================
+            HEADER
+        ================================================= */}
 
         <header className="employees-header">
 
@@ -851,18 +996,18 @@ function Employees() {
             className="add-employee-button"
             onClick={openAddModal}
           >
-            <span>
-              +
-            </span>
+
+            <span>+</span>
 
             Add Employee
+
           </button>
 
         </header>
 
 
         {/* =================================================
-            SUCCESS
+            SUCCESS MESSAGE
         ================================================= */}
 
         {success && (
@@ -875,7 +1020,7 @@ function Employees() {
 
 
         {/* =================================================
-            ERROR
+            ERROR MESSAGE
         ================================================= */}
 
         {error && (
@@ -893,6 +1038,8 @@ function Employees() {
 
         <section className="employee-stat-grid">
 
+
+          {/* TOTAL */}
 
           <div className="employee-stat-card">
 
@@ -915,6 +1062,31 @@ function Employees() {
           </div>
 
 
+          {/* PENDING */}
+
+          <div className="employee-stat-card">
+
+            <div className="employee-stat-icon orange">
+              !
+            </div>
+
+            <div>
+
+              <span>
+                PENDING REQUESTS
+              </span>
+
+              <strong>
+                {pendingEmployees}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          {/* ACTIVE */}
+
           <div className="employee-stat-card">
 
             <div className="employee-stat-icon green">
@@ -935,6 +1107,8 @@ function Employees() {
 
           </div>
 
+
+          {/* INACTIVE */}
 
           <div className="employee-stat-card">
 
@@ -960,7 +1134,7 @@ function Employees() {
 
 
         {/* =================================================
-            EMPLOYEE TABLE PANEL
+            EMPLOYEE DIRECTORY
         ================================================= */}
 
         <section className="employees-panel">
@@ -989,7 +1163,9 @@ function Employees() {
               onClick={fetchEmployees}
               disabled={loading}
             >
+
               ↻ Refresh
+
             </button>
 
           </div>
@@ -1013,9 +1189,7 @@ function Employees() {
                 placeholder="Search employees..."
                 value={search}
                 onChange={(e) =>
-                  setSearch(
-                    e.target.value
-                  )
+                  setSearch(e.target.value)
                 }
               />
 
@@ -1036,12 +1210,20 @@ function Employees() {
                 All Employees
               </option>
 
+              <option value="PENDING">
+                Pending Requests
+              </option>
+
               <option value="ACTIVE">
                 Active
               </option>
 
               <option value="INACTIVE">
                 Inactive
+              </option>
+
+              <option value="REJECTED">
+                Rejected
               </option>
 
             </select>
@@ -1067,6 +1249,11 @@ function Employees() {
 
           ) : filteredEmployees.length === 0 ? (
 
+
+            /* =================================================
+               EMPTY STATE
+            ================================================= */
+
             <div className="employees-empty">
 
               <div>
@@ -1078,20 +1265,27 @@ function Employees() {
               </h3>
 
               <p>
+
                 {search
                   ? "Try a different search."
-                  : "Add your first employee to get started."
+                  : statusFilter === "PENDING"
+                    ? "There are no pending employee requests."
+                    : "Add your first employee to get started."
                 }
+
               </p>
 
 
-              {!search && (
+              {!search &&
+                statusFilter === "ALL" && (
 
                 <button
                   type="button"
                   onClick={openAddModal}
                 >
+
                   + Add Employee
+
                 </button>
 
               )}
@@ -1100,6 +1294,7 @@ function Employees() {
 
           ) : (
 
+
             /* =================================================
                TABLE
             ================================================= */
@@ -1107,6 +1302,7 @@ function Employees() {
             <div className="employees-table-wrapper">
 
               <table className="employees-table">
+
 
                 <thead>
 
@@ -1148,165 +1344,258 @@ function Employees() {
                 <tbody>
 
                   {filteredEmployees.map(
-                    employee => (
+                    (employee) => (
 
-                      <tr
-                        key={employee.id}
-                        className={
-                          !employee.active
-                            ? "inactive-row"
-                            : ""
-                        }
-                      >
-
-
-                        {/* EMPLOYEE */}
-
-                        <td>
-
-                          <div className="employee-person">
-
-                            <div className="employee-person-avatar">
-
-                              {employee.name
-                                ?.charAt(0)
-                                .toUpperCase()}
-
-                            </div>
+                    <tr
+                      key={employee.id}
+                      className={
+                        !employee.active
+                          ? "inactive-row"
+                          : ""
+                      }
+                    >
 
 
-                            <div>
+                      {/* EMPLOYEE */}
 
-                              <strong>
-                                {employee.name}
-                              </strong>
+                      <td>
 
-                              <span>
-                                {employee.employeeCode}
-                              </span>
+                        <div className="employee-person">
 
-                            </div>
+                          <div className="employee-person-avatar">
+
+                            {employee.name
+                              ?.charAt(0)
+                              .toUpperCase()}
 
                           </div>
 
-                        </td>
+
+                          <div>
+
+                            <strong>
+                              {employee.name}
+                            </strong>
+
+                            <span>
+                              {employee.employeeCode}
+                            </span>
+
+                          </div>
+
+                        </div>
+
+                      </td>
 
 
-                        {/* EMAIL */}
+                      {/* EMAIL */}
 
-                        <td>
-                          <span className="employee-email">
-                            {employee.email}
-                          </span>
-                        </td>
+                      <td>
 
+                        <span className="employee-email">
+                          {employee.email}
+                        </span>
 
-                        {/* DEPARTMENT */}
-
-                        <td>
-                          {employee.department}
-                        </td>
+                      </td>
 
 
-                        {/* DESIGNATION */}
+                      {/* DEPARTMENT */}
 
-                        <td>
-                          {employee.designation}
-                        </td>
-
-
-                        {/* JOINING DATE */}
-
-                        <td>
-                          {formatDate(
-                            employee.joiningDate
-                          )}
-                        </td>
+                      <td>
+                        {employee.department}
+                      </td>
 
 
-                        {/* STATUS */}
+                      {/* DESIGNATION */}
 
-                        <td>
+                      <td>
+                        {employee.designation}
+                      </td>
 
-                          <span
-                            className={
-                              employee.active
-                                ? "employee-status active"
-                                : "employee-status inactive"
+
+                      {/* JOINING DATE */}
+
+                      <td>
+                        {formatDate(
+                          employee.joiningDate
+                        )}
+                      </td>
+
+
+                      {/* STATUS */}
+
+                      <td>
+
+                        <span
+                          className={
+                            employee.status === "PENDING"
+                              ? "employee-status pending"
+
+                              : employee.status === "REJECTED"
+                                ? "employee-status rejected"
+
+                                : employee.active
+                                  ? "employee-status active"
+
+                                  : "employee-status inactive"
+                          }
+                        >
+
+                          <i></i>
+
+                          {
+                            employee.status === "PENDING"
+
+                              ? "Pending"
+
+                              : employee.status === "REJECTED"
+
+                                ? "Rejected"
+
+                                : employee.active
+                                  ? "Active"
+                                  : "Inactive"
+                          }
+
+                        </span>
+
+                      </td>
+
+
+                      {/* ACTIONS */}
+
+                      <td>
+
+                        <div className="employee-actions">
+
+
+                          {/* VIEW */}
+
+                          <button
+                            type="button"
+                            title="View employee"
+                            onClick={() =>
+                              setViewEmployee(
+                                employee
+                              )
                             }
                           >
-
-                            <i></i>
-
-                            {employee.active
-                              ? "Active"
-                              : "Inactive"}
-
-                          </span>
-
-                        </td>
+                            View
+                          </button>
 
 
-                        {/* ACTIONS */}
+                          {/* EDIT */}
 
-                        <td>
-
-                          <div className="employee-actions">
-
-                            <button
-                              type="button"
-                              title="View employee"
-                              onClick={() =>
-                                setViewEmployee(
-                                  employee
-                                )
-                              }
-                            >
-                              View
-                            </button>
-
-
-                            <button
-                              type="button"
-                              title="Edit employee"
-                              onClick={() =>
-                                openEditModal(
-                                  employee
-                                )
-                              }
-                              disabled={
-                                !employee.active
-                              }
-                            >
-                              Edit
-                            </button>
+                          <button
+                            type="button"
+                            title="Edit employee"
+                            onClick={() =>
+                              openEditModal(
+                                employee
+                              )
+                            }
+                            disabled={
+                              !employee.active &&
+                              employee.status !== "PENDING"
+                            }
+                          >
+                            Edit
+                          </button>
 
 
-                            {employee.active && (
+                          {/* =================================================
+                              PENDING → ACCEPT / REJECT
+                          ================================================= */}
+
+                          {employee.status === "PENDING" ? (
+
+                            <>
 
                               <button
                                 type="button"
-                                className="danger"
-                                title="Deactivate employee"
+                                className="approve-button"
+                                title="Approve employee"
                                 onClick={() =>
-                                  handleDeactivate(
+                                  handleApprove(
                                     employee
                                   )
                                 }
                               >
-                                Deactivate
+                                Accept
                               </button>
 
-                            )}
 
-                          </div>
+                              <button
+                                type="button"
+                                className="reject-button"
+                                title="Reject employee"
+                                onClick={() =>
+                                  handleReject(
+                                    employee
+                                  )
+                                }
+                              >
+                                Reject
+                              </button>
 
-                        </td>
+                            </>
 
-                      </tr>
+                          ) : employee.status === "REJECTED" ? (
 
-                    )
-                  )}
+
+                            /* REJECTED */
+
+                            <span className="employee-request-rejected">
+                              Rejected
+                            </span>
+
+
+                          ) : employee.active ? (
+
+
+                            /* ACTIVE */
+
+                            <button
+                              type="button"
+                              className="danger"
+                              title="Deactivate employee"
+                              onClick={() =>
+                                handleDeactivate(
+                                  employee
+                                )
+                              }
+                            >
+                              Deactivate
+                            </button>
+
+
+                          ) : (
+
+
+                            /* INACTIVE */
+
+                            <button
+                              type="button"
+                              className="reactivate-button"
+                              title="Reactivate employee"
+                              onClick={() =>
+                                handleReactivate(
+                                  employee
+                                )
+                              }
+                            >
+                              Reactivate
+                            </button>
+
+                          )}
+
+                        </div>
+
+                      </td>
+
+                    </tr>
+
+                  ))}
 
                 </tbody>
 
@@ -1349,6 +1638,14 @@ function Employees() {
                     ? "Edit employee"
                     : "Add employee"}
                 </h2>
+
+                {editingEmployee?.status === "PENDING" && (
+
+                  <small className="employee-pending-note">
+                    Complete the department, designation and joining date before approving this employee.
+                  </small>
+
+                )}
 
               </div>
 
@@ -1440,9 +1737,7 @@ function Employees() {
                 <input
                   type="text"
                   name="name"
-                  value={
-                    formData.name
-                  }
+                  value={formData.name}
                   onChange={handleChange}
                   placeholder="Enter employee name"
                   disabled={submitting}
@@ -1463,9 +1758,7 @@ function Employees() {
                 <input
                   type="email"
                   name="email"
-                  value={
-                    formData.email
-                  }
+                  value={formData.email}
                   onChange={handleChange}
                   placeholder="employee@gmail.com"
                   disabled={submitting}
@@ -1475,7 +1768,7 @@ function Employees() {
               </div>
 
 
-              {/* DEPARTMENT */}
+              {/* DEPARTMENT + DESIGNATION */}
 
               <div className="employee-form-row">
 
@@ -1500,8 +1793,6 @@ function Employees() {
 
                 </div>
 
-
-                {/* DESIGNATION */}
 
                 <div className="employee-form-group">
 
@@ -1572,8 +1863,7 @@ function Employees() {
                     ? "Saving..."
                     : editingEmployee
                       ? "Save Changes"
-                      : "Add Employee"
-                  }
+                      : "Add Employee"}
 
                 </button>
 
@@ -1607,6 +1897,9 @@ function Employees() {
               e.stopPropagation()
             }
           >
+
+
+            {/* VIEW HEADER */}
 
             <div className="employee-view-header">
 
@@ -1644,6 +1937,8 @@ function Employees() {
 
             </div>
 
+
+            {/* VIEW DETAILS */}
 
             <div className="employee-view-grid">
 
@@ -1710,14 +2005,32 @@ function Employees() {
 
                 <strong
                   className={
-                    viewEmployee.active
-                      ? "view-active"
-                      : "view-inactive"
+                    viewEmployee.status === "PENDING"
+                      ? "view-pending"
+
+                      : viewEmployee.status === "REJECTED"
+                        ? "view-rejected"
+
+                        : viewEmployee.active
+                          ? "view-active"
+                          : "view-inactive"
                   }
                 >
-                  {viewEmployee.active
-                    ? "Active"
-                    : "Inactive"}
+
+                  {
+                    viewEmployee.status === "PENDING"
+
+                      ? "Pending"
+
+                      : viewEmployee.status === "REJECTED"
+
+                        ? "Rejected"
+
+                        : viewEmployee.active
+                          ? "Active"
+                          : "Inactive"
+                  }
+
                 </strong>
 
               </div>
@@ -1725,9 +2038,59 @@ function Employees() {
             </div>
 
 
+            {/* VIEW ACTIONS */}
+
             <div className="employee-view-actions">
 
-              {viewEmployee.active && (
+
+              {/* ACCEPT FROM VIEW */}
+
+              {viewEmployee.status === "PENDING" && (
+
+                <>
+
+                  <button
+                    type="button"
+                    className="approve-button"
+                    onClick={async () => {
+
+                      await handleApprove(
+                        viewEmployee
+                      );
+
+                      setViewEmployee(null);
+
+                    }}
+                  >
+                    Accept
+                  </button>
+
+
+                  <button
+                    type="button"
+                    className="reject-button"
+                    onClick={async () => {
+
+                      await handleReject(
+                        viewEmployee
+                      );
+
+                      setViewEmployee(null);
+
+                    }}
+                  >
+                    Reject
+                  </button>
+
+                </>
+
+              )}
+
+
+              {/* EDIT */}
+
+              {viewEmployee.status !== "PENDING" &&
+                viewEmployee.active && (
 
                 <button
                   type="button"
@@ -1745,6 +2108,7 @@ function Employees() {
                 </button>
 
               )}
+
 
               <button
                 type="button"
@@ -1767,6 +2131,5 @@ function Employees() {
     </div>
   );
 }
-
 
 export default Employees;

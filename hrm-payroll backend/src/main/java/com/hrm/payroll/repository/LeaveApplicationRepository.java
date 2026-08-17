@@ -11,4 +11,5 @@ public interface LeaveApplicationRepository
     List<LeaveApplication> findByEmployeeId(Long employeeId);
 
     List<LeaveApplication> findByStatus(String status);
+    long countByStatusIgnoreCase(String status);
 }

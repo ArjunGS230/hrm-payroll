@@ -4,22 +4,21 @@ import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import "../styles/SignUp.css";
 
-
 function SignUp() {
 
   const navigate = useNavigate();
-
 
   /* =====================================================
      FORM DATA
   ===================================================== */
 
   const [formData, setFormData] = useState({
+    name: "",
     username: "",
     email: "",
     phoneNumber: "",
     password: "",
-    role: "HR",
+    role: "HR"
   });
 
 
@@ -62,7 +61,7 @@ function SignUp() {
 
     setFormData((previous) => ({
       ...previous,
-      [name]: value,
+      [name]: value
     }));
 
     setError("");
@@ -80,6 +79,20 @@ function SignUp() {
 
     setError("");
     setSuccess("");
+
+
+    /* =================================================
+       NAME VALIDATION
+    ================================================= */
+
+    if (!formData.name.trim()) {
+
+      setError(
+        "Please enter your full name."
+      );
+
+      return;
+    }
 
 
     /* =================================================
@@ -195,10 +208,12 @@ function SignUp() {
 
       setLoading(true);
 
-
       const response = await axios.post(
         "http://localhost:8090/api/auth/register",
         {
+          name:
+            formData.name.trim(),
+
           username:
             formData.username.trim(),
 
@@ -212,19 +227,31 @@ function SignUp() {
             formData.password,
 
           role:
-            formData.role,
+            formData.role
         }
       );
 
 
       /* =================================================
-         SUCCESS
+         SUCCESS MESSAGE
       ================================================= */
 
-      setSuccess(
-        response.data ||
-        "Account created successfully."
-      );
+      if (
+        formData.role.toUpperCase() ===
+        "EMPLOYEE"
+      ) {
+
+        setSuccess(
+          "Registration submitted successfully. Please wait for HR approval before logging in."
+        );
+
+      } else {
+
+        setSuccess(
+          response.data ||
+          "HR account created successfully."
+        );
+      }
 
 
       /* =================================================
@@ -232,25 +259,26 @@ function SignUp() {
       ================================================= */
 
       setFormData({
+        name: "",
         username: "",
         email: "",
         phoneNumber: "",
         password: "",
-        role: "HR",
+        role: "HR"
       });
 
       setConfirmPassword("");
 
 
       /* =================================================
-         REDIRECT TO LOGIN
+         REDIRECT
       ================================================= */
 
       setTimeout(() => {
 
         navigate("/login");
 
-      }, 1500);
+      }, 2500);
 
 
     } catch (err) {
@@ -420,6 +448,29 @@ function SignUp() {
 
 
             {/* =================================================
+                FULL NAME
+            ================================================= */}
+
+            <div className="signup-input-group">
+
+              <label>
+                Full Name
+              </label>
+
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Enter your full name"
+                autoComplete="name"
+                required
+              />
+
+            </div>
+
+
+            {/* =================================================
                 USERNAME
             ================================================= */}
 
@@ -493,7 +544,7 @@ function SignUp() {
                     setFormData(
                       (previous) => ({
                         ...previous,
-                        phoneNumber: value,
+                        phoneNumber: value
                       })
                     );
 
@@ -519,9 +570,7 @@ function SignUp() {
             <div className="signup-two-column">
 
 
-              {/* =================================================
-                  PASSWORD
-              ================================================= */}
+              {/* PASSWORD */}
 
               <div className="signup-input-group">
 
@@ -546,8 +595,6 @@ function SignUp() {
                     required
                   />
 
-
-                  {/* EYE BUTTON */}
 
                   <button
                     type="button"
@@ -587,9 +634,7 @@ function SignUp() {
               </div>
 
 
-              {/* =================================================
-                  CONFIRM PASSWORD
-              ================================================= */}
+              {/* CONFIRM PASSWORD */}
 
               <div className="signup-input-group">
 
@@ -622,8 +667,6 @@ function SignUp() {
                     required
                   />
 
-
-                  {/* EYE BUTTON */}
 
                   <button
                     type="button"
@@ -741,7 +784,6 @@ function SignUp() {
                 : "Create Account"
               }
 
-
               {!loading && (
 
                 <span>
@@ -801,6 +843,5 @@ function SignUp() {
     </div>
   );
 }
-
 
 export default SignUp;

@@ -1,328 +1,425 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "../styles/Dashboard.css";
+import { useState } from "react";
+import axios from "axios";
+
+import "../styles/Settings.css";
 
 function Settings() {
 
-  const navigate = useNavigate();
+  // =====================================================
+  // USER DETAILS
+  // =====================================================
 
   const username =
     localStorage.getItem("username") || "User";
 
+  const email =
+    localStorage.getItem("email") || "Email not available";
+
   const role =
-    localStorage.getItem("role") || "HR";
+    localStorage.getItem("role")?.toUpperCase() || "EMPLOYEE";
+
+  const token =
+    localStorage.getItem("token");
 
 
-  const [activeTab, setActiveTab] = useState("profile");
+  // =====================================================
+  // ACTIVE TAB
+  // =====================================================
 
-  const [profile, setProfile] = useState({
-    name: username,
-    email: "arjun@example.com",
-    role: role
-  });
-
-
-  const [company, setCompany] = useState({
-    companyName: "HRM Solutions",
-    companyEmail: "admin@hrm.com",
-    phone: "+91 9876543210",
-    address: "Bengaluru, Karnataka, India"
-  });
+  const [activeTab, setActiveTab] =
+    useState(
+      role === "HR" || role === "ADMIN"
+        ? "general"
+        : "profile"
+    );
 
 
-  const [payroll, setPayroll] = useState({
-    payrollDay: "30",
-    currency: "INR",
-    workingDays: "26",
-    overtimeEnabled: true
-  });
+  // =====================================================
+  // SEARCH
+  // =====================================================
+
+  const [searchText, setSearchText] =
+    useState("");
 
 
-  const [emailSettings, setEmailSettings] = useState({
-    emailEnabled: true,
-    sendPayslipAutomatically: true,
-    sendLeaveNotifications: true,
-    sendPayrollNotifications: true
-  });
+  // =====================================================
+  // PASSWORD
+  // =====================================================
+
+  const [currentPassword, setCurrentPassword] =
+    useState("");
+
+  const [newPassword, setNewPassword] =
+    useState("");
+
+  const [confirmPassword, setConfirmPassword] =
+    useState("");
+
+  const [showCurrentPassword, setShowCurrentPassword] =
+    useState(false);
+
+  const [showNewPassword, setShowNewPassword] =
+    useState(false);
+
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState(false);
+
+  const [passwordLoading, setPasswordLoading] =
+    useState(false);
+
+  const [passwordMessage, setPasswordMessage] =
+    useState("");
+
+  const [passwordError, setPasswordError] =
+    useState("");
 
 
-  const [security, setSecurity] = useState({
-    twoFactor: false,
-    sessionTimeout: "30"
-  });
+  // =====================================================
+  // NOTIFICATIONS
+  // =====================================================
+
+  const [emailNotifications, setEmailNotifications] =
+    useState(true);
+
+  const [payrollNotifications, setPayrollNotifications] =
+    useState(true);
+
+  const [leaveNotifications, setLeaveNotifications] =
+    useState(true);
 
 
-  useEffect(() => {
+  // =====================================================
+  // HR GENERAL SETTINGS
+  // =====================================================
 
-    const token = localStorage.getItem("token");
+  const [companyName, setCompanyName] =
+    useState("HRM Solutions");
 
-    if (!token) {
-      navigate("/login");
+  const [companyEmail, setCompanyEmail] =
+    useState("admin@hrm.com");
+
+  const [timezone, setTimezone] =
+    useState("Asia/Kolkata");
+
+  const [currency, setCurrency] =
+    useState("INR");
+
+
+  // =====================================================
+  // HR SETTINGS
+  // =====================================================
+
+  const hrSettings = [
+
+    {
+      id: "general",
+      title: "General",
+      description:
+        "Manage company information and general HRM settings.",
+      keywords:
+        "general company organization profile information",
+      icon: "⚙"
+    },
+
+    {
+      id: "security",
+      title: "Security",
+      description:
+        "Manage password and account security.",
+      keywords:
+        "security password authentication login",
+      icon: "🔒"
+    },
+
+    {
+      id: "notifications",
+      title: "Notifications",
+      description:
+        "Configure notification preferences.",
+      keywords:
+        "notifications email alerts messages",
+      icon: "♧"
+    },
+
+    {
+      id: "payroll",
+      title: "Payroll",
+      description:
+        "Configure payroll preferences.",
+      keywords:
+        "payroll salary processing payslip",
+      icon: "₹"
+    },
+
+    {
+      id: "email",
+      title: "Email",
+      description:
+        "Configure email delivery settings.",
+      keywords:
+        "email smtp delivery automation",
+      icon: "✉"
     }
 
-  }, [navigate]);
+  ];
 
 
-  const handleLogout = () => {
+  // =====================================================
+  // EMPLOYEE SETTINGS
+  // =====================================================
 
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    localStorage.removeItem("role");
+  const employeeSettings = [
 
-    navigate("/login");
-  };
+    {
+      id: "profile",
+      title: "My Profile",
+      description:
+        "View your employee account information.",
+      keywords:
+        "profile employee username email account",
+      icon: "👤"
+    },
+
+    {
+      id: "security",
+      title: "Security",
+      description:
+        "Change your account password.",
+      keywords:
+        "security password authentication login",
+      icon: "🔒"
+    },
+
+    {
+      id: "notifications",
+      title: "Notifications",
+      description:
+        "Manage your notification preferences.",
+      keywords:
+        "notifications email alerts messages",
+      icon: "♧"
+    }
+
+  ];
 
 
-  const handleProfileChange = (e) => {
+  // =====================================================
+  // SETTINGS BASED ON ROLE
+  // =====================================================
 
-    setProfile({
-      ...profile,
-      [e.target.name]: e.target.value
+  const settingsItems =
+    role === "HR" || role === "ADMIN"
+      ? hrSettings
+      : employeeSettings;
+
+
+  // =====================================================
+  // SEARCH FILTER
+  // =====================================================
+
+  const search =
+    searchText.trim().toLowerCase();
+
+
+  const filteredSettings =
+    settingsItems.filter((item) => {
+
+      if (!search) {
+        return true;
+      }
+
+      return (
+        item.title
+          .toLowerCase()
+          .includes(search)
+
+        ||
+
+        item.description
+          .toLowerCase()
+          .includes(search)
+
+        ||
+
+        item.keywords
+          .toLowerCase()
+          .includes(search)
+      );
+
     });
 
+
+  // =====================================================
+  // CHANGE PASSWORD
+  // =====================================================
+
+  const handleChangePassword = async (e) => {
+
+    e.preventDefault();
+
+    setPasswordMessage("");
+    setPasswordError("");
+
+
+    // -----------------------------------------------
+    // VALIDATION
+    // -----------------------------------------------
+
+    if (
+      !currentPassword ||
+      !newPassword ||
+      !confirmPassword
+    ) {
+
+      setPasswordError(
+        "Please fill all password fields."
+      );
+
+      return;
+    }
+
+
+    if (newPassword.length < 6) {
+
+      setPasswordError(
+        "New password must contain at least 6 characters."
+      );
+
+      return;
+    }
+
+
+    if (
+      newPassword !== confirmPassword
+    ) {
+
+      setPasswordError(
+        "New passwords do not match."
+      );
+
+      return;
+    }
+
+
+    try {
+
+      setPasswordLoading(true);
+
+
+      // ---------------------------------------------
+      // API
+      // ---------------------------------------------
+
+      const response =
+        await axios.put(
+          "http://localhost:8090/api/auth/change-password",
+
+          {
+            currentPassword:
+              currentPassword,
+
+            newPassword:
+              newPassword,
+
+            confirmPassword:
+              confirmPassword
+          },
+
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`
+            }
+          }
+        );
+
+
+      // ---------------------------------------------
+      // SUCCESS
+      // ---------------------------------------------
+
+      setPasswordMessage(
+        response.data ||
+        "Password changed successfully."
+      );
+
+
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+
+
+    } catch (error) {
+
+      console.error(
+        "Change password error:",
+        error
+      );
+
+
+      if (error.response) {
+
+        setPasswordError(
+          error.response.data?.message ||
+          error.response.data ||
+          "Unable to change password."
+        );
+
+      } else {
+
+        setPasswordError(
+          "Unable to connect to the server."
+        );
+
+      }
+
+    } finally {
+
+      setPasswordLoading(false);
+
+    }
+
   };
 
 
-  const handleCompanyChange = (e) => {
+  // =====================================================
+  // SAVE SETTINGS
+  // =====================================================
 
-    setCompany({
-      ...company,
-      [e.target.name]: e.target.value
-    });
+  const handleSave = () => {
 
-  };
-
-
-  const handlePayrollChange = (e) => {
-
-    setPayroll({
-      ...payroll,
-      [e.target.name]: e.target.value
-    });
+    alert(
+      "Settings saved successfully."
+    );
 
   };
 
 
-  const handleEmailChange = (e) => {
-
-    setEmailSettings({
-      ...emailSettings,
-      [e.target.name]: e.target.checked
-    });
-
-  };
-
-
-  const handleSecurityChange = (e) => {
-
-    setSecurity({
-      ...security,
-      [e.target.name]: e.target.type === "checkbox"
-        ? e.target.checked
-        : e.target.value
-    });
-
-  };
-
-
-  const handleSave = (section) => {
-
-    alert(`${section} settings saved successfully.`);
-
-  };
-
+  // =====================================================
+  // RENDER
+  // =====================================================
 
   return (
 
-    <div className="dashboard-page">
+    <div className="settings-page">
 
-      {/* ================= SIDEBAR ================= */}
-
-      <aside className="dashboard-sidebar">
-
-        <div className="dashboard-brand">
-
-          <div className="dashboard-brand-logo">
-            H
-          </div>
-
-          <div>
-            <strong>HRM</strong>
-
-            <span>
-              PAYROLL AUTOMATION
-            </span>
-          </div>
-
-        </div>
+      <main className="settings-main">
 
 
-        <nav className="dashboard-navigation">
-
-          <button
-            type="button"
-            className="dashboard-menu-item"
-            onClick={() => navigate("/dashboard")}
-          >
-            <span className="dashboard-menu-icon">⌂</span>
-            <span className="dashboard-menu-text">
-              Dashboard
-            </span>
-          </button>
-
-
-          <button
-            type="button"
-            className="dashboard-menu-item"
-            onClick={() => navigate("/employees")}
-          >
-            <span className="dashboard-menu-icon">♙</span>
-            <span className="dashboard-menu-text">
-              Employees
-            </span>
-          </button>
-
-
-          <button
-            type="button"
-            className="dashboard-menu-item"
-            onClick={() => navigate("/salary-structures")}
-          >
-            <span className="dashboard-menu-icon">₹</span>
-            <span className="dashboard-menu-text">
-              Salary Structures
-            </span>
-          </button>
-
-
-          <button
-            type="button"
-            className="dashboard-menu-item"
-            onClick={() => navigate("/leave-management")}
-          >
-            <span className="dashboard-menu-icon">◷</span>
-            <span className="dashboard-menu-text">
-              Leave Management
-            </span>
-          </button>
-
-
-          <button
-            type="button"
-            className="dashboard-menu-item"
-            onClick={() => navigate("/payroll")}
-          >
-            <span className="dashboard-menu-icon">▣</span>
-            <span className="dashboard-menu-text">
-              Payroll
-            </span>
-          </button>
-
-
-          <button
-            type="button"
-            className="dashboard-menu-item"
-            onClick={() => navigate("/payslips")}
-          >
-            <span className="dashboard-menu-icon">▤</span>
-            <span className="dashboard-menu-text">
-              Payslips
-            </span>
-          </button>
-
-
-          <button
-            type="button"
-            className="dashboard-menu-item"
-            onClick={() => navigate("/email-logs")}
-          >
-            <span className="dashboard-menu-icon">✉</span>
-            <span className="dashboard-menu-text">
-              Email Logs
-            </span>
-          </button>
-
-
-          <button
-            type="button"
-            className="dashboard-menu-item"
-            onClick={() => navigate("/reports")}
-          >
-            <span className="dashboard-menu-icon">▥</span>
-            <span className="dashboard-menu-text">
-              Reports
-            </span>
-          </button>
-
-
-          {/* SETTINGS ACTIVE */}
-
-          <button
-            type="button"
-            className="dashboard-menu-item active"
-            onClick={() => navigate("/settings")}
-          >
-            <span className="dashboard-menu-icon">⚙</span>
-            <span className="dashboard-menu-text">
-              Settings
-            </span>
-          </button>
-
-        </nav>
-
-
-        {/* SIDEBAR FOOTER */}
-
-        <div className="dashboard-sidebar-footer">
-
-          <div className="dashboard-user">
-
-            <div className="dashboard-avatar">
-              {username
-                .substring(0, 2)
-                .toUpperCase()}
-            </div>
-
-            <div>
-
-              <strong>
-                {username}
-              </strong>
-
-              <span>
-                {role}
-              </span>
-
-            </div>
-
-          </div>
-
-
-          <button
-            className="logout-button"
-            onClick={handleLogout}
-          >
-            <span>↪</span>
-            Logout
-          </button>
-
-        </div>
-
-      </aside>
-
-
-      {/* ================= MAIN CONTENT ================= */}
-
-      <main className="dashboard-main">
-
-        {/* TOPBAR */}
+        {/* =================================================
+            TOP BAR
+        ================================================= */}
 
         <header className="dashboard-topbar">
 
           <div>
 
             <span className="dashboard-overline">
-              HR WORKSPACE
+
+              {role === "HR" || role === "ADMIN"
+                ? "HR WORKSPACE"
+                : "EMPLOYEE WORKSPACE"}
+
             </span>
 
             <h1>
@@ -334,24 +431,97 @@ function Settings() {
 
           <div className="dashboard-top-actions">
 
-            <button className="dashboard-search">
-              <span>⌕</span>
-              Search anything...
-            </button>
+
+            {/* SEARCH */}
+
+            <div className="settings-search-wrapper">
+
+              <div className="settings-search">
+
+                <span>
+                  ⌕
+                </span>
+
+                <input
+                  type="text"
+                  value={searchText}
+                  onChange={(e) =>
+                    setSearchText(
+                      e.target.value
+                    )
+                  }
+                  placeholder="Search settings..."
+                />
+
+              </div>
 
 
-            <button className="notification-button">
-              ♧
-              <b>3</b>
-            </button>
+              {searchText.trim() && (
 
+                <div className="settings-search-results">
+
+                  {filteredSettings.length > 0 ? (
+
+                    filteredSettings.map(
+                      (item) => (
+
+                        <div
+                          key={item.id}
+                          className="settings-search-result"
+                          onClick={() => {
+                            setActiveTab(item.id);
+                            setSearchText("");
+                          }}
+                        >
+
+                          <div className="settings-search-avatar">
+                            {item.icon}
+                          </div>
+
+                          <div className="settings-search-info">
+
+                            <strong>
+                              {item.title}
+                            </strong>
+
+                            <span>
+                              {item.description}
+                            </span>
+
+                          </div>
+
+                        </div>
+
+                      )
+                    )
+
+                  ) : (
+
+                    <div className="settings-search-no-result">
+
+                      No matching settings found.
+
+                    </div>
+
+                  )}
+
+                </div>
+
+              )}
+
+            </div>
+
+
+            {/* USER */}
 
             <div className="topbar-user">
 
               <div className="dashboard-avatar">
+
                 {username
                   .substring(0, 2)
                   .toUpperCase()}
+
               </div>
 
               <div>
@@ -373,377 +543,762 @@ function Settings() {
         </header>
 
 
-        {/* ================= SETTINGS CONTENT ================= */}
+        {/* =================================================
+            CONTENT
+        ================================================= */}
 
-        <section
-          style={{
-            padding: "32px"
-          }}
-        >
+        <div className="settings-content">
 
-          <div style={{ marginBottom: "30px" }}>
 
-            <span
-              style={{
-                color: "#2563eb",
-                fontSize: "12px",
-                fontWeight: "700",
-                letterSpacing: "2px"
-              }}
-            >
-              SYSTEM SETTINGS
+          {/* HEADING */}
+
+          <div className="settings-heading">
+
+            <span>
+              SETTINGS
             </span>
 
-            <h2
-              style={{
-                fontSize: "32px",
-                margin: "8px 0",
-                color: "#172033"
-              }}
-            >
-              Settings
+            <h2>
+              Account & Preferences
             </h2>
 
-            <p
-              style={{
-                color: "#64748b",
-                margin: 0
-              }}
-            >
-              Manage your HRM payroll system settings.
+            <p>
+
+              {role === "HR" || role === "ADMIN"
+                ? "Manage your HRM system preferences."
+                : "Manage your employee account and preferences."}
+
             </p>
 
           </div>
 
 
-          {/* SETTINGS LAYOUT */}
+          {/* =================================================
+              SETTINGS LAYOUT
+          ================================================= */}
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "230px 1fr",
-              gap: "25px",
-              alignItems: "start"
-            }}
-          >
+          <div className="settings-layout">
 
 
-            {/* SETTINGS MENU */}
+            {/* =================================================
+                LEFT MENU
+            ================================================= */}
 
-            <div
-              style={{
-                background: "#ffffff",
-                borderRadius: "12px",
-                padding: "10px",
-                boxShadow:
-                  "0 3px 12px rgba(0,0,0,0.06)"
-              }}
-            >
+            <div className="settings-menu">
 
-              <button
-                onClick={() => setActiveTab("profile")}
-                style={{
-                  ...tabStyle,
-                  ...(activeTab === "profile"
-                    ? activeTabStyle
-                    : {})
-                }}
-              >
-                👤 Profile
-              </button>
+              {filteredSettings.map(
+                (item) => (
 
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={`settings-menu-button ${
+                      activeTab === item.id
+                        ? "active"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      setActiveTab(item.id)
+                    }
+                  >
 
-              <button
-                onClick={() => setActiveTab("company")}
-                style={{
-                  ...tabStyle,
-                  ...(activeTab === "company"
-                    ? activeTabStyle
-                    : {})
-                }}
-              >
-                🏢 Company
-              </button>
+                    <span>
+                      {item.icon}
+                    </span>
 
+                    <span>
+                      {item.title}
+                    </span>
 
-              <button
-                onClick={() => setActiveTab("payroll")}
-                style={{
-                  ...tabStyle,
-                  ...(activeTab === "payroll"
-                    ? activeTabStyle
-                    : {})
-                }}
-              >
-                ₹ Payroll
-              </button>
+                  </button>
 
-
-              <button
-                onClick={() => setActiveTab("email")}
-                style={{
-                  ...tabStyle,
-                  ...(activeTab === "email"
-                    ? activeTabStyle
-                    : {})
-                }}
-              >
-                ✉ Email
-              </button>
-
-
-              <button
-                onClick={() => setActiveTab("security")}
-                style={{
-                  ...tabStyle,
-                  ...(activeTab === "security"
-                    ? activeTabStyle
-                    : {})
-                }}
-              >
-                🔐 Security
-              </button>
+                )
+              )}
 
             </div>
 
 
-            {/* SETTINGS PANEL */}
+            {/* =================================================
+                RIGHT PANEL
+            ================================================= */}
 
-            <div
-              style={{
-                background: "#ffffff",
-                borderRadius: "12px",
-                padding: "30px",
-                boxShadow:
-                  "0 3px 12px rgba(0,0,0,0.06)"
-              }}
-            >
+            <div className="settings-panel">
 
 
-              {/* ================= PROFILE ================= */}
+              {/* =================================================
+                  EMPLOYEE PROFILE
+              ================================================= */}
 
               {activeTab === "profile" && (
 
                 <>
 
-                  <h3 style={headingStyle}>
-                    Profile Settings
+                  <h3>
+                    My Profile
                   </h3>
 
-                  <p style={descriptionStyle}>
-                    Manage your personal account information.
+                  <p className="settings-description">
+
+                    Your account information.
+
                   </p>
 
 
-                  <div style={formGrid}>
+                  <div className="settings-form-grid">
 
-                    <div>
-                      <label style={labelStyle}>
-                        Full Name
+
+                    {/* USERNAME */}
+
+                    <div className="settings-field">
+
+                      <label>
+                        Username
                       </label>
 
                       <input
                         type="text"
-                        name="name"
-                        value={profile.name}
-                        onChange={handleProfileChange}
-                        style={inputStyle}
+                        value={username}
+                        readOnly
                       />
+
                     </div>
 
 
-                    <div>
-                      <label style={labelStyle}>
-                        Email Address
+                    {/* GMAIL */}
+
+                    <div className="settings-field">
+
+                      <label>
+                        Gmail
                       </label>
 
                       <input
                         type="email"
-                        name="email"
-                        value={profile.email}
-                        onChange={handleProfileChange}
-                        style={inputStyle}
+                        value={email}
+                        readOnly
                       />
+
                     </div>
 
 
-                    <div>
-                      <label style={labelStyle}>
+                    {/* ROLE */}
+
+                    <div className="settings-field">
+
+                      <label>
                         Role
                       </label>
 
                       <input
                         type="text"
-                        value={profile.role}
-                        disabled
-                        style={{
-                          ...inputStyle,
-                          background: "#f1f5f9"
-                        }}
+                        value={role}
+                        readOnly
                       />
+
+                    </div>
+
+
+                    {/* STATUS */}
+
+                    <div className="settings-field">
+
+                      <label>
+                        Account Status
+                      </label>
+
+                      <input
+                        type="text"
+                        value="Active"
+                        readOnly
+                      />
+
                     </div>
 
                   </div>
-
-
-                  <SaveButton
-                    onClick={() =>
-                      handleSave("Profile")
-                    }
-                  />
 
                 </>
 
               )}
 
 
-              {/* ================= COMPANY ================= */}
+              {/* =================================================
+                  SECURITY
+              ================================================= */}
 
-              {activeTab === "company" && (
+              {activeTab === "security" && (
 
                 <>
 
-                  <h3 style={headingStyle}>
-                    Company Information
+                  <h3>
+                    Security Settings
                   </h3>
 
-                  <p style={descriptionStyle}>
-                    Configure your organization's basic information.
+                  <p className="settings-description">
+
+                    Change your password securely.
+
                   </p>
 
 
-                  <div style={formGrid}>
+                  {/* LOGIN NOTIFICATIONS */}
+
+                  <div className="settings-toggle-row">
 
                     <div>
-                      <label style={labelStyle}>
+
+                      <strong>
+                        Login notifications
+                      </strong>
+
+                      <p>
+                        Receive notifications when
+                        a new login occurs.
+                      </p>
+
+                    </div>
+
+                    <input
+                      type="checkbox"
+                      defaultChecked
+                    />
+
+                  </div>
+
+
+                  {/* PASSWORD SECTION */}
+
+                  <div
+                    style={{
+                      marginTop: "25px",
+                      padding: "24px",
+                      borderRadius: "12px",
+                      background: "#f8fafc",
+                      border: "1px solid #e5e7eb"
+                    }}
+                  >
+
+                    <h4
+                      style={{
+                        marginTop: 0,
+                        marginBottom: "8px"
+                      }}
+                    >
+                      Change Password
+                    </h4>
+
+                    <p
+                      style={{
+                        color: "#64748b",
+                        fontSize: "13px",
+                        marginBottom: "20px"
+                      }}
+                    >
+                      Enter your current password and
+                      choose a new password.
+                    </p>
+
+
+                    <form
+                      onSubmit={
+                        handleChangePassword
+                      }
+                    >
+
+
+                      {/* CURRENT PASSWORD */}
+
+                      <div
+                        className="settings-field"
+                        style={{
+                          marginBottom: "16px"
+                        }}
+                      >
+
+                        <label>
+                          Current Password
+                        </label>
+
+                        <div
+                          style={{
+                            position: "relative"
+                          }}
+                        >
+
+                          <input
+                            type={
+                              showCurrentPassword
+                                ? "text"
+                                : "password"
+                            }
+                            value={
+                              currentPassword
+                            }
+                            onChange={(e) =>
+                              setCurrentPassword(
+                                e.target.value
+                              )
+                            }
+                            placeholder="Enter current password"
+                            autoComplete="current-password"
+                          />
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setShowCurrentPassword(
+                                !showCurrentPassword
+                              )
+                            }
+                            style={{
+                              position: "absolute",
+                              right: "12px",
+                              top: "50%",
+                              transform:
+                                "translateY(-50%)",
+                              border: "none",
+                              background: "transparent",
+                              cursor: "pointer"
+                            }}
+                          >
+                            {showCurrentPassword
+                              ? "Hide"
+                              : "Show"}
+                          </button>
+
+                        </div>
+
+                      </div>
+
+
+                      {/* NEW PASSWORD */}
+
+                      <div
+                        className="settings-field"
+                        style={{
+                          marginBottom: "16px"
+                        }}
+                      >
+
+                        <label>
+                          New Password
+                        </label>
+
+                        <div
+                          style={{
+                            position: "relative"
+                          }}
+                        >
+
+                          <input
+                            type={
+                              showNewPassword
+                                ? "text"
+                                : "password"
+                            }
+                            value={
+                              newPassword
+                            }
+                            onChange={(e) =>
+                              setNewPassword(
+                                e.target.value
+                              )
+                            }
+                            placeholder="Enter new password"
+                            autoComplete="new-password"
+                          />
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setShowNewPassword(
+                                !showNewPassword
+                              )
+                            }
+                            style={{
+                              position: "absolute",
+                              right: "12px",
+                              top: "50%",
+                              transform:
+                                "translateY(-50%)",
+                              border: "none",
+                              background: "transparent",
+                              cursor: "pointer"
+                            }}
+                          >
+                            {showNewPassword
+                              ? "Hide"
+                              : "Show"}
+                          </button>
+
+                        </div>
+
+                      </div>
+
+
+                      {/* CONFIRM PASSWORD */}
+
+                      <div
+                        className="settings-field"
+                        style={{
+                          marginBottom: "18px"
+                        }}
+                      >
+
+                        <label>
+                          Confirm New Password
+                        </label>
+
+                        <div
+                          style={{
+                            position: "relative"
+                          }}
+                        >
+
+                          <input
+                            type={
+                              showConfirmPassword
+                                ? "text"
+                                : "password"
+                            }
+                            value={
+                              confirmPassword
+                            }
+                            onChange={(e) =>
+                              setConfirmPassword(
+                                e.target.value
+                              )
+                            }
+                            placeholder="Confirm new password"
+                            autoComplete="new-password"
+                          />
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setShowConfirmPassword(
+                                !showConfirmPassword
+                              )
+                            }
+                            style={{
+                              position: "absolute",
+                              right: "12px",
+                              top: "50%",
+                              transform:
+                                "translateY(-50%)",
+                              border: "none",
+                              background: "transparent",
+                              cursor: "pointer"
+                            }}
+                          >
+                            {showConfirmPassword
+                              ? "Hide"
+                              : "Show"}
+                          </button>
+
+                        </div>
+
+                      </div>
+
+
+                      {/* ERROR */}
+
+                      {passwordError && (
+
+                        <div
+                          style={{
+                            padding: "10px 12px",
+                            marginBottom: "15px",
+                            borderRadius: "8px",
+                            background: "#fff1f2",
+                            color: "#dc2626",
+                            fontSize: "13px"
+                          }}
+                        >
+                          {passwordError}
+                        </div>
+
+                      )}
+
+
+                      {/* SUCCESS */}
+
+                      {passwordMessage && (
+
+                        <div
+                          style={{
+                            padding: "10px 12px",
+                            marginBottom: "15px",
+                            borderRadius: "8px",
+                            background: "#f0fdf4",
+                            color: "#16a34a",
+                            fontSize: "13px"
+                          }}
+                        >
+                          {passwordMessage}
+                        </div>
+
+                      )}
+
+
+                      {/* CHANGE PASSWORD */}
+
+                      <button
+                        type="submit"
+                        className="settings-save-button"
+                        disabled={
+                          passwordLoading
+                        }
+                      >
+
+                        {passwordLoading
+                          ? "Changing Password..."
+                          : "Change Password"}
+
+                      </button>
+
+                    </form>
+
+                  </div>
+
+                </>
+
+              )}
+
+
+              {/* =================================================
+                  NOTIFICATIONS
+              ================================================= */}
+
+              {activeTab === "notifications" && (
+
+                <>
+
+                  <h3>
+                    Notification Settings
+                  </h3>
+
+                  <p className="settings-description">
+
+                    Choose which notifications
+                    you want to receive.
+
+                  </p>
+
+
+                  <div className="settings-toggle-row">
+
+                    <div>
+
+                      <strong>
+                        Email Notifications
+                      </strong>
+
+                      <p>
+                        Receive important notifications
+                        through email.
+                      </p>
+
+                    </div>
+
+                    <input
+                      type="checkbox"
+                      checked={
+                        emailNotifications
+                      }
+                      onChange={(e) =>
+                        setEmailNotifications(
+                          e.target.checked
+                        )
+                      }
+                    />
+
+                  </div>
+
+
+                  <div className="settings-toggle-row">
+
+                    <div>
+
+                      <strong>
+                        Payroll Notifications
+                      </strong>
+
+                      <p>
+                        Receive notifications about
+                        payroll processing.
+                      </p>
+
+                    </div>
+
+                    <input
+                      type="checkbox"
+                      checked={
+                        payrollNotifications
+                      }
+                      onChange={(e) =>
+                        setPayrollNotifications(
+                          e.target.checked
+                        )
+                      }
+                    />
+
+                  </div>
+
+
+                  <div className="settings-toggle-row">
+
+                    <div>
+
+                      <strong>
+                        Leave Notifications
+                      </strong>
+
+                      <p>
+                        Receive notifications about
+                        leave requests.
+                      </p>
+
+                    </div>
+
+                    <input
+                      type="checkbox"
+                      checked={
+                        leaveNotifications
+                      }
+                      onChange={(e) =>
+                        setLeaveNotifications(
+                          e.target.checked
+                        )
+                      }
+                    />
+
+                  </div>
+
+
+                  <button
+                    type="button"
+                    className="settings-save-button"
+                    onClick={handleSave}
+                  >
+                    Save Changes
+                  </button>
+
+                </>
+
+              )}
+
+
+              {/* =================================================
+                  HR GENERAL
+              ================================================= */}
+
+              {activeTab === "general" && (
+
+                <>
+
+                  <h3>
+                    General Settings
+                  </h3>
+
+                  <p className="settings-description">
+
+                    Manage company information
+                    and general HRM preferences.
+
+                  </p>
+
+
+                  <div className="settings-form-grid">
+
+                    <div className="settings-field">
+
+                      <label>
                         Company Name
                       </label>
 
                       <input
                         type="text"
-                        name="companyName"
-                        value={company.companyName}
-                        onChange={handleCompanyChange}
-                        style={inputStyle}
+                        value={companyName}
+                        onChange={(e) =>
+                          setCompanyName(
+                            e.target.value
+                          )
+                        }
                       />
+
                     </div>
 
 
-                    <div>
-                      <label style={labelStyle}>
+                    <div className="settings-field">
+
+                      <label>
                         Company Email
                       </label>
 
                       <input
                         type="email"
-                        name="companyEmail"
-                        value={company.companyEmail}
-                        onChange={handleCompanyChange}
-                        style={inputStyle}
+                        value={companyEmail}
+                        onChange={(e) =>
+                          setCompanyEmail(
+                            e.target.value
+                          )
+                        }
                       />
+
                     </div>
 
 
-                    <div>
-                      <label style={labelStyle}>
-                        Phone Number
-                      </label>
+                    <div className="settings-field">
 
-                      <input
-                        type="text"
-                        name="phone"
-                        value={company.phone}
-                        onChange={handleCompanyChange}
-                        style={inputStyle}
-                      />
-                    </div>
-
-
-                    <div>
-                      <label style={labelStyle}>
-                        Address
-                      </label>
-
-                      <input
-                        type="text"
-                        name="address"
-                        value={company.address}
-                        onChange={handleCompanyChange}
-                        style={inputStyle}
-                      />
-                    </div>
-
-                  </div>
-
-
-                  <SaveButton
-                    onClick={() =>
-                      handleSave("Company")
-                    }
-                  />
-
-                </>
-
-              )}
-
-
-              {/* ================= PAYROLL ================= */}
-
-              {activeTab === "payroll" && (
-
-                <>
-
-                  <h3 style={headingStyle}>
-                    Payroll Settings
-                  </h3>
-
-                  <p style={descriptionStyle}>
-                    Configure your payroll processing preferences.
-                  </p>
-
-
-                  <div style={formGrid}>
-
-                    <div>
-                      <label style={labelStyle}>
-                        Payroll Processing Day
+                      <label>
+                        Timezone
                       </label>
 
                       <select
-                        name="payrollDay"
-                        value={payroll.payrollDay}
-                        onChange={handlePayrollChange}
-                        style={inputStyle}
+                        value={timezone}
+                        onChange={(e) =>
+                          setTimezone(
+                            e.target.value
+                          )
+                        }
                       >
 
-                        {Array.from(
-                          { length: 28 },
-                          (_, i) => (
-                            <option
-                              key={i + 1}
-                              value={i + 1}
-                            >
-                              {i + 1}
-                            </option>
-                          )
-                        )}
+                        <option value="Asia/Kolkata">
+                          Asia/Kolkata
+                        </option>
+
+                        <option value="Asia/Dubai">
+                          Asia/Dubai
+                        </option>
+
+                        <option value="Asia/Singapore">
+                          Asia/Singapore
+                        </option>
+
+                        <option value="UTC">
+                          UTC
+                        </option>
 
                       </select>
 
                     </div>
 
 
-                    <div>
-                      <label style={labelStyle}>
+                    <div className="settings-field">
+
+                      <label>
                         Currency
                       </label>
 
                       <select
-                        name="currency"
-                        value={payroll.currency}
-                        onChange={handlePayrollChange}
-                        style={inputStyle}
+                        value={currency}
+                        onChange={(e) =>
+                          setCurrency(
+                            e.target.value
+                          )
+                        }
                       >
+
                         <option value="INR">
                           INR - Indian Rupee
                         </option>
@@ -760,268 +1315,169 @@ function Settings() {
 
                     </div>
 
-
-                    <div>
-                      <label style={labelStyle}>
-                        Standard Working Days
-                      </label>
-
-                      <input
-                        type="number"
-                        name="workingDays"
-                        value={payroll.workingDays}
-                        onChange={handlePayrollChange}
-                        style={inputStyle}
-                      />
-                    </div>
-
                   </div>
 
 
-                  <div style={toggleRow}>
-
-                    <div>
-                      <strong>
-                        Enable Overtime
-                      </strong>
-
-                      <p style={smallDescription}>
-                        Allow overtime calculations in payroll.
-                      </p>
-                    </div>
-
-                    <input
-                      type="checkbox"
-                      name="overtimeEnabled"
-                      checked={payroll.overtimeEnabled}
-                      onChange={(e) =>
-                        setPayroll({
-                          ...payroll,
-                          overtimeEnabled:
-                            e.target.checked
-                        })
-                      }
-                    />
-
-                  </div>
-
-
-                  <SaveButton
-                    onClick={() =>
-                      handleSave("Payroll")
-                    }
-                  />
+                  <button
+                    type="button"
+                    className="settings-save-button"
+                    onClick={handleSave}
+                  >
+                    Save Changes
+                  </button>
 
                 </>
 
               )}
 
 
-              {/* ================= EMAIL ================= */}
+              {/* =================================================
+                  HR PAYROLL
+              ================================================= */}
+
+              {activeTab === "payroll" && (
+
+                <>
+
+                  <h3>
+                    Payroll Settings
+                  </h3>
+
+                  <p className="settings-description">
+
+                    Configure payroll processing preferences.
+
+                  </p>
+
+
+                  <div className="settings-toggle-row">
+
+                    <div>
+
+                      <strong>
+                        Automatic Payroll Processing
+                      </strong>
+
+                      <p>
+                        Automatically process payroll
+                        for configured periods.
+                      </p>
+
+                    </div>
+
+                    <input
+                      type="checkbox"
+                      defaultChecked
+                    />
+
+                  </div>
+
+
+                  <div className="settings-toggle-row">
+
+                    <div>
+
+                      <strong>
+                        Automatic Payslip Generation
+                      </strong>
+
+                      <p>
+                        Generate payslips after payroll
+                        processing.
+                      </p>
+
+                    </div>
+
+                    <input
+                      type="checkbox"
+                      defaultChecked
+                    />
+
+                  </div>
+
+
+                  <button
+                    type="button"
+                    className="settings-save-button"
+                    onClick={handleSave}
+                  >
+                    Save Changes
+                  </button>
+
+                </>
+
+              )}
+
+
+              {/* =================================================
+                  HR EMAIL
+              ================================================= */}
 
               {activeTab === "email" && (
 
                 <>
 
-                  <h3 style={headingStyle}>
+                  <h3>
                     Email Settings
                   </h3>
 
-                  <p style={descriptionStyle}>
-                    Configure automatic HR and payroll email notifications.
+                  <p className="settings-description">
+
+                    Manage email delivery and automation
+                    preferences.
+
                   </p>
 
 
-                  <div style={settingsList}>
+                  <div className="settings-field">
 
-
-                    <div style={toggleRow}>
-
-                      <div>
-                        <strong>
-                          Email Notifications
-                        </strong>
-
-                        <p style={smallDescription}>
-                          Enable system email notifications.
-                        </p>
-                      </div>
-
-                      <input
-                        type="checkbox"
-                        name="emailEnabled"
-                        checked={emailSettings.emailEnabled}
-                        onChange={handleEmailChange}
-                      />
-
-                    </div>
-
-
-                    <div style={toggleRow}>
-
-                      <div>
-                        <strong>
-                          Automatically Send Payslips
-                        </strong>
-
-                        <p style={smallDescription}>
-                          Send generated payslips automatically to employees.
-                        </p>
-                      </div>
-
-                      <input
-                        type="checkbox"
-                        name="sendPayslipAutomatically"
-                        checked={
-                          emailSettings.sendPayslipAutomatically
-                        }
-                        onChange={handleEmailChange}
-                      />
-
-                    </div>
-
-
-                    <div style={toggleRow}>
-
-                      <div>
-                        <strong>
-                          Leave Notifications
-                        </strong>
-
-                        <p style={smallDescription}>
-                          Send notifications when leave requests are created or approved.
-                        </p>
-                      </div>
-
-                      <input
-                        type="checkbox"
-                        name="sendLeaveNotifications"
-                        checked={
-                          emailSettings.sendLeaveNotifications
-                        }
-                        onChange={handleEmailChange}
-                      />
-
-                    </div>
-
-
-                    <div style={toggleRow}>
-
-                      <div>
-                        <strong>
-                          Payroll Notifications
-                        </strong>
-
-                        <p style={smallDescription}>
-                          Send notifications related to payroll processing.
-                        </p>
-                      </div>
-
-                      <input
-                        type="checkbox"
-                        name="sendPayrollNotifications"
-                        checked={
-                          emailSettings.sendPayrollNotifications
-                        }
-                        onChange={handleEmailChange}
-                      />
-
-                    </div>
-
-                  </div>
-
-
-                  <SaveButton
-                    onClick={() =>
-                      handleSave("Email")
-                    }
-                  />
-
-                </>
-
-              )}
-
-
-              {/* ================= SECURITY ================= */}
-
-              {activeTab === "security" && (
-
-                <>
-
-                  <h3 style={headingStyle}>
-                    Security Settings
-                  </h3>
-
-                  <p style={descriptionStyle}>
-                    Manage account security and session preferences.
-                  </p>
-
-
-                  <div style={toggleRow}>
-
-                    <div>
-                      <strong>
-                        Two-Factor Authentication
-                      </strong>
-
-                      <p style={smallDescription}>
-                        Add an additional security layer to your account.
-                      </p>
-                    </div>
+                    <label>
+                      Sender Email
+                    </label>
 
                     <input
-                      type="checkbox"
-                      name="twoFactor"
-                      checked={security.twoFactor}
-                      onChange={handleSecurityChange}
+                      type="email"
+                      defaultValue="noreply@hrm.com"
                     />
 
                   </div>
 
 
-                  <div style={formGrid}>
+                  <div
+                    className="settings-toggle-row"
+                    style={{
+                      marginTop: "20px"
+                    }}
+                  >
 
                     <div>
 
-                      <label style={labelStyle}>
-                        Session Timeout
-                      </label>
+                      <strong>
+                        Automatic Payslip Emails
+                      </strong>
 
-                      <select
-                        name="sessionTimeout"
-                        value={security.sessionTimeout}
-                        onChange={handleSecurityChange}
-                        style={inputStyle}
-                      >
-
-                        <option value="15">
-                          15 minutes
-                        </option>
-
-                        <option value="30">
-                          30 minutes
-                        </option>
-
-                        <option value="60">
-                          1 hour
-                        </option>
-
-                        <option value="120">
-                          2 hours
-                        </option>
-
-                      </select>
+                      <p>
+                        Automatically send generated
+                        payslips to employees.
+                      </p>
 
                     </div>
+
+                    <input
+                      type="checkbox"
+                      defaultChecked
+                    />
 
                   </div>
 
 
-                  <SaveButton
-                    onClick={() =>
-                      handleSave("Security")
-                    }
-                  />
+                  <button
+                    type="button"
+                    className="settings-save-button"
+                    onClick={handleSave}
+                  >
+                    Save Changes
+                  </button>
 
                 </>
 
@@ -1031,128 +1487,13 @@ function Settings() {
 
           </div>
 
-        </section>
+        </div>
 
       </main>
 
     </div>
-  );
-}
-
-
-/* ================= STYLES ================= */
-
-const tabStyle = {
-  width: "100%",
-  border: "none",
-  background: "transparent",
-  padding: "13px 15px",
-  textAlign: "left",
-  borderRadius: "7px",
-  cursor: "pointer",
-  fontSize: "14px",
-  color: "#475569",
-  marginBottom: "3px"
-};
-
-
-const activeTabStyle = {
-  background: "#eef4ff",
-  color: "#2563eb",
-  fontWeight: "600"
-};
-
-
-const headingStyle = {
-  margin: 0,
-  color: "#172033",
-  fontSize: "22px"
-};
-
-
-const descriptionStyle = {
-  color: "#64748b",
-  marginTop: "8px",
-  marginBottom: "28px"
-};
-
-
-const formGrid = {
-  display: "grid",
-  gridTemplateColumns:
-    "repeat(2, minmax(0, 1fr))",
-  gap: "22px",
-  marginBottom: "25px"
-};
-
-
-const labelStyle = {
-  display: "block",
-  marginBottom: "8px",
-  fontSize: "14px",
-  fontWeight: "600",
-  color: "#334155"
-};
-
-
-const inputStyle = {
-  width: "100%",
-  boxSizing: "border-box",
-  padding: "12px 13px",
-  border: "1px solid #dbe2ea",
-  borderRadius: "7px",
-  outline: "none",
-  fontSize: "14px",
-  color: "#172033",
-  background: "#ffffff"
-};
-
-
-const toggleRow = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  padding: "18px 0",
-  borderBottom: "1px solid #e5e7eb",
-  marginBottom: "5px"
-};
-
-
-const smallDescription = {
-  color: "#64748b",
-  fontSize: "13px",
-  margin: "5px 0 0"
-};
-
-
-const settingsList = {
-  marginBottom: "25px"
-};
-
-
-function SaveButton({ onClick }) {
-
-  return (
-
-    <button
-      onClick={onClick}
-      style={{
-        marginTop: "10px",
-        padding: "11px 22px",
-        border: "none",
-        borderRadius: "7px",
-        background: "#2563eb",
-        color: "#ffffff",
-        fontWeight: "600",
-        cursor: "pointer"
-      }}
-    >
-      Save Changes
-    </button>
 
   );
-
 }
-
 
 export default Settings;

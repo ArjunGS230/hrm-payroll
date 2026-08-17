@@ -1,5 +1,6 @@
 package com.hrm.payroll.controller;
 
+import com.hrm.payroll.dto.ChangePasswordRequest;
 import com.hrm.payroll.dto.LoginRequest;
 import com.hrm.payroll.dto.LoginResponse;
 import com.hrm.payroll.dto.RegisterRequest;
@@ -10,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,6 +21,10 @@ public class AuthController {
 
     private final AuthService authService;
 
+
+    // =====================================================
+    // REGISTER
+    // =====================================================
 
     @PostMapping("/register")
     public ResponseEntity<String> register(
@@ -32,12 +38,39 @@ public class AuthController {
     }
 
 
+    // =====================================================
+    // LOGIN
+    // =====================================================
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
             @Valid @RequestBody LoginRequest request) {
 
         return ResponseEntity.ok(
                 authService.login(request)
+        );
+    }
+
+
+    // =====================================================
+    // CHANGE PASSWORD
+    // =====================================================
+
+    @PutMapping("/change-password")
+    public ResponseEntity<String> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            Authentication authentication) {
+
+        String username =
+                authentication.getName();
+
+        authService.changePassword(
+                username,
+                request
+        );
+
+        return ResponseEntity.ok(
+                "Password changed successfully"
         );
     }
 }

@@ -29,7 +29,9 @@ function Login() {
     setError("");
 
 
-    /* VALIDATION */
+    /* =================================================
+       VALIDATION
+    ================================================= */
 
     if (!username || !password) {
 
@@ -46,7 +48,9 @@ function Login() {
       setLoading(true);
 
 
-      /* API CALL */
+      /* =================================================
+         API CALL
+      ================================================= */
 
       const response = await axios.post(
         "http://localhost:8090/api/auth/login",
@@ -87,26 +91,60 @@ function Login() {
          STORE LOGIN DATA
       ================================================= */
 
+      // JWT token
       localStorage.setItem(
         "token",
         token
       );
 
 
+      // Username returned by backend
       localStorage.setItem(
         "username",
-        username
+        response.data.username || username
       );
 
 
+      // Email returned by backend
+      if (response.data.email) {
+
+        localStorage.setItem(
+          "email",
+          response.data.email
+        );
+
+      }
+
+
+      // Role
       if (response.data.role) {
 
         localStorage.setItem(
           "role",
-          response.data.role
+          response.data.role.toUpperCase()
         );
 
       }
+
+
+      /* =================================================
+         DEBUG
+      ================================================= */
+
+      console.log(
+        "Logged-in username:",
+        response.data.username
+      );
+
+      console.log(
+        "Logged-in email:",
+        response.data.email
+      );
+
+      console.log(
+        "Logged-in role:",
+        response.data.role
+      );
 
 
       /* =================================================
@@ -145,6 +183,7 @@ function Login() {
       setLoading(false);
 
     }
+
   };
 
 
@@ -461,6 +500,7 @@ function Login() {
       </section>
 
     </div>
+
   );
 }
 

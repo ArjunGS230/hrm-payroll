@@ -4,6 +4,7 @@ import com.hrm.payroll.entity.EmailLog;
 import com.hrm.payroll.entity.Employee;
 import com.hrm.payroll.entity.Payslip;
 import com.hrm.payroll.repository.EmailLogRepository;
+import com.hrm.payroll.service.EmailLogPersistenceService;
 import com.hrm.payroll.service.EmailService;
 
 import jakarta.mail.internet.MimeMessage;
@@ -26,36 +27,75 @@ public class EmailServiceImpl implements EmailService {
 
     private final EmailLogRepository emailLogRepository;
 
+    private final EmailLogPersistenceService
+            emailLogPersistenceService;
+
+
+    // =========================================================
+    // SEND PAYSLIP EMAIL
+    // =========================================================
 
     @Override
     public void sendPayslipEmail(
             Employee employee,
             Payslip payslip) {
 
-        String email = employee.getEmail();
+        String email =
+                employee.getEmail();
+
+
+        // =====================================================
+        // FIND EXISTING EMAIL LOG
+        // =====================================================
+
+        EmailLog existingEmailLog =
+                emailLogRepository
+                        .findByPayslipId(
+                                payslip.getId()
+                        )
+                        .orElse(null);
+
 
         /*
-         * Check whether an email log already exists
-         * for this payslip.
+         * If a log already exists, this is an automatic/manual
+         * retry.
+         *
+         * If no log exists, this is the first email attempt
+         * during payslip generation.
          */
-        EmailLog emailLog =
-                emailLogRepository
-                        .findByPayslipId(payslip.getId())
-                        .orElse(
-                                EmailLog.builder()
-                                        .employee(employee)
-                                        .payslip(payslip)
-                                        .email(email)
-                                        .retryCount(0)
-                                        .build()
-                        );
+
+        boolean isRetry =
+                existingEmailLog != null;
+
+
+        // =====================================================
+        // CREATE / REUSE EMAIL LOG
+        // =====================================================
+
+        EmailLog emailLog;
+
+        if (existingEmailLog != null) {
+
+            emailLog =
+                    existingEmailLog;
+
+        } else {
+
+            emailLog =
+                    EmailLog.builder()
+                            .employee(employee)
+                            .payslip(payslip)
+                            .email(email)
+                            .retryCount(0)
+                            .build();
+        }
 
 
         try {
 
-            // ==========================================
+            // =================================================
             // CREATE EMAIL
-            // ==========================================
+            // =================================================
 
             MimeMessage message =
                     mailSender.createMimeMessage();
@@ -68,6 +108,7 @@ public class EmailServiceImpl implements EmailService {
 
 
             helper.setTo(email);
+
 
             helper.setSubject(
                     "Payslip - "
@@ -92,9 +133,9 @@ public class EmailServiceImpl implements EmailService {
             );
 
 
-            // ==========================================
+            // =================================================
             // CHECK PDF
-            // ==========================================
+            // =================================================
 
             File pdfFile =
                     new File(
@@ -111,9 +152,9 @@ public class EmailServiceImpl implements EmailService {
             }
 
 
-            // ==========================================
+            // =================================================
             // ATTACH PDF
-            // ==========================================
+            // =================================================
 
             FileSystemResource attachment =
                     new FileSystemResource(
@@ -127,28 +168,35 @@ public class EmailServiceImpl implements EmailService {
             );
 
 
-            // ==========================================
+            // =================================================
             // SEND EMAIL
-            // ==========================================
+            // =================================================
 
             mailSender.send(message);
 
 
-            // ==========================================
-            // UPDATE EMAIL LOG
-            // ==========================================
+            // =================================================
+            // SUCCESS
+            // =================================================
 
             emailLog.setEmployee(employee);
+
             emailLog.setPayslip(payslip);
+
             emailLog.setEmail(email);
+
             emailLog.setStatus("SENT");
+
             emailLog.setSentAt(
                     LocalDateTime.now()
             );
+
             emailLog.setErrorMessage(null);
 
 
-            emailLogRepository.save(emailLog);
+            emailLogRepository.save(
+                    emailLog
+            );
 
 
             System.out.println(
@@ -156,46 +204,58 @@ public class EmailServiceImpl implements EmailService {
                             + email
             );
 
+
         } catch (Exception e) {
+
+            // =================================================
+            // FAILURE
+            // =================================================
+
+            if (isRetry) {
+
+                // Existing payslip already exists in DB.
+                // Separate transaction is safe.
+
+                emailLogPersistenceService
+                        .saveFailedEmailLogNewTransaction(
+                                emailLog,
+                                employee,
+                                payslip,
+                                email,
+                                e
+                        );
+
+            } else {
+
+                // First email attempt.
+                // Use the current transaction.
+
+                emailLogPersistenceService
+                        .saveFailedEmailLog(
+                                emailLog,
+                                employee,
+                                payslip,
+                                email,
+                                e
+                        );
+            }
+
+
+            System.out.println(
+                    "Payslip generated successfully, "
+                            + "but email delivery failed for: "
+                            + email
+            );
 
             /*
              * IMPORTANT:
-             * Do not create a new EmailLog here.
              *
-             * Reuse the existing log if it already exists.
+             * Do NOT throw the email exception here.
+             *
+             * The payslip has already been generated.
+             * The failed email is recorded in email_logs.
+             * Scheduler will retry it automatically.
              */
-
-            emailLog.setEmployee(employee);
-            emailLog.setPayslip(payslip);
-            emailLog.setEmail(email);
-            emailLog.setStatus("FAILED");
-            emailLog.setErrorMessage(
-                    e.getMessage()
-            );
-
-            Integer retryCount =
-                    emailLog.getRetryCount();
-
-            if (retryCount == null) {
-                retryCount = 0;
-            }
-
-            emailLog.setRetryCount(
-                    retryCount + 1
-            );
-
-
-            /*
-             * Save the same EmailLog record.
-             */
-            emailLogRepository.save(emailLog);
-
-
-            throw new RuntimeException(
-                    "Failed to send payslip email: "
-                            + e.getMessage(),
-                    e
-            );
         }
     }
 }

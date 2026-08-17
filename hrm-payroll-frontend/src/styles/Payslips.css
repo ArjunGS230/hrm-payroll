@@ -1190,3 +1190,59 @@
     font-size: 14px;
     font-weight: 800;
 }
+.payslip-email-status {
+    margin-top: 20px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid #dfe5ed;
+    background: #f8fafc;
+}
+
+.payslip-email-status strong {
+    margin-right: 8px;
+}
+
+.payslip-email-status p {
+    margin: 7px 0 0;
+    font-size: 13px;
+}
+
+.payslip-email-status.sent {
+    color: #166534;
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.payslip-email-status.failed {
+    color: #92400e;
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+.payslip-email-status {
+    margin-top: 20px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid #dfe5ed;
+    background: #f8fafc;
+}
+
+.payslip-email-status strong {
+    margin-right: 8px;
+}
+
+.payslip-email-status p {
+    margin: 7px 0 0;
+    font-size: 13px;
+}
+
+.payslip-email-status.sent {
+    color: #166534;
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.payslip-email-status.failed {
+    color: #92400e;
+    background: #fffbeb;
+    border-color: #fde68a;
+}

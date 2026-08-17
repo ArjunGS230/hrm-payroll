@@ -1,5 +1,6 @@
 package com.hrm.payroll.dto;
 
+import com.hrm.payroll.entity.EmployeeStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,11 +11,20 @@ import java.time.LocalDate;
 public class EmployeeResponse {
 
     private Long id;
+
     private String employeeCode;
+
     private String name;
+
     private String email;
+
     private String department;
+
     private String designation;
+
     private LocalDate joiningDate;
+
     private boolean active;
+
+    private EmployeeStatus status;
 }

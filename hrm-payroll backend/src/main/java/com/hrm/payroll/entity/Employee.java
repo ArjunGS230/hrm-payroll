@@ -35,4 +35,9 @@ public class Employee {
 
     @Builder.Default
     private boolean active = true;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private EmployeeStatus status = EmployeeStatus.PENDING;
 }

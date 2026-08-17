@@ -14,11 +14,10 @@
 /* =====================================================
    SIDEBAR
 ===================================================== */
-
 .leave-sidebar {
-    width: 236px;
-    min-width: 236px;
-    min-height: 100vh;
+    width: 310px;
+    min-width: 310px;
+    height: 100vh;
 
     background: #07101c;
     color: #d8e1ef;
@@ -26,9 +25,11 @@
     display: flex;
     flex-direction: column;
 
-    padding: 24px 14px;
+    padding: 24px 16px;
 
     box-sizing: border-box;
+
+    flex-shrink: 0;
 }
 
 
@@ -255,6 +256,8 @@
 .leave-main {
     flex: 1;
     min-width: 0;
+    margin: 0;
+    padding: 0;
 }
 
 
@@ -1009,10 +1012,7 @@
 
 @media (max-width: 900px) {
 
-    .leave-sidebar {
-        width: 205px;
-        min-width: 205px;
-    }
+    
 
     .leave-content {
         padding: 28px 24px 40px;
@@ -1027,10 +1027,7 @@
 
 @media (max-width: 700px) {
 
-    .leave-sidebar {
-        width: 185px;
-        min-width: 185px;
-    }
+    
 
     .leave-menu-item {
         font-size: 13px;

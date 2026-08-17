@@ -1,6 +1,7 @@
 package com.hrm.payroll.controller;
 
 import com.hrm.payroll.dto.PayslipResponse;
+import org.springframework.security.core.Authentication;
 import com.hrm.payroll.service.PayslipService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,19 +22,70 @@ public class PayslipController {
 
     // Generate monthly payslip
     @PostMapping("/generate/{employeeId}")
-    public ResponseEntity<PayslipResponse> generatePayslip(
+    public ResponseEntity<?> generatePayslip(
             @PathVariable Long employeeId,
             @RequestParam String payPeriod) {
 
-        PayslipResponse response =
-                payslipService.generatePayslip(
-                        employeeId,
-                        payPeriod
-                );
+        System.out.println("====================================");
+        System.out.println("GENERATE PAYSLIP REQUEST");
+        System.out.println("Employee ID : " + employeeId);
+        System.out.println("Pay Period  : " + payPeriod);
+        System.out.println("====================================");
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
+        try {
+
+            PayslipResponse response =
+                    payslipService.generatePayslip(
+                            employeeId,
+                            payPeriod
+                    );
+
+            System.out.println(
+                    "PAYSLIP GENERATION SUCCESS"
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(response);
+
+        } catch (Exception e) {
+
+            System.out.println(
+                    "===================================="
+            );
+
+            System.out.println(
+                    "PAYSLIP GENERATION FAILED"
+            );
+
+            System.out.println(
+                    "ERROR TYPE : "
+                            + e.getClass().getName()
+            );
+
+            System.out.println(
+                    "ERROR MESSAGE : "
+                            + e.getMessage()
+            );
+
+            e.printStackTrace();
+
+            System.out.println(
+                    "===================================="
+            );
+
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            java.util.Map.of(
+                                    "message",
+                                    e.getMessage() != null
+                                            ? e.getMessage()
+                                            : "Unknown server error"
+                            )
+                    );
+        }
     }
     @PostMapping("/{id}/send-email")
     public ResponseEntity<String> sendPayslipEmail(
@@ -45,6 +97,17 @@ public class PayslipController {
 
         return ResponseEntity.ok(
                 "Payslip email sent successfully"
+        );
+    }
+    @GetMapping("/my")
+    public ResponseEntity<List<PayslipResponse>> getMyPayslips(
+            Authentication authentication) {
+
+        String username =
+                authentication.getName();
+
+        return ResponseEntity.ok(
+                payslipService.getMyPayslips(username)
         );
     }
 

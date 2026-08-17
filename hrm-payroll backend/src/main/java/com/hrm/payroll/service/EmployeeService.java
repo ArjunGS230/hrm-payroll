@@ -16,4 +16,8 @@ public interface EmployeeService {
     EmployeeResponse updateEmployee(Long id, EmployeeRequest request);
 
     void deleteEmployee(Long id);
+    EmployeeResponse reactivateEmployee(Long id);
+    EmployeeResponse approveEmployee(Long id);
+
+    EmployeeResponse rejectEmployee(Long id);
 }

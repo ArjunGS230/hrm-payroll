@@ -3906,172 +3906,173 @@ a {
   }
 
 }
-/* =========================================
-   COMMON APPLICATION LAYOUT
-========================================= */
+
+
+
+/* =========================================================
+   COMMON HRM APPLICATION LAYOUT
+   ========================================================= */
 
 .app-layout {
   display: flex;
+  width: 100%;
   min-height: 100vh;
   background: #f5f7fb;
 }
 
 
-/* =========================================
-   SIDEBAR
-========================================= */
+/* =========================================================
+   FIXED SIDEBAR
+   ========================================================= */
 
 .app-sidebar {
-  width: 310px;
-  min-width: 310px;
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 270px;
   height: 100vh;
+
+  flex: 0 0 270px;
+
   background: #070f1b;
-  color: white;
+  color: #ffffff;
 
   display: flex;
   flex-direction: column;
 
-  position: fixed;
-  left: 0;
-  top: 0;
+  padding: 28px 15px 18px;
 
   box-sizing: border-box;
-  padding: 34px 14px 20px;
 
   z-index: 1000;
 }
 
 
-/* =========================================
-   LOGO
-========================================= */
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.app-content {
+  width: calc(100% - 270px);
+  min-height: 100vh;
+
+  margin-left: 270px;
+
+  padding: 0;
+
+  box-sizing: border-box;
+
+  overflow-x: hidden;
+}
+
+
+/* =========================================================
+   PREVENT HORIZONTAL GAP / OVERFLOW
+   ========================================================= */
+
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+
+/* =========================================================
+   SIDEBAR LOGO
+   ========================================================= */
 
 .app-logo {
   display: flex;
   align-items: center;
-  gap: 14px;
 
-  padding: 0 8px 26px;
+  gap: 12px;
+
+  padding: 0 8px 24px;
 }
 
 
-.app-logo-box {
-  width: 50px;
-  height: 50px;
-
-  border-radius: 12px;
-
-  background: #3168ed;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 22px;
-  font-weight: 700;
-
-  box-shadow: 0 8px 20px rgba(49, 104, 237, 0.25);
-}
-
-
-.app-logo-text {
-  display: flex;
-  flex-direction: column;
-}
-
-
-.app-logo-text strong {
-  font-size: 20px;
-  line-height: 1.2;
-}
-
-
-.app-logo-text span {
-  margin-top: 4px;
-
-  font-size: 9px;
-  letter-spacing: 1.5px;
-
-  color: #7e9bc2;
-}
-
-
-/* =========================================
-   DIVIDER
-========================================= */
-
-.sidebar-divider {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.08);
-
-  margin: 0 0 18px;
-}
-
-
-/* =========================================
-   MENU
-========================================= */
+/* =========================================================
+   SIDEBAR MENU
+   ========================================================= */
 
 .sidebar-menu {
   display: flex;
   flex-direction: column;
 
-  gap: 7px;
+  gap: 5px;
+
+  width: 100%;
 }
 
 
 .sidebar-item {
   width: 100%;
-  height: 60px;
-
-  border: none;
-  border-radius: 11px;
-
-  background: transparent;
-
-  color: #c9d5e8;
+  height: 54px;
 
   display: flex;
   align-items: center;
 
-  gap: 18px;
+  gap: 16px;
 
-  padding: 0 20px;
+  padding: 0 18px;
 
-  font-size: 17px;
+  border: none;
+  border-radius: 10px;
 
-  cursor: pointer;
+  background: transparent;
+
+  color: #b7c4d8;
+
+  font-size: 16px;
+  font-weight: 500;
 
   text-align: left;
 
-  transition: 0.2s ease;
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 
 .sidebar-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+
+  transform: translateX(2px);
 }
 
 
 .sidebar-item.active {
-  background: #192f5c;
+  background: #1b3568;
 
   color: #72a0ff;
 
   border-left: 3px solid #3975ff;
 
-  padding-left: 17px;
+  padding-left: 15px;
 }
 
 
 .sidebar-icon {
   width: 20px;
+  min-width: 20px;
 
   display: flex;
+  align-items: center;
   justify-content: center;
 
-  font-size: 18px;
+  font-size: 17px;
 
   color: #8aa4ca;
 }
@@ -4082,14 +4083,9 @@ a {
 }
 
 
-.sidebar-text {
-  white-space: nowrap;
-}
-
-
-/* =========================================
+/* =========================================================
    SIDEBAR BOTTOM
-========================================= */
+   ========================================================= */
 
 .sidebar-bottom {
   margin-top: auto;
@@ -4100,15 +4096,19 @@ a {
   display: flex;
   align-items: center;
 
-  gap: 12px;
+  gap: 11px;
 
-  padding: 12px 7px 18px;
+  padding: 14px 7px 16px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 
 .sidebar-avatar {
-  width: 46px;
-  height: 46px;
+  width: 40px;
+  height: 40px;
+
+  flex-shrink: 0;
 
   border-radius: 10px;
 
@@ -4120,37 +4120,24 @@ a {
   align-items: center;
   justify-content: center;
 
+  font-size: 13px;
   font-weight: 700;
-  font-size: 14px;
 }
 
 
-.sidebar-user-info {
-  display: flex;
-  flex-direction: column;
-}
-
-
-.sidebar-user-info strong {
-  color: white;
-  font-size: 14px;
-}
-
-
-.sidebar-user-info span {
-  color: #7286a5;
-  font-size: 12px;
-
-  margin-top: 4px;
-}
-
-
-/* =========================================
+/* =========================================================
    LOGOUT
-========================================= */
+   ========================================================= */
 
 .logout-button {
   width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  padding: 11px;
 
   border: none;
 
@@ -4158,36 +4145,103 @@ a {
 
   color: #91a4c2;
 
-  display: flex;
-  align-items: center;
-
-  gap: 14px;
-
-  padding: 12px;
-
   font-size: 15px;
+
+  text-align: left;
 
   cursor: pointer;
 
-  text-align: left;
+  transition: color 0.2s ease;
 }
 
 
 .logout-button:hover {
-  color: white;
+  color: #ffffff;
 }
 
 
-/* =========================================
-   MAIN CONTENT
-========================================= */
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
 
-.app-content {
-  margin-left: 310px;
+@media (max-width: 1100px) {
 
-  width: calc(100% - 310px);
+  .app-sidebar {
+    width: 240px;
+    flex-basis: 240px;
+  }
 
-  min-height: 100vh;
+  .app-content {
+    width: calc(100% - 240px);
+    margin-left: 240px;
+  }
 
-  box-sizing: border-box;
+  .sidebar-item {
+    font-size: 15px;
+  }
+}
+
+
+@media (max-width: 800px) {
+
+  .app-sidebar {
+    width: 220px;
+  }
+
+  .app-content {
+    width: calc(100% - 220px);
+    margin-left: 220px;
+  }
+
+  .sidebar-item {
+    height: 50px;
+    font-size: 14px;
+  }
+}
+
+
+@media (max-width: 650px) {
+
+  .app-sidebar {
+    position: relative;
+
+    width: 100%;
+    height: auto;
+
+    min-height: auto;
+
+    padding: 18px;
+
+    flex: none;
+  }
+
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .app-content {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .sidebar-menu {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sidebar-bottom {
+    margin-top: 15px;
+  }
+}
+
+
+@media (max-width: 420px) {
+
+  .sidebar-menu {
+    grid-template-columns: 1fr;
+  }
+
+  .app-sidebar {
+    padding: 15px;
+  }
 }

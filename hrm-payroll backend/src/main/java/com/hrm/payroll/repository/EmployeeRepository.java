@@ -15,4 +15,5 @@ public interface EmployeeRepository
     Optional<Employee> findByEmail(
             String email
     );
+    long countByActiveTrue();
 }

@@ -16,4 +16,6 @@ public interface UserRepository
     boolean existsByPhoneNumber(String phoneNumber);
 
     Optional<User> findByUsername(String username);
+
+    Optional<User> findByEmail(String email);
 }

@@ -24,7 +24,6 @@ const modules = [
   },
 ];
 
-
 const features = [
   {
     icon: "◈",
@@ -48,156 +47,111 @@ const features = [
   },
 ];
 
-
 function Welcome() {
-
   const navigate = useNavigate();
 
-
   const scrollToSection = (id) => {
+  const element = document.getElementById(id);
 
-    const element =
-      document.getElementById(id);
+  if (element) {
+    const rect = element.getBoundingClientRect();
 
-    if (element) {
+    const heading = element.querySelector(
+      ".welcome-info-label, h2"
+    );
 
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+    const target = heading || element;
 
-    }
-  };
+    const targetRect = target.getBoundingClientRect();
 
+    const scrollPosition =
+      window.scrollY +
+      targetRect.top -
+      window.innerHeight / 2 +
+      targetRect.height / 2;
+
+    window.scrollTo({
+      top: scrollPosition,
+      behavior: "smooth",
+    });
+  }
+};
 
   return (
+    <div className="welcome-page">
 
-    <div className="hrm-home">
+      {/* BACKGROUND */}
+      <div className="welcome-grid"></div>
+      <div className="welcome-glow welcome-glow-one"></div>
+      <div className="welcome-glow welcome-glow-two"></div>
 
+      {/* NAVBAR */}
+      <header className="welcome-navbar">
 
-      {/* =====================================================
-          BACKGROUND
-      ===================================================== */}
-
-      <div className="home-grid"></div>
-
-      <div className="home-glow home-glow-one"></div>
-
-      <div className="home-glow home-glow-two"></div>
-
-
-      {/* =====================================================
-          NAVBAR
-      ===================================================== */}
-
-      <header className="home-navbar">
-
-
-        {/* BRAND */}
-
-        <div className="home-brand">
-
-          <div className="brand-logo">
+        <div className="welcome-brand">
+          <div className="welcome-brand-logo">
             H
           </div>
 
-          <div className="brand-info">
-
-            <strong>
-              HRM
-            </strong>
-
-            <span>
-              PAYROLL AUTOMATION
-            </span>
-
+          <div className="welcome-brand-info">
+            <strong>HRM</strong>
+            <span>PAYROLL AUTOMATION</span>
           </div>
-
         </div>
 
-
-        {/* NAVIGATION */}
-
-        <nav className="home-nav">
+        <nav className="welcome-nav">
 
           <button
             type="button"
-            onClick={() =>
-              scrollToSection("features-section")
-            }
+            onClick={() => scrollToSection("welcome-features")}
           >
             Features
           </button>
 
-
           <button
             type="button"
-            onClick={() =>
-              scrollToSection("modules-section")
-            }
+            onClick={() => scrollToSection("welcome-modules")}
           >
             Modules
           </button>
 
-
           <button
             type="button"
-            onClick={() =>
-              scrollToSection("security-section")
-            }
+            onClick={() => scrollToSection("welcome-security")}
           >
             Security
           </button>
 
-
           <button
             type="button"
-            onClick={() =>
-              scrollToSection("about-section")
-            }
+            onClick={() => scrollToSection("welcome-about")}
           >
             About
           </button>
 
-
           <button
             type="button"
-            onClick={() =>
-              scrollToSection("contact-section")
-            }
+            onClick={() => scrollToSection("welcome-contact")}
           >
             Contact
           </button>
 
         </nav>
 
-
-        {/* ACTION BUTTONS */}
-
-        <div className="home-actions">
-
-
-          {/* SIGN IN */}
+        <div className="welcome-actions">
 
           <button
             type="button"
-            className="signin-btn"
-            onClick={() =>
-              navigate("/login")
-            }
+            className="welcome-signin"
+            onClick={() => navigate("/login")}
           >
             Sign In
           </button>
 
-
-          {/* GET STARTED */}
-
           <button
             type="button"
-            className="get-started-btn"
-            onClick={() =>
-              navigate("/signup")
-            }
+            className="welcome-get-started"
+            onClick={() => navigate("/signup")}
           >
             Get Started
           </button>
@@ -206,369 +160,182 @@ function Welcome() {
 
       </header>
 
+      {/* HERO */}
+      <main className="welcome-hero">
 
-      {/* =====================================================
-          HERO
-      ===================================================== */}
+        {/* LEFT CONTENT */}
+        <section className="welcome-hero-left">
 
-      <main className="home-hero">
-
-
-        {/* ===================================================
-            HERO LEFT
-        =================================================== */}
-
-        <section className="hero-left">
-
-
-          {/* BADGE */}
-
-          <div className="hero-badge">
-
+          <div className="welcome-badge">
             <span></span>
-
             SMART HR · MODERN PAYROLL
-
           </div>
-
-
-          {/* TITLE */}
 
           <h1>
-
             Salary Structure
-
             <br />
-
             &amp; Payslip
-
             <br />
-
-            <span>
-              Automation
-            </span>
-
+            <span>Automation</span>
           </h1>
 
-
-          {/* DESCRIPTION */}
-
-          <p className="hero-description">
-
+          <p className="welcome-description">
             Configure salaries. Process payroll.
-
             <br />
-
             Generate payslips. Deliver automatically.
-
           </p>
 
-
-          {/* =================================================
-              MODULES
-          ================================================= */}
-
+          {/* MODULES */}
           <div
-            className="hero-modules"
-            id="modules-section"
+            className="welcome-modules"
+            id="welcome-modules"
           >
 
-            {modules.map(
-              (module, index) => (
-
-                <div
-                  className="hero-module"
-                  key={index}
-                >
-
-                  <div className="module-icon">
-                    {module.icon}
-                  </div>
-
-                  <strong>
-                    {module.title}
-                  </strong>
-
-                  <span>
-                    {module.subtitle}
-                  </span>
-
+            {modules.map((module, index) => (
+              <div
+                className="welcome-module"
+                key={index}
+              >
+                <div className="welcome-module-icon">
+                  {module.icon}
                 </div>
 
-              )
-            )}
+                <strong>{module.title}</strong>
+
+                <span>{module.subtitle}</span>
+              </div>
+            ))}
 
           </div>
 
-
-          {/* =================================================
-              HERO BUTTONS
-          ================================================= */}
-
-          <div className="hero-buttons">
-
-
-            {/* GET STARTED */}
+          {/* BUTTONS */}
+          <div className="welcome-hero-buttons">
 
             <button
               type="button"
-              className="hero-primary"
-              onClick={() =>
-                navigate("/signup")
-              }
+              className="welcome-primary-button"
+              onClick={() => navigate("/signup")}
             >
-
               Get Started Now
-
-              <span>
-                →
-              </span>
-
+              <span>→</span>
             </button>
 
-
-            {/* EXPLORE FEATURES */}
-
             <button
               type="button"
-              className="hero-secondary"
-              onClick={() =>
-                scrollToSection(
-                  "features-section"
-                )
-              }
+              className="welcome-secondary-button"
+              onClick={() => scrollToSection("welcome-features")}
             >
-
-              <span className="play-icon">
-                ▶
-              </span>
-
+              <span>▶</span>
               Explore Features
-
             </button>
 
           </div>
 
         </section>
 
+        {/* DASHBOARD PREVIEW */}
+        <section className="welcome-dashboard">
 
-        {/* ===================================================
-            DASHBOARD PREVIEW
-        =================================================== */}
+          <div className="welcome-dashboard-window">
 
-        <section className="hero-dashboard">
+            {/* SIDEBAR */}
+            <aside className="welcome-dashboard-sidebar">
 
-          <div className="dashboard-window">
-
-
-            {/* =================================================
-                SIDEBAR
-            ================================================= */}
-
-            <aside className="dashboard-sidebar">
-
-
-              <div className="dashboard-logo">
+              <div className="welcome-dashboard-logo">
                 HRM
               </div>
 
+              <div className="welcome-sidebar-menu">
 
-              <div className="sidebar-menu">
-
-
-                <div className="sidebar-item active">
-
-                  <span>
-                    ⌂
-                  </span>
-
-                  <span className="sidebar-text">
-                    Dashboard
-                  </span>
-
+                <div className="welcome-sidebar-item active">
+                  <span>⌂</span>
+                  <span>Dashboard</span>
                 </div>
 
-
-                <div className="sidebar-item">
-
-                  <span>
-                    ♙
-                  </span>
-
-                  <span className="sidebar-text">
-                    Employees
-                  </span>
-
+                <div className="welcome-sidebar-item">
+                  <span>♙</span>
+                  <span>Employees</span>
                 </div>
 
-
-                <div className="sidebar-item">
-
-                  <span>
-                    ▣
-                  </span>
-
-                  <span className="sidebar-text">
-                    Salary Structures
-                  </span>
-
+                <div className="welcome-sidebar-item">
+                  <span>▣</span>
+                  <span>Salary Structures</span>
                 </div>
 
-
-                <div className="sidebar-item">
-
-                  <span>
-                    ◷
-                  </span>
-
-                  <span className="sidebar-text">
-                    Leave Management
-                  </span>
-
+                <div className="welcome-sidebar-item">
+                  <span>◷</span>
+                  <span>Leave Management</span>
                 </div>
 
-
-                <div className="sidebar-item">
-
-                  <span>
-                    ▤
-                  </span>
-
-                  <span className="sidebar-text">
-                    Payroll
-                  </span>
-
+                <div className="welcome-sidebar-item">
+                  <span>▤</span>
+                  <span>Payroll</span>
                 </div>
 
-
-                <div className="sidebar-item">
-
-                  <span>
-                    ▧
-                  </span>
-
-                  <span className="sidebar-text">
-                    Payslips
-                  </span>
-
+                <div className="welcome-sidebar-item">
+                  <span>▧</span>
+                  <span>Payslips</span>
                 </div>
 
-
-                <div className="sidebar-item">
-
-                  <span>
-                    ✉
-                  </span>
-
-                  <span className="sidebar-text">
-                    Email Logs
-                  </span>
-
+                <div className="welcome-sidebar-item">
+                  <span>✉</span>
+                  <span>Email Logs</span>
                 </div>
 
-
-                <div className="sidebar-item">
-
-                  <span>
-                    ◫
-                  </span>
-
-                  <span className="sidebar-text">
-                    Reports
-                  </span>
-
+                <div className="welcome-sidebar-item">
+                  <span>◫</span>
+                  <span>Reports</span>
                 </div>
 
-
-                <div className="sidebar-item">
-
-                  <span>
-                    ⚙
-                  </span>
-
-                  <span className="sidebar-text">
-                    Settings
-                  </span>
-
+                <div className="welcome-sidebar-item">
+                  <span>⚙</span>
+                  <span>Settings</span>
                 </div>
 
               </div>
 
+              <div className="welcome-sidebar-user">
 
-              {/* USER */}
-
-              <div className="sidebar-user">
-
-                <div className="user-avatar">
+                <div className="welcome-user-avatar">
                   AR
                 </div>
 
                 <div>
-
-                  <strong>
-                    Arjun Reddy
-                  </strong>
-
-                  <span>
-                    HR Manager
-                  </span>
-
+                  <strong>Arjun Reddy</strong>
+                  <span>HR Manager</span>
                 </div>
 
               </div>
 
             </aside>
 
+            {/* DASHBOARD CONTENT */}
+            <div className="welcome-dashboard-content">
 
-            {/* =================================================
-                DASHBOARD CONTENT
-            ================================================= */}
-
-            <div className="dashboard-content">
-
-
-              {/* TOP */}
-
-              <div className="dashboard-top">
+              {/* TOP BAR */}
+              <div className="welcome-dashboard-top">
 
                 <div>
-
-                  <span className="dashboard-small">
+                  <span className="welcome-dashboard-small">
                     HR WORKSPACE
                   </span>
 
-                  <h2>
-                    Dashboard
-                  </h2>
-
+                  <h2>Dashboard</h2>
                 </div>
 
+                <div className="welcome-dashboard-profile">
 
-                <div className="dashboard-profile">
-
-                  <div className="search-box">
-
+                  <div className="welcome-search">
                     ⌕
-
-                    <span>
-                      Search anything...
-                    </span>
-
+                    <span>Search anything...</span>
                   </div>
 
-
-                  <div className="notification">
-
+                  <div className="welcome-notification">
                     ♧
-
-                    <b>
-                      3
-                    </b>
-
+                    <b>3</b>
                   </div>
 
-
-                  <div className="profile-avatar">
+                  <div className="welcome-profile-avatar">
                     AR
                   </div>
 
@@ -576,241 +343,122 @@ function Welcome() {
 
               </div>
 
+              {/* STAT CARDS */}
+              <div className="welcome-stat-grid">
 
-              {/* =================================================
-                  STAT CARDS
-              ================================================= */}
-
-              <div className="stat-grid">
-
-
-                <div className="stat-card">
-
-                  <span>
-                    TOTAL EMPLOYEES
-                  </span>
-
-                  <strong>
-                    128
-                  </strong>
-
-                  <small className="positive">
+                <div className="welcome-stat-card">
+                  <span>TOTAL EMPLOYEES</span>
+                  <strong>128</strong>
+                  <small className="welcome-positive">
                     ↑ 12 this month
                   </small>
-
-                  <div className="stat-symbol blue">
+                  <div className="welcome-stat-symbol blue">
                     ♙
                   </div>
-
                 </div>
 
-
-                <div className="stat-card">
-
-                  <span>
-                    TOTAL PAYROLL
-                  </span>
-
-                  <strong>
-                    ₹48.64L
-                  </strong>
-
-                  <small className="positive">
+                <div className="welcome-stat-card">
+                  <span>TOTAL PAYROLL</span>
+                  <strong>₹48.64L</strong>
+                  <small className="welcome-positive">
                     ↑ 8.4% this month
                   </small>
-
-                  <div className="stat-symbol green">
+                  <div className="welcome-stat-symbol green">
                     ₹
                   </div>
-
                 </div>
 
-
-                <div className="stat-card">
-
-                  <span>
-                    LEAVE REQUESTS
-                  </span>
-
-                  <strong>
-                    16
-                  </strong>
-
-                  <small>
-                    Pending approval
-                  </small>
-
-                  <div className="stat-symbol yellow">
+                <div className="welcome-stat-card">
+                  <span>LEAVE REQUESTS</span>
+                  <strong>16</strong>
+                  <small>Pending approval</small>
+                  <div className="welcome-stat-symbol yellow">
                     ◷
                   </div>
-
                 </div>
 
-
-                <div className="stat-card">
-
-                  <span>
-                    PAYSLIPS GENERATED
-                  </span>
-
-                  <strong>
-                    114
-                  </strong>
-
-                  <small>
-                    This month
-                  </small>
-
-                  <div className="stat-symbol purple">
+                <div className="welcome-stat-card">
+                  <span>PAYSLIPS GENERATED</span>
+                  <strong>114</strong>
+                  <small>This month</small>
+                  <div className="welcome-stat-symbol purple">
                     ▧
                   </div>
-
                 </div>
 
               </div>
 
-
-              {/* =================================================
-                  MIDDLE
-              ================================================= */}
-
-              <div className="dashboard-middle">
-
+              {/* MIDDLE */}
+              <div className="welcome-dashboard-middle">
 
                 {/* PAYROLL */}
+                <div className="welcome-payroll-panel">
 
-                <div className="payroll-panel">
-
-                  <div className="panel-heading">
+                  <div className="welcome-panel-heading">
 
                     <div>
-
-                      <h3>
-                        Monthly Payroll Overview
-                      </h3>
-
-                      <span>
-                        November 2026
-                      </span>
-
+                      <h3>Monthly Payroll Overview</h3>
+                      <span>November 2026</span>
                     </div>
 
-                    <button
-                      type="button"
-                    >
+                    <button type="button">
                       This month⌄
                     </button>
 
                   </div>
 
+                  <div className="welcome-payroll-data">
 
-                  <div className="payroll-data">
+                    <div className="welcome-payroll-numbers">
 
+                      <span>Total Gross Salary</span>
+                      <strong>₹48,64,000</strong>
 
-                    <div className="payroll-numbers">
-
-                      <span>
-                        Total Gross Salary
-                      </span>
-
-                      <strong>
-                        ₹48,64,000
-                      </strong>
-
-
-                      <span className="net-label">
+                      <span className="welcome-net-label">
                         Total Net Salary
                       </span>
 
-                      <strong className="net-value">
+                      <strong className="welcome-net-value">
                         ₹36,72,000
                       </strong>
 
-
-                      <div className="processed-badge">
+                      <div className="welcome-processed">
                         ✓ PROCESSED
                       </div>
 
                     </div>
 
-
-                    <div className="donut">
-
-                      <div className="donut-center">
-
-                        <span>
-                          Total
-                        </span>
-
-                        <strong>
-                          ₹48.64L
-                        </strong>
-
+                    <div className="welcome-donut">
+                      <div className="welcome-donut-center">
+                        <span>Total</span>
+                        <strong>₹48.64L</strong>
                       </div>
-
                     </div>
 
-
-                    <div className="legend">
-
+                    <div className="welcome-legend">
 
                       <div>
-
-                        <span className="dot blue-dot"></span>
-
-                        <label>
-                          Basic Salary
-                        </label>
-
-                        <strong>
-                          ₹28,00,000
-                        </strong>
-
+                        <span className="welcome-dot blue-dot"></span>
+                        <label>Basic Salary</label>
+                        <strong>₹28,00,000</strong>
                       </div>
 
-
                       <div>
-
-                        <span className="dot cyan-dot"></span>
-
-                        <label>
-                          HRA
-                        </label>
-
-                        <strong>
-                          ₹10,80,000
-                        </strong>
-
+                        <span className="welcome-dot cyan-dot"></span>
+                        <label>HRA</label>
+                        <strong>₹10,80,000</strong>
                       </div>
 
-
                       <div>
-
-                        <span className="dot purple-dot"></span>
-
-                        <label>
-                          Allowances
-                        </label>
-
-                        <strong>
-                          ₹7,20,000
-                        </strong>
-
+                        <span className="welcome-dot purple-dot"></span>
+                        <label>Allowances</label>
+                        <strong>₹7,20,000</strong>
                       </div>
 
-
                       <div>
-
-                        <span className="dot yellow-dot"></span>
-
-                        <label>
-                          Deductions
-                        </label>
-
-                        <strong>
-                          ₹2,00,000
-                        </strong>
-
+                        <span className="welcome-dot yellow-dot"></span>
+                        <label>Deductions</label>
+                        <strong>₹2,00,000</strong>
                       </div>
 
                     </div>
@@ -819,23 +467,17 @@ function Welcome() {
 
                 </div>
 
-
                 {/* LEAVE */}
+                <div className="welcome-leave-panel">
 
-                <div className="leave-panel">
+                  <div className="welcome-panel-heading">
 
-                  <div className="panel-heading">
-
-                    <h3>
-                      Leave Balance
-                    </h3>
+                    <h3>Leave Balance</h3>
 
                     <button
                       type="button"
                       onClick={() =>
-                        scrollToSection(
-                          "modules-section"
-                        )
+                        scrollToSection("welcome-modules")
                       }
                     >
                       View all
@@ -843,110 +485,54 @@ function Welcome() {
 
                   </div>
 
-
-                  <div className="leave-row">
+                  <div className="welcome-leave-row">
 
                     <div>
-
-                      <span>
-                        Casual Leave
-                      </span>
-
-                      <strong>
-                        12 / 12 days
-                      </strong>
-
+                      <span>Casual Leave</span>
+                      <strong>12 / 12 days</strong>
                     </div>
 
-                    <div className="leave-progress">
-
-                      <span
-                        style={{
-                          width: "100%",
-                        }}
-                      ></span>
-
+                    <div className="welcome-leave-progress">
+                      <span style={{ width: "100%" }}></span>
                     </div>
 
                   </div>
 
-
-                  <div className="leave-row">
+                  <div className="welcome-leave-row">
 
                     <div>
-
-                      <span>
-                        Medical Leave
-                      </span>
-
-                      <strong>
-                        15 / 15 days
-                      </strong>
-
+                      <span>Medical Leave</span>
+                      <strong>15 / 15 days</strong>
                     </div>
 
-                    <div className="leave-progress">
-
-                      <span
-                        style={{
-                          width: "100%",
-                        }}
-                      ></span>
-
+                    <div className="welcome-leave-progress">
+                      <span style={{ width: "100%" }}></span>
                     </div>
 
                   </div>
 
-
-                  <div className="leave-row">
+                  <div className="welcome-leave-row">
 
                     <div>
-
-                      <span>
-                        Earned Leave
-                      </span>
-
-                      <strong>
-                        18 / 20 days
-                      </strong>
-
+                      <span>Earned Leave</span>
+                      <strong>18 / 20 days</strong>
                     </div>
 
-                    <div className="leave-progress">
-
-                      <span
-                        style={{
-                          width: "90%",
-                        }}
-                      ></span>
-
+                    <div className="welcome-leave-progress">
+                      <span style={{ width: "90%" }}></span>
                     </div>
 
                   </div>
 
-
-                  <div className="leave-row">
+                  <div className="welcome-leave-row">
 
                     <div>
-
-                      <span>
-                        Comp Off
-                      </span>
-
-                      <strong>
-                        05 / 08 days
-                      </strong>
-
+                      <span>Comp Off</span>
+                      <strong>05 / 08 days</strong>
                     </div>
 
-                    <div className="leave-progress yellow-progress">
-
-                      <span
-                        style={{
-                          width: "63%",
-                        }}
-                      ></span>
-
+                    <div className="welcome-leave-progress yellow-progress">
+                      <span style={{ width: "63%" }}></span>
                     </div>
 
                   </div>
@@ -955,30 +541,20 @@ function Welcome() {
 
               </div>
 
+              {/* BOTTOM */}
+              <div className="welcome-dashboard-bottom">
 
-              {/* =================================================
-                  BOTTOM
-              ================================================= */}
+                {/* ACTIVITY */}
+                <div className="welcome-activity-panel">
 
-              <div className="dashboard-bottom">
+                  <div className="welcome-panel-heading">
 
-
-                {/* PAYROLL ACTIVITY */}
-
-                <div className="activity-panel">
-
-                  <div className="panel-heading">
-
-                    <h3>
-                      Recent Payroll Activity
-                    </h3>
+                    <h3>Recent Payroll Activity</h3>
 
                     <button
                       type="button"
                       onClick={() =>
-                        scrollToSection(
-                          "modules-section"
-                        )
+                        scrollToSection("welcome-modules")
                       }
                     >
                       View all →
@@ -986,160 +562,81 @@ function Welcome() {
 
                   </div>
 
-
-                  <div className="activity-header">
-
-                    <span>
-                      Employee
-                    </span>
-
-                    <span>
-                      Department
-                    </span>
-
-                    <span>
-                      Gross Salary
-                    </span>
-
-                    <span>
-                      Net Salary
-                    </span>
-
-                    <span>
-                      Status
-                    </span>
-
+                  <div className="welcome-activity-header">
+                    <span>Employee</span>
+                    <span>Department</span>
+                    <span>Gross Salary</span>
+                    <span>Net Salary</span>
+                    <span>Status</span>
                   </div>
 
+                  <div className="welcome-activity-row">
 
-                  <div className="activity-row">
-
-                    <div className="employee-name">
-
-                      <div className="mini-avatar">
+                    <div className="welcome-employee-name">
+                      <div className="welcome-mini-avatar">
                         RV
                       </div>
-
                       Rahul Verma
-
                     </div>
 
-                    <span>
-                      Engineering
-                    </span>
-
-                    <span>
-                      ₹52,000
-                    </span>
-
-                    <span>
-                      ₹41,600
-                    </span>
-
-                    <b className="paid">
-                      PAID
-                    </b>
+                    <span>Engineering</span>
+                    <span>₹52,000</span>
+                    <span>₹41,600</span>
+                    <b className="welcome-paid">PAID</b>
 
                   </div>
 
+                  <div className="welcome-activity-row">
 
-                  <div className="activity-row">
-
-                    <div className="employee-name">
-
-                      <div className="mini-avatar purple-avatar">
+                    <div className="welcome-employee-name">
+                      <div className="welcome-mini-avatar">
                         PS
                       </div>
-
                       Priya Singh
-
                     </div>
 
-                    <span>
-                      Marketing
-                    </span>
-
-                    <span>
-                      ₹45,000
-                    </span>
-
-                    <span>
-                      ₹36,250
-                    </span>
-
-                    <b className="paid">
-                      PAID
-                    </b>
+                    <span>Marketing</span>
+                    <span>₹45,000</span>
+                    <span>₹36,250</span>
+                    <b className="welcome-paid">PAID</b>
 
                   </div>
 
+                  <div className="welcome-activity-row">
 
-                  <div className="activity-row">
-
-                    <div className="employee-name">
-
-                      <div className="mini-avatar orange-avatar">
+                    <div className="welcome-employee-name">
+                      <div className="welcome-mini-avatar">
                         AK
                       </div>
-
                       Amit Kumar
-
                     </div>
 
-                    <span>
-                      Sales
-                    </span>
-
-                    <span>
-                      ₹38,000
-                    </span>
-
-                    <span>
-                      ₹30,400
-                    </span>
-
-                    <b className="paid">
-                      PAID
-                    </b>
+                    <span>Sales</span>
+                    <span>₹38,000</span>
+                    <span>₹30,400</span>
+                    <b className="welcome-paid">PAID</b>
 
                   </div>
 
                 </div>
 
-
                 {/* PAYSLIP STATUS */}
+                <div className="welcome-payslip-panel">
 
-                <div className="payslip-panel">
+                  <h3>Payslip Status</h3>
 
-                  <h3>
-                    Payslip Status
-                  </h3>
-
-
-                  <div className="payslip-circle">
-
+                  <div className="welcome-payslip-circle">
                     <div>
-
-                      <strong>
-                        89%
-                      </strong>
-
-                      <span>
-                        generated
-                      </span>
-
+                      <strong>89%</strong>
+                      <span>generated</span>
                     </div>
-
                   </div>
 
-
-                  <strong className="payslip-count">
+                  <strong className="welcome-payslip-count">
                     114 / 128
                   </strong>
 
-                  <span>
-                    Payslips Generated
-                  </span>
+                  <span>Payslips Generated</span>
 
                 </div>
 
@@ -1153,102 +650,65 @@ function Welcome() {
 
       </main>
 
-
-      {/* =====================================================
-          SECURITY
-      ===================================================== */}
-
+      {/* SECURITY */}
       <section
-        className="info-section"
-        id="security-section"
+        className="welcome-info-section"
+        id="welcome-security"
       >
 
-        <div className="info-content">
+        <div className="welcome-info-content">
 
-          <span className="info-label">
+          <span className="welcome-info-label">
             SECURITY
           </span>
 
           <h2>
             Your HR data stays
-            <span>
-              {" "}protected.
-            </span>
+            <span> protected.</span>
           </h2>
 
           <p>
-            Built with secure authentication and
-            controlled access to protect employee,
-            salary and payroll information.
+            Built with secure authentication and controlled
+            access to protect employee, salary and payroll
+            information.
           </p>
 
+          <div className="welcome-info-cards">
 
-          <div className="info-cards">
-
-
-            <div className="info-card">
-
-              <div className="info-icon">
-                ✓
-              </div>
+            <div className="welcome-info-card">
+              <div className="welcome-info-icon">✓</div>
 
               <div>
-
-                <h3>
-                  JWT Authentication
-                </h3>
-
+                <h3>JWT Authentication</h3>
                 <p>
                   Secure authentication keeps your HR
                   application protected.
                 </p>
-
               </div>
-
             </div>
 
-
-            <div className="info-card">
-
-              <div className="info-icon">
-                ◆
-              </div>
+            <div className="welcome-info-card">
+              <div className="welcome-info-icon">◆</div>
 
               <div>
-
-                <h3>
-                  Role-Based Access
-                </h3>
-
+                <h3>Role-Based Access</h3>
                 <p>
-                  Control which users can access
-                  sensitive HR operations.
+                  Control which users can access sensitive
+                  HR operations.
                 </p>
-
               </div>
-
             </div>
 
-
-            <div className="info-card">
-
-              <div className="info-icon">
-                ▣
-              </div>
+            <div className="welcome-info-card">
+              <div className="welcome-info-icon">▣</div>
 
               <div>
-
-                <h3>
-                  Protected Payroll
-                </h3>
-
+                <h3>Protected Payroll</h3>
                 <p>
-                  Salary and payslip information is
-                  handled through protected APIs.
+                  Salary and payslip information is handled
+                  through protected APIs.
                 </p>
-
               </div>
-
             </div>
 
           </div>
@@ -1257,89 +717,50 @@ function Welcome() {
 
       </section>
 
-
-      {/* =====================================================
-          ABOUT
-      ===================================================== */}
-
+      {/* ABOUT */}
       <section
-        className="info-section about-section"
-        id="about-section"
+        className="welcome-info-section welcome-about-section"
+        id="welcome-about"
       >
 
-        <div className="info-content">
+        <div className="welcome-info-content">
 
-          <span className="info-label">
+          <span className="welcome-info-label">
             ABOUT HRM
           </span>
 
           <h2>
             One workspace for
-            <span>
-              {" "}modern HR.
-            </span>
+            <span> modern HR.</span>
           </h2>
 
           <p>
-            HRM Salary Structure &amp; Payslip Automation
-            brings salary configuration, leave management,
-            payroll processing and payslip delivery together
-            in one streamlined workspace.
+            HRM Salary Structure &amp; Payslip Automation brings
+            salary configuration, leave management, payroll
+            processing and payslip delivery together in one
+            streamlined workspace.
           </p>
 
-
-          <div className="about-stats">
-
+          <div className="welcome-about-stats">
 
             <div>
-
-              <strong>
-                01
-              </strong>
-
-              <span>
-                Salary Configuration
-              </span>
-
+              <strong>01</strong>
+              <span>Salary Configuration</span>
             </div>
 
-
             <div>
-
-              <strong>
-                02
-              </strong>
-
-              <span>
-                Leave Management
-              </span>
-
+              <strong>02</strong>
+              <span>Leave Management</span>
             </div>
 
-
             <div>
-
-              <strong>
-                03
-              </strong>
-
-              <span>
-                Payroll Processing
-              </span>
-
+              <strong>03</strong>
+              <span>Payroll Processing</span>
             </div>
 
-
             <div>
-
-              <strong>
-                04
-              </strong>
-
-              <span>
-                Payslip Automation
-              </span>
-
+              <strong>04</strong>
+              <span>Payslip Automation</span>
             </div>
 
           </div>
@@ -1348,64 +769,46 @@ function Welcome() {
 
       </section>
 
-
-      {/* =====================================================
-          CONTACT
-      ===================================================== */}
-
+      {/* CONTACT */}
       <section
-        className="contact-section"
-        id="contact-section"
+        className="welcome-contact-section"
+        id="welcome-contact"
       >
 
-        <div className="contact-content">
-
+        <div className="welcome-contact-content">
 
           <div>
 
-            <span className="info-label">
+            <span className="welcome-info-label">
               CONTACT
             </span>
 
             <h2>
               Ready to simplify
-              <span>
-                {" "}payroll?
-              </span>
+              <span> payroll?</span>
             </h2>
 
             <p>
-              Start using the HRM payroll workspace
-              and make salary and payslip management
-              simpler.
+              Start using the HRM payroll workspace and make
+              salary and payslip management simpler.
             </p>
 
           </div>
 
-
-          <div className="contact-actions">
-
+          <div className="welcome-contact-actions">
 
             <button
               type="button"
-              className="hero-primary"
-              onClick={() =>
-                navigate("/signup")
-              }
+              className="welcome-primary-button"
+              onClick={() => navigate("/signup")}
             >
-
               Get Started
-
-              <span>
-                →
-              </span>
-
+              <span>→</span>
             </button>
-
 
             <a
               href="mailto:hrm@example.com"
-              className="contact-email"
+              className="welcome-contact-email"
             >
               ✉ hrm@example.com
             </a>
@@ -1416,64 +819,42 @@ function Welcome() {
 
       </section>
 
-
-      {/* =====================================================
-          FEATURES
-      ===================================================== */}
-
+      {/* FEATURES */}
       <section
-        className="feature-section"
-        id="features-section"
+        className="welcome-feature-section"
+        id="welcome-features"
       >
 
-        {features.map(
-          (feature, index) => (
+        {features.map((feature, index) => (
 
-            <div
-              className="feature-item"
-              key={index}
-            >
+          <div
+            className="welcome-feature-item"
+            key={index}
+          >
 
-              <div className="feature-icon">
-                {feature.icon}
-              </div>
-
-              <div>
-
-                <h3>
-                  {feature.title}
-                </h3>
-
-                <p>
-                  {feature.text}
-                </p>
-
-              </div>
-
+            <div className="welcome-feature-icon">
+              {feature.icon}
             </div>
 
-          )
-        )}
+            <div>
+              <h3>{feature.title}</h3>
+              <p>{feature.text}</p>
+            </div>
+
+          </div>
+
+        ))}
 
       </section>
 
-
-      {/* =====================================================
-          FOOTER
-      ===================================================== */}
-
-      <footer className="home-footer">
+      {/* FOOTER */}
+      <footer className="welcome-footer">
 
         <div>
-
-          <strong>
-            HRM
-          </strong>
-
+          <strong>HRM</strong>
           <span>
             Salary Structure &amp; Payslip Automation
           </span>
-
         </div>
 
         <span>
@@ -1485,6 +866,5 @@ function Welcome() {
     </div>
   );
 }
-
 
 export default Welcome;

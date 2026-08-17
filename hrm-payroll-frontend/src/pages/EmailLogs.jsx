@@ -3,15 +3,37 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/EmailLogs.css";
 
+
 function EmailLogs() {
 
     const navigate = useNavigate();
 
+
+    // =====================================================
+    // STATE
+    // =====================================================
+
     const [logs, setLogs] = useState([]);
+
     const [loading, setLoading] = useState(true);
+
     const [error, setError] = useState("");
 
-    const token = localStorage.getItem("token");
+    const [successMessage, setSuccessMessage] = useState("");
+
+    const [retryingId, setRetryingId] = useState(null);
+
+    // Selected technical error for popup
+    const [selectedError, setSelectedError] = useState(null);
+
+
+    // =====================================================
+    // AUTH
+    // =====================================================
+
+    const token =
+        localStorage.getItem("token");
+
 
     const authConfig = {
         headers: {
@@ -28,15 +50,21 @@ function EmailLogs() {
 
         try {
 
-            setLoading(true);
             setError("");
 
-            const response = await axios.get(
-                "http://localhost:8090/api/email-logs",
-                authConfig
+            const response =
+                await axios.get(
+                    "http://localhost:8090/api/email-logs",
+                    authConfig
+                );
+
+
+            setLogs(
+                Array.isArray(response.data)
+                    ? response.data
+                    : []
             );
 
-            setLogs(response.data);
 
         } catch (err) {
 
@@ -45,19 +73,23 @@ function EmailLogs() {
                 err
             );
 
-            if (err.response?.status === 401) {
+
+            if (
+                err.response?.status === 401
+            ) {
 
                 localStorage.clear();
 
                 navigate("/login");
 
-            } else {
-
-                setError(
-                    err.response?.data?.message ||
-                    "Unable to load email logs."
-                );
+                return;
             }
+
+
+            setError(
+                err.response?.data?.message ||
+                "Unable to load email logs."
+            );
 
         } finally {
 
@@ -67,25 +99,46 @@ function EmailLogs() {
 
 
     // =====================================================
-    // RETRY EMAIL
+    // RETRY EMAIL MANUALLY
     // =====================================================
 
     const retryEmail = async (id) => {
 
         try {
 
+            setError("");
+
+            setSuccessMessage("");
+
+            setRetryingId(id);
+
+
             await axios.post(
+
                 `http://localhost:8090/api/email-logs/${id}/retry`,
+
                 {},
+
                 authConfig
             );
 
-            alert(
-                "Payslip email sent successfully"
+
+            // Refresh immediately
+            await fetchLogs();
+
+
+            setSuccessMessage(
+                "Email retry process completed."
             );
 
-            // Refresh email logs
-            fetchLogs();
+
+            // Remove success message after 4 seconds
+            setTimeout(() => {
+
+                setSuccessMessage("");
+
+            }, 4000);
+
 
         } catch (err) {
 
@@ -94,26 +147,35 @@ function EmailLogs() {
                 err
             );
 
-            if (err.response?.status === 401) {
+
+            if (
+                err.response?.status === 401
+            ) {
 
                 localStorage.clear();
 
                 navigate("/login");
 
-            } else {
-
-                alert(
-                    err.response?.data ||
-                    err.response?.data?.message ||
-                    "Failed to retry email."
-                );
+                return;
             }
+
+
+            setError(
+                err.response?.data?.message ||
+                err.response?.data ||
+                "Failed to retry email."
+            );
+
+
+        } finally {
+
+            setRetryingId(null);
         }
     };
 
 
     // =====================================================
-    // LOAD EMAIL LOGS
+    // INITIAL LOAD + AUTOMATIC REFRESH
     // =====================================================
 
     useEffect(() => {
@@ -125,7 +187,32 @@ function EmailLogs() {
             return;
         }
 
+
         fetchLogs();
+
+
+        /*
+         * Refresh every 10 seconds.
+         *
+         * This allows HR to see automatic
+         * retry count/status changes.
+         */
+
+        const refreshInterval =
+            setInterval(() => {
+
+                fetchLogs();
+
+            }, 10000);
+
+
+        return () => {
+
+            clearInterval(
+                refreshInterval
+            );
+
+        };
 
     }, []);
 
@@ -141,6 +228,7 @@ function EmailLogs() {
             return "-";
         }
 
+
         return new Date(date).toLocaleString(
             "en-IN",
             {
@@ -155,16 +243,59 @@ function EmailLogs() {
 
 
     // =====================================================
-    // LOGOUT
+    // STATUS CLASS
     // =====================================================
 
-    const handleLogout = () => {
+    const getStatusClass = (status) => {
 
-        localStorage.removeItem("token");
-        localStorage.removeItem("username");
-        localStorage.removeItem("role");
+        if (
+            status?.toUpperCase() === "SENT"
+        ) {
 
-        navigate("/login");
+            return "email-log-status sent";
+        }
+
+
+        return "email-log-status failed";
+    };
+
+
+    // =====================================================
+    // GET ERROR MESSAGE
+    // =====================================================
+
+    const getErrorMessage = (log) => {
+
+        if (
+            log.status?.toUpperCase() !== "FAILED"
+        ) {
+
+            return "-";
+        }
+
+
+        return (
+            log.errorMessage ||
+            "Email delivery failed."
+        );
+    };
+
+
+    // =====================================================
+    // RETRY BUTTON TEXT
+    // =====================================================
+
+    const getRetryButtonText = (log) => {
+
+        if (
+            retryingId === log.id
+        ) {
+
+            return "Retrying...";
+        }
+
+
+        return "Retry Now";
     };
 
 
@@ -176,234 +307,17 @@ function EmailLogs() {
 
         <div className="email-logs-page">
 
-            {/* =================================================
-                SIDEBAR
-            ================================================= */}
-
-            <aside className="email-logs-sidebar">
-
-                <div className="email-logs-brand">
-
-                    <div className="email-logs-logo">
-                        H
-                    </div>
-
-                    <div>
-
-                        <div className="email-logs-brand-name">
-                            HRM
-                        </div>
-
-                        <div className="email-logs-brand-subtitle">
-                            PAYROLL
-                            <br />
-                            AUTOMATION
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <nav className="email-logs-navigation">
-
-                    <button
-                        className="email-logs-menu-item"
-                        onClick={() =>
-                            navigate("/dashboard")
-                        }
-                    >
-                        <span className="email-logs-menu-icon">
-                            ⌂
-                        </span>
-
-                        Dashboard
-
-                    </button>
-
-
-                    <button
-                        className="email-logs-menu-item"
-                        onClick={() =>
-                            navigate("/employees")
-                        }
-                    >
-                        <span className="email-logs-menu-icon">
-                            ♙
-                        </span>
-
-                        Employees
-
-                    </button>
-
-
-                    <button
-                        className="email-logs-menu-item"
-                        onClick={() =>
-                            navigate("/salary-structures")
-                        }
-                    >
-                        <span className="email-logs-menu-icon">
-                            ₹
-                        </span>
-
-                        Salary Structures
-
-                    </button>
-
-
-                    <button
-                        className="email-logs-menu-item"
-                        onClick={() =>
-                            navigate("/leave-management")
-                        }
-                    >
-                        <span className="email-logs-menu-icon">
-                            ◷
-                        </span>
-
-                        Leave Management
-
-                    </button>
-
-
-                    <button
-                        className="email-logs-menu-item"
-                        onClick={() =>
-                            navigate("/payroll")
-                        }
-                    >
-                        <span className="email-logs-menu-icon">
-                            ▣
-                        </span>
-
-                        Payroll
-
-                    </button>
-
-
-                    <button
-                        className="email-logs-menu-item"
-                        onClick={() =>
-                            navigate("/payslips")
-                        }
-                    >
-                        <span className="email-logs-menu-icon">
-                            ▤
-                        </span>
-
-                        Payslips
-
-                    </button>
-
-
-                    <button
-                        className="email-logs-menu-item active"
-                        onClick={() =>
-                            navigate("/email-logs")
-                        }
-                    >
-                        <span className="email-logs-menu-icon">
-                            ✉
-                        </span>
-
-                        Email Logs
-
-                    </button>
-
-
-                    <button
-                        className="email-logs-menu-item"
-                        onClick={() =>
-                            navigate("/reports")
-                        }
-                    >
-                        <span className="email-logs-menu-icon">
-                            ▥
-                        </span>
-
-                        Reports
-
-                    </button>
-
-
-                    <button
-                        className="email-logs-menu-item"
-                        onClick={() =>
-                            navigate("/settings")
-                        }
-                    >
-                        <span className="email-logs-menu-icon">
-                            ⚙
-                        </span>
-
-                        Settings
-
-                    </button>
-
-                </nav>
-
-
-                {/* =================================================
-                    USER
-                ================================================= */}
-
-                <div className="email-logs-sidebar-footer">
-
-                    <div className="email-logs-user">
-
-                        <div className="email-logs-user-avatar">
-
-                            {(
-                                localStorage.getItem(
-                                    "username"
-                                ) || "A"
-                            )
-                                .charAt(0)
-                                .toUpperCase()}
-
-                        </div>
-
-                        <div>
-
-                            <div className="email-logs-user-name">
-
-                                {localStorage.getItem(
-                                    "username"
-                                ) || "Admin"}
-
-                            </div>
-
-                            <div className="email-logs-user-role">
-
-                                {localStorage.getItem(
-                                    "role"
-                                ) || "HR"}
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <button
-                        className="email-logs-logout"
-                        onClick={handleLogout}
-                    >
-                        ↪ Logout
-                    </button>
-
-                </div>
-
-            </aside>
-
 
             {/* =================================================
                 MAIN
             ================================================= */}
 
             <div className="email-logs-main">
+
+
+                {/* =================================================
+                    TOP BAR
+                ================================================= */}
 
                 <header className="email-logs-topbar">
 
@@ -413,9 +327,11 @@ function EmailLogs() {
                             HR WORKSPACE
                         </div>
 
+
                         <h1>
                             Email Logs
                         </h1>
+
 
                         <p>
                             Track automatic payslip email delivery.
@@ -426,7 +342,16 @@ function EmailLogs() {
                 </header>
 
 
+                {/* =================================================
+                    CONTENT
+                ================================================= */}
+
                 <main className="email-logs-content">
+
+
+                    {/* =================================================
+                        SECTION HEADER
+                    ================================================= */}
 
                     <div className="email-logs-section-header">
 
@@ -436,9 +361,11 @@ function EmailLogs() {
                                 EMAIL DELIVERY
                             </div>
 
+
                             <h2>
                                 Email Activity
                             </h2>
+
 
                             <p>
                                 Latest email activity appears first.
@@ -453,6 +380,7 @@ function EmailLogs() {
                                 Total Emails:
                             </span>
 
+
                             <strong>
                                 {logs.length}
                             </strong>
@@ -462,28 +390,146 @@ function EmailLogs() {
                     </div>
 
 
-                    {/* ERROR */}
+                    {/* =================================================
+                        ERROR
+                    ================================================= */}
 
                     {error && (
 
                         <div className="email-logs-error">
+
                             {error}
+
                         </div>
 
                     )}
 
 
-                    {/* LOADING */}
+                    {/* =================================================
+                        SUCCESS
+                    ================================================= */}
+
+                    {successMessage && (
+
+                        <div className="email-logs-success">
+
+                            {successMessage}
+
+                        </div>
+
+                    )}
+
+
+                    {/* =================================================
+                        ERROR MODAL
+                    ================================================= */}
+
+                    {selectedError && (
+
+                        <div
+                            className="email-error-modal-overlay"
+                            onClick={() =>
+                                setSelectedError(null)
+                            }
+                        >
+
+                            <div
+                                className="email-error-modal"
+                                onClick={(event) =>
+                                    event.stopPropagation()
+                                }
+                            >
+
+
+                                {/* =================================================
+                                    MODAL HEADER
+                                ================================================= */}
+
+                                <div className="email-error-modal-header">
+
+                                    <h3>
+                                        Email Delivery Error
+                                    </h3>
+
+
+                                    <button
+                                        type="button"
+                                        className="email-error-close-button"
+                                        onClick={() =>
+                                            setSelectedError(null)
+                                        }
+                                    >
+                                        ×
+                                    </button>
+
+                                </div>
+
+
+                                {/* =================================================
+                                    MODAL BODY
+                                ================================================= */}
+
+                                <div className="email-error-modal-body">
+
+                                    <p className="email-error-label">
+                                        Technical Error
+                                    </p>
+
+
+                                    <div className="email-error-full-message">
+
+                                        {selectedError}
+
+                                    </div>
+
+                                </div>
+
+
+                                {/* =================================================
+                                    MODAL FOOTER
+                                ================================================= */}
+
+                                <div className="email-error-modal-footer">
+
+                                    <button
+                                        type="button"
+                                        className="email-error-close"
+                                        onClick={() =>
+                                            setSelectedError(null)
+                                        }
+                                    >
+                                        Close
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    )}
+
+
+                    {/* =================================================
+                        LOADING
+                    ================================================= */}
 
                     {loading ? (
 
                         <div className="email-logs-loading">
+
                             Loading email logs...
+
                         </div>
 
                     ) : (
 
                         <section className="email-logs-card">
+
+
+                            {/* =================================================
+                                CARD HEADER
+                            ================================================= */}
 
                             <div className="email-logs-card-heading">
 
@@ -493,18 +539,40 @@ function EmailLogs() {
                                         Payslip Email History
                                     </h3>
 
+
                                     <p>
                                         Automatic email delivery records.
                                     </p>
 
                                 </div>
 
+
+                                <div className="email-logs-live">
+
+                                    <span
+                                        className="email-logs-live-dot"
+                                    ></span>
+
+
+                                    Auto Refresh: 10s
+
+                                </div>
+
                             </div>
 
+
+                            {/* =================================================
+                                TABLE
+                            ================================================= */}
 
                             <div className="email-logs-table-wrapper">
 
                                 <table className="email-logs-table">
+
+
+                                    {/* =================================================
+                                        HEADER
+                                    ================================================= */}
 
                                     <thead>
 
@@ -514,25 +582,36 @@ function EmailLogs() {
                                                 Employee
                                             </th>
 
+
                                             <th>
                                                 Email
                                             </th>
+
 
                                             <th>
                                                 Pay Month
                                             </th>
 
+
                                             <th>
                                                 Payslip
                                             </th>
+
 
                                             <th>
                                                 Status
                                             </th>
 
+
+                                            <th>
+                                                Error Message
+                                            </th>
+
+
                                             <th>
                                                 Sent At
                                             </th>
+
 
                                             <th>
                                                 Retry
@@ -543,6 +622,10 @@ function EmailLogs() {
                                     </thead>
 
 
+                                    {/* =================================================
+                                        BODY
+                                    ================================================= */}
+
                                     <tbody>
 
                                         {logs.length === 0 ? (
@@ -550,10 +633,12 @@ function EmailLogs() {
                                             <tr>
 
                                                 <td
-                                                    colSpan="7"
+                                                    colSpan="8"
                                                     className="email-logs-empty"
                                                 >
+
                                                     No email logs found.
+
                                                 </td>
 
                                             </tr>
@@ -567,19 +652,29 @@ function EmailLogs() {
                                                         key={log.id}
                                                     >
 
-                                                        {/* EMPLOYEE */}
+
+                                                        {/* =================================================
+                                                            EMPLOYEE
+                                                        ================================================= */}
 
                                                         <td>
 
-                                                            <div className="email-logs-employee">
+                                                            <div
+                                                                className="email-logs-employee"
+                                                            >
 
-                                                                <div className="email-logs-employee-code">
+                                                                <div
+                                                                    className="email-logs-employee-code"
+                                                                >
 
                                                                     {log.employeeCode}
 
                                                                 </div>
 
-                                                                <div className="email-logs-employee-name">
+
+                                                                <div
+                                                                    className="email-logs-employee-name"
+                                                                >
 
                                                                     {log.employeeName}
 
@@ -590,79 +685,192 @@ function EmailLogs() {
                                                         </td>
 
 
-                                                        {/* EMAIL */}
+                                                        {/* =================================================
+                                                            EMAIL
+                                                        ================================================= */}
 
                                                         <td>
+
                                                             {log.email}
+
                                                         </td>
 
 
-                                                        {/* PAY MONTH */}
+                                                        {/* =================================================
+                                                            PAY MONTH
+                                                        ================================================= */}
 
                                                         <td>
+
                                                             {log.payPeriod || "-"}
+
                                                         </td>
 
 
-                                                        {/* PAYSLIP */}
+                                                        {/* =================================================
+                                                            PAYSLIP
+                                                        ================================================= */}
 
                                                         <td>
+
                                                             #{log.payslipId}
+
                                                         </td>
 
 
-                                                        {/* STATUS */}
+                                                        {/* =================================================
+                                                            STATUS
+                                                        ================================================= */}
 
                                                         <td>
 
                                                             <span
                                                                 className={
-                                                                    log.status === "SENT"
-                                                                        ? "email-log-status sent"
-                                                                        : "email-log-status failed"
+                                                                    getStatusClass(
+                                                                        log.status
+                                                                    )
                                                                 }
                                                             >
+
                                                                 {log.status}
+
                                                             </span>
 
                                                         </td>
 
 
-                                                        {/* SENT AT */}
-
-                                                        <td>
-                                                            {formatDate(
-                                                                log.sentAt
-                                                            )}
-                                                        </td>
-
-
-                                                        {/* RETRY */}
+                                                        {/* =================================================
+                                                            ERROR MESSAGE
+                                                        ================================================= */}
 
                                                         <td>
 
-                                                            <div className="email-logs-retry">
+                                                            {log.status?.toUpperCase() === "FAILED" ? (
 
-                                                                <span>
-                                                                    {log.retryCount ?? 0}
-                                                                </span>
+                                                                <div
+                                                                    className="email-logs-error-message"
+                                                                >
 
+                                                                    <div
+                                                                        className="email-logs-error-preview"
+                                                                    >
 
-                                                                {log.status === "FAILED" && (
+                                                                        Email delivery failed.
+
+                                                                    </div>
+
 
                                                                     <button
                                                                         type="button"
-                                                                        className="email-logs-retry-button"
+                                                                        className="email-logs-view-error-button"
                                                                         onClick={() =>
-                                                                            retryEmail(
-                                                                                log.id
+                                                                            setSelectedError(
+                                                                                getErrorMessage(
+                                                                                    log
+                                                                                )
                                                                             )
                                                                         }
                                                                     >
-                                                                        Retry
+
+                                                                        View Error
+
                                                                     </button>
 
-                                                                )}
+                                                                </div>
+
+                                                            ) : (
+
+                                                                <span
+                                                                    className="email-logs-no-error"
+                                                                >
+                                                                    -
+                                                                </span>
+
+                                                            )}
+
+                                                        </td>
+
+
+                                                        {/* =================================================
+                                                            SENT AT
+                                                        ================================================= */}
+
+                                                        <td>
+
+                                                            {formatDate(
+                                                                log.sentAt
+                                                            )}
+
+                                                        </td>
+
+
+                                                        {/* =================================================
+                                                            RETRY
+                                                        ================================================= */}
+
+                                                        <td>
+
+                                                            <div
+                                                                className="email-logs-retry"
+                                                            >
+
+
+                                                                {/* RETRY COUNT */}
+
+                                                                <span>
+
+                                                                    {log.retryCount ?? 0}
+
+                                                                    {" / 3"}
+
+                                                                </span>
+
+
+                                                                {/* RETRY BUTTON */}
+
+                                                                {log.status?.toUpperCase() === "FAILED"
+                                                                    &&
+                                                                    (log.retryCount ?? 0) < 3
+                                                                    && (
+
+                                                                        <button
+                                                                            type="button"
+                                                                            className="email-logs-retry-button"
+                                                                            onClick={() =>
+                                                                                retryEmail(
+                                                                                    log.id
+                                                                                )
+                                                                            }
+                                                                            disabled={
+                                                                                retryingId === log.id
+                                                                            }
+                                                                        >
+
+                                                                            {getRetryButtonText(
+                                                                                log
+                                                                            )}
+
+                                                                        </button>
+
+                                                                    )}
+
+
+                                                                {/* MAX RETRIES */}
+
+                                                                {log.status?.toUpperCase() === "FAILED"
+                                                                    &&
+                                                                    (log.retryCount ?? 0) >= 3
+                                                                    && (
+
+                                                                        <span
+                                                                            className="email-logs-max-retries"
+                                                                        >
+
+                                                                            Max retries reached
+
+                                                                        </span>
+
+                                                                    )}
 
                                                             </div>
 
@@ -689,8 +897,11 @@ function EmailLogs() {
 
             </div>
 
+
         </div>
+
     );
 }
+
 
 export default EmailLogs;

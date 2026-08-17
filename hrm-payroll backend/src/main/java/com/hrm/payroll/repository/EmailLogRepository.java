@@ -12,4 +12,9 @@ public interface EmailLogRepository
     Optional<EmailLog> findByPayslipId(Long payslipId);
 
     List<EmailLog> findAllByOrderBySentAtDesc();
+
+    List<EmailLog> findByStatusAndRetryCountLessThan(
+            String status,
+            Integer retryCount
+    );
 }

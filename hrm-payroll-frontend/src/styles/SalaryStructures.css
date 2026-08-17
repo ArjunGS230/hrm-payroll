@@ -1827,3 +1827,120 @@
         width: 100%;
     }
 }
+
+/* =====================================================
+   FINAL LAYOUT FIX
+   SalaryStructures uses the shared application Layout.
+   Do NOT render another sidebar inside this page.
+===================================================== */
+
+.salary-page {
+    width: 100%;
+    min-height: 100vh;
+    display: block;
+    background: #f5f7fb;
+    color: #172033;
+    box-sizing: border-box;
+}
+
+.salary-main {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.salary-topbar,
+.salary-content {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* These rules are intentionally removed from the page at runtime:
+   the common Layout owns the sidebar/navigation. */
+.salary-page > .salary-sidebar {
+    display: none !important;
+}
+
+@media (max-width: 900px) {
+    .salary-content {
+        padding: 28px 24px 40px;
+    }
+
+    .salary-topbar {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+
+@media (max-width: 650px) {
+    .salary-content {
+        padding: 22px 16px 35px;
+    }
+
+    .salary-topbar {
+        padding: 22px 16px;
+    }
+}
+/* =====================================================
+   FINAL SALARY PAGE WIDTH FIX
+   ===================================================== */
+
+/* Salary page must occupy the complete Layout main area */
+.salary-page {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 100vh !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+
+    background: #f5f7fb;
+}
+
+/* Main salary content starts immediately after
+   the common HRM sidebar */
+.salary-main {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+}
+
+/* Top section uses complete available width */
+.salary-topbar {
+    width: 100% !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+    box-sizing: border-box !important;
+
+    padding: 27px 42px 22px !important;
+}
+
+/* Main salary content */
+.salary-content {
+    width: 100% !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+    box-sizing: border-box !important;
+
+    padding: 34px 42px 50px !important;
+}
+
+/* Salary table should use available width */
+.salary-table-card {
+    width: 100% !important;
+    max-width: none !important;
+
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+
+    box-sizing: border-box !important;
+}

@@ -34,9 +34,11 @@ public class EmailLog {
 
     @Column(name = "sent_at")
     private LocalDateTime sentAt;
-
-    @Column(name = "error_message")
-    private String errorMessage;
+    @Column(
+    	    name = "error_message",
+    	    columnDefinition = "TEXT"
+    	)
+    	private String errorMessage;
 
     @Column(name = "retry_count")
     private Integer retryCount = 0;

@@ -1,0 +1,402 @@
+/* =========================================================
+   COMMON HRM LAYOUT
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  font-family: "Inter", Arial, sans-serif;
+  background: #f5f7fb;
+  color: #14213d;
+}
+
+/* =========================================================
+   MAIN LAYOUT
+   ========================================================= */
+
+.app-layout {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  background: #f5f7fb;
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.app-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 333px;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #07101d;
+  color: white;
+
+  padding: 28px 16px 18px;
+
+  border-right: 1px solid #182234;
+
+  z-index: 1000;
+
+  overflow: hidden;
+}
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+.app-brand {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 0 8px 20px;
+
+  border-bottom: 1px solid #1b2638;
+
+  flex-shrink: 0;
+}
+
+.app-brand-logo {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: #4178f4;
+
+  color: white;
+
+  font-size: 22px;
+  font-weight: 700;
+
+  box-shadow: 0 8px 22px rgba(65, 120, 244, 0.25);
+}
+
+.app-brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-brand-text strong {
+  font-size: 20px;
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+.app-brand-text span {
+  margin-top: 5px;
+
+  color: #7890b1;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  letter-spacing: 1.6px;
+}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.app-navigation {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+
+  margin-top: 24px;
+
+  flex: 1;
+
+  min-height: 0;
+}
+
+.app-menu-item {
+  width: 100%;
+  height: 48px;
+  min-height: 48px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+
+  padding: 0 20px;
+
+  border: none;
+  border-radius: 9px;
+
+  background: transparent;
+
+  color: #b8c8df;
+
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 500;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.app-menu-item:hover {
+  background: rgba(76, 126, 247, 0.10);
+  color: white;
+
+  transform: translateX(2px);
+}
+
+.app-menu-item.active {
+  background: #1d3c78;
+
+  color: white;
+
+  box-shadow:
+    inset 3px 0 0 #4c7fff;
+}
+
+.app-menu-icon {
+  width: 20px;
+  min-width: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #7fa4e7;
+
+  font-size: 15px;
+}
+
+.app-menu-item.active .app-menu-icon {
+  color: #70a0ff;
+}
+
+.app-menu-text {
+  white-space: nowrap;
+}
+
+/* =========================================================
+   SIDEBAR FOOTER
+   ========================================================= */
+
+.app-sidebar-footer {
+  flex-shrink: 0;
+
+  border-top: 1px solid #1b2638;
+
+  padding-top: 14px;
+}
+
+.app-user {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 0 7px;
+}
+
+.app-avatar {
+  width: 40px;
+  height: 40px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #18346f;
+
+  color: #71a0ff;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.app-user-info {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.app-user-info strong {
+  color: white;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.app-user-info span {
+  margin-top: 3px;
+
+  color: #7f94b2;
+
+  font-size: 12px;
+}
+
+.app-logout {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: 10px;
+
+  padding: 8px 8px;
+
+  border: none;
+
+  background: transparent;
+
+  color: #83a5d6;
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.app-logout:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.04);
+
+  border-radius: 7px;
+}
+
+.app-logout span {
+  font-size: 17px;
+}
+
+/* =========================================================
+   MAIN AREA
+   ========================================================= */
+
+.app-main {
+  width: calc(100% - 333px);
+  min-height: 100vh;
+
+  margin-left: 333px;
+  padding: 0;
+
+  background: #f5f7fb;
+
+  overflow-x: hidden;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+  .app-sidebar {
+    width: 270px;
+  }
+
+  .app-main {
+    width: calc(100% - 270px);
+    margin-left: 270px;
+  }
+}
+
+@media (max-width: 900px) {
+  .app-sidebar {
+    width: 230px;
+  }
+
+  .app-main {
+    width: calc(100% - 230px);
+    margin-left: 230px;
+  }
+
+  .app-menu-item {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 650px) {
+  .app-sidebar {
+    width: 210px;
+  }
+
+  .app-main {
+    width: calc(100% - 210px);
+    margin-left: 210px;
+  }
+
+  .app-menu-item {
+    padding-left: 14px;
+    padding-right: 10px;
+  }
+}
+.app-layout {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.app-sidebar {
+  width: 290px;
+  min-width: 290px;
+  height: 100vh;
+
+  position: fixed;
+  left: 0;
+  top: 0;
+
+  background: #07101e;
+}
+
+.app-main {
+  width: calc(100% - 290px);
+  min-width: 0;
+
+  margin-left: 290px;
+  padding: 0;
+
+  min-height: 100vh;
+
+  box-sizing: border-box;
+}

@@ -1,0 +1,214 @@
+.leave-report-page {
+  min-height: 100vh;
+  padding: 36px 44px;
+  background: #f5f7fb;
+  color: #17233d;
+}
+
+.leave-report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+
+.leave-report-header span {
+  color: #3569e8;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.leave-report-header h1 {
+  margin: 6px 0;
+  font-size: 32px;
+}
+
+.leave-report-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 15px;
+}
+
+.leave-report-header button,
+.leave-report-card-header button {
+  border: 1px solid #d9e1ef;
+  background: white;
+  color: #31548f;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.leave-report-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.leave-report-summary-card {
+  background: white;
+  border: 1px solid #e0e6f0;
+  border-radius: 14px;
+  padding: 22px;
+}
+
+.leave-report-summary-card span {
+  display: block;
+  color: #64748b;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.leave-report-summary-card strong {
+  font-size: 25px;
+}
+
+.leave-report-total-days {
+  background: white;
+  border: 1px solid #e0e6f0;
+  border-radius: 14px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.leave-report-total-days span {
+  color: #64748b;
+}
+
+.leave-report-total-days strong {
+  font-size: 22px;
+}
+
+.leave-report-card {
+  background: white;
+  border: 1px solid #e0e6f0;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.leave-report-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 24px;
+  border-bottom: 1px solid #e8edf5;
+}
+
+.leave-report-card-header h2 {
+  margin: 0 0 5px;
+  font-size: 20px;
+}
+
+.leave-report-card-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.leave-report-table-wrapper {
+  overflow-x: auto;
+}
+
+.leave-report-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leave-report-table th {
+  background: #f8faff;
+  color: #60708d;
+  font-size: 12px;
+  text-align: left;
+  padding: 16px;
+  white-space: nowrap;
+}
+
+.leave-report-table td {
+  padding: 16px;
+  border-top: 1px solid #edf1f6;
+  font-size: 14px;
+}
+
+.leave-report-table td strong {
+  display: block;
+}
+
+.leave-report-table td small {
+  display: block;
+  margin-top: 4px;
+  color: #8290a8;
+}
+
+.leave-report-reason {
+  max-width: 220px;
+  color: #52627d;
+}
+
+.leave-report-status {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.leave-report-status.approved {
+  background: #e9f8ef;
+  color: #16834b;
+}
+
+.leave-report-status.pending {
+  background: #fff7e6;
+  color: #b7791f;
+}
+
+.leave-report-status.rejected {
+  background: #fff1f2;
+  color: #be123c;
+}
+
+.leave-report-loading {
+  padding: 50px;
+  text-align: center;
+  color: #64748b;
+}
+
+.leave-report-empty {
+  text-align: center;
+  color: #64748b;
+  padding: 45px !important;
+}
+
+.leave-report-error {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #be123c;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 900px) {
+  .leave-report-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .leave-report-page {
+    padding: 25px;
+  }
+}
+
+@media (max-width: 600px) {
+  .leave-report-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .leave-report-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

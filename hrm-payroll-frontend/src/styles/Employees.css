@@ -3,11 +3,13 @@
 ========================================================= */
 
 .employees-page {
-  min-height: 100vh;
   width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 
   background: #f5f7fb;
-
   color: #273247;
 
   font-family:
@@ -20,331 +22,18 @@
 
 
 /* =========================================================
-   SIDEBAR
-========================================================= */
-
-.employees-sidebar {
-  position: fixed;
-
-  top: 0;
-  left: 0;
-  bottom: 0;
-
-  width: 220px;
-
-  display: flex;
-  flex-direction: column;
-
-  padding: 24px 14px;
-
-  background: #07101d;
-
-  border-right: 1px solid
-    rgba(255, 255, 255, 0.06);
-
-  z-index: 100;
-}
-
-
-/* BRAND */
-
-.employees-brand {
-  display: flex;
-
-  align-items: center;
-
-  gap: 11px;
-
-  padding: 2px 8px 22px;
-
-  border-bottom: 1px solid
-    rgba(255, 255, 255, 0.07);
-}
-
-
-.employees-logo {
-  width: 39px;
-  height: 39px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 9px;
-
-  background:
-    linear-gradient(
-      145deg,
-      #5b86ff,
-      #315bd0
-    );
-
-  color: white;
-
-  font-size: 16px;
-
-  font-weight: 800;
-
-  box-shadow:
-    0 10px 25px
-    rgba(71, 119, 255, 0.2);
-}
-
-
-.employees-brand strong {
-  display: block;
-
-  color: #f5f7fb;
-
-  font-size: 15px;
-
-  font-weight: 800;
-}
-
-
-.employees-brand span {
-  display: block;
-
-  margin-top: 2px;
-
-  color: #657187;
-
-  font-size: 7px;
-
-  font-weight: 800;
-
-  letter-spacing: 1.5px;
-}
-
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
-.employees-nav {
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 4px;
-
-  margin-top: 22px;
-}
-
-
-.employees-nav button {
-  width: 100%;
-
-  min-height: 42px;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 12px;
-
-  padding: 0 12px;
-
-  border: none;
-
-  border-radius: 8px;
-
-  background: transparent;
-
-  color: #aebbd0;
-
-  font-family: inherit;
-
-  font-size: 12px;
-
-  font-weight: 650;
-
-  text-align: left;
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
-}
-
-
-.employees-nav button span {
-  width: 20px;
-
-  min-width: 20px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  color: #7f8da3;
-
-  font-size: 16px;
-}
-
-
-.employees-nav button:hover {
-  background:
-    rgba(71, 119, 255, 0.08);
-
-  color: white;
-}
-
-
-.employees-nav button:hover span {
-  color: #6d91ff;
-}
-
-
-.employees-nav button.active {
-  background:
-    linear-gradient(
-      90deg,
-      rgba(71, 119, 255, 0.22),
-      rgba(71, 119, 255, 0.07)
-    );
-
-  color: white;
-}
-
-
-.employees-nav button.active span {
-  color: #6e91ff;
-}
-
-
-/* =========================================================
-   SIDEBAR FOOTER
-========================================================= */
-
-.employees-sidebar-footer {
-  margin-top: auto;
-
-  padding-top: 16px;
-
-  border-top: 1px solid
-    rgba(255, 255, 255, 0.07);
-}
-
-
-.employees-user {
-  display: flex;
-
-  align-items: center;
-
-  gap: 9px;
-
-  padding: 5px 5px 12px;
-}
-
-
-.employees-avatar {
-  width: 32px;
-  height: 32px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  flex-shrink: 0;
-
-  border-radius: 50%;
-
-  background: #18243a;
-
-  color: #7da0ff;
-
-  font-size: 11px;
-
-  font-weight: 800;
-}
-
-
-.employees-user strong {
-  display: block;
-
-  color: #dbe2ec;
-
-  font-size: 10px;
-}
-
-
-.employees-user span {
-  display: block;
-
-  margin-top: 2px;
-
-  color: #69778b;
-
-  font-size: 8px;
-
-  font-weight: 700;
-
-  letter-spacing: 0.8px;
-}
-
-
-.employees-logout {
-  width: 100%;
-
-  height: 39px;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  gap: 8px;
-
-  border: 1px solid
-    rgba(255, 255, 255, 0.07);
-
-  border-radius: 7px;
-
-  background: transparent;
-
-  color: #8c98aa;
-
-  font-family: inherit;
-
-  font-size: 10px;
-
-  cursor: pointer;
-}
-
-
-.employees-logout:hover {
-  color: #ff8d8d;
-
-  border-color:
-    rgba(255, 100, 100, 0.2);
-
-  background:
-    rgba(255, 80, 80, 0.05);
-}
-
-
-/* =========================================================
    MAIN
 ========================================================= */
 
 .employees-main {
-  width: calc(100% - 220px);
-
+  width: 100%;
   min-height: 100vh;
 
-  margin-left: 220px;
-
-  padding: 0 42px 55px;
+  margin: 0;
+  padding: 42px 30px 55px;
 
   box-sizing: border-box;
 }
-
 
 /* =========================================================
    HEADER
@@ -354,22 +43,20 @@
   min-height: 125px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
 
   gap: 25px;
 
-  border-bottom: 1px solid #e4e8ef;
+  border-bottom:
+    1px solid #e4e8ef;
 }
 
 
 .employees-overline {
   color: #6688ff;
 
-  font-size: 9px;
-
+  font-size: 11px;
   font-weight: 800;
 
   letter-spacing: 1.7px;
@@ -379,9 +66,10 @@
 .employees-header h1 {
   margin: 7px 0 0;
 
-  color: #263247;
+  color: #172033;
 
-  font-size: 31px;
+  font-size: 36px;
+  font-weight: 700;
 
   line-height: 1.1;
 
@@ -392,19 +80,22 @@
 .employees-header p {
   margin: 7px 0 0;
 
-  color: #7b8799;
+  color: #667085;
 
-  font-size: 12px;
+  font-size: 16px;
 
   line-height: 1.6;
 }
 
 
+/* =========================================================
+   ADD EMPLOYEE BUTTON
+========================================================= */
+
 .add-employee-button {
   height: 45px;
 
   display: flex;
-
   align-items: center;
 
   gap: 9px;
@@ -412,7 +103,6 @@
   padding: 0 18px;
 
   border: none;
-
   border-radius: 8px;
 
   background:
@@ -426,8 +116,7 @@
 
   font-family: inherit;
 
-  font-size: 11px;
-
+  font-size: 12px;
   font-weight: 750;
 
   cursor: pointer;
@@ -444,7 +133,6 @@
 
 .add-employee-button span {
   font-size: 18px;
-
   line-height: 1;
 }
 
@@ -470,7 +158,6 @@
   border-radius: 8px;
 
   font-size: 11px;
-
   font-weight: 650;
 }
 
@@ -513,14 +200,14 @@
   min-height: 112px;
 
   display: flex;
-
   align-items: center;
 
   gap: 15px;
 
   padding: 20px;
 
-  border: 1px solid #e5e9ef;
+  border:
+    1px solid #e5e9ef;
 
   border-radius: 12px;
 
@@ -537,7 +224,6 @@
   height: 44px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
@@ -546,28 +232,24 @@
   border-radius: 10px;
 
   font-size: 18px;
-
   font-weight: 800;
 }
 
 
 .employee-stat-icon.blue {
   background: #edf2ff;
-
   color: #557dff;
 }
 
 
 .employee-stat-icon.green {
   background: #ecf9f1;
-
   color: #32a36a;
 }
 
 
 .employee-stat-icon.orange {
   background: #fff4e9;
-
   color: #df8a35;
 }
 
@@ -575,11 +257,10 @@
 .employee-stat-card span {
   display: block;
 
-  color: #78859a;
+  color: #667085;
 
-  font-size: 8px;
-
-  font-weight: 800;
+  font-size: 12px;
+  font-weight: 700;
 
   letter-spacing: 1px;
 }
@@ -590,22 +271,24 @@
 
   margin-top: 6px;
 
-  color: #263247;
+  color: #172033;
 
-  font-size: 27px;
+  font-size: 30px;
+  font-weight: 700;
 
   line-height: 1;
 }
 
 
 /* =========================================================
-   PANEL
+   EMPLOYEE DIRECTORY PANEL
 ========================================================= */
 
 .employees-panel {
   margin-top: 18px;
 
-  border: 1px solid #e5e9ef;
+  border:
+    1px solid #e5e9ef;
 
   border-radius: 13px;
 
@@ -619,51 +302,59 @@
 }
 
 
+/* =========================================================
+   PANEL HEADER
+========================================================= */
+
 .employees-panel-header {
   min-height: 85px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
 
   gap: 20px;
 
   padding: 0 23px;
 
-  border-bottom: 1px solid #edf0f4;
+  border-bottom:
+    1px solid #edf0f4;
 }
 
 
-.employees-panel-header span {
-  color: #7d8aa0;
+.employees-panel-header > div > span {
+  color: #667085;
 
-  font-size: 8px;
+  font-size: 12px;
+  font-weight: 700;
 
-  font-weight: 800;
-
-  letter-spacing: 1.4px;
+  letter-spacing: 1.5px;
 }
 
 
 .employees-panel-header h2 {
   margin: 5px 0 0;
 
-  color: #2a3549;
+  color: #172033;
 
-  font-size: 17px;
+  font-size: 24px;
+  font-weight: 700;
 
   letter-spacing: -0.3px;
 }
 
+
+/* =========================================================
+   REFRESH
+========================================================= */
 
 .refresh-button {
   height: 35px;
 
   padding: 0 13px;
 
-  border: 1px solid #dfe4eb;
+  border:
+    1px solid #dfe4eb;
 
   border-radius: 7px;
 
@@ -673,8 +364,7 @@
 
   font-family: inherit;
 
-  font-size: 10px;
-
+  font-size: 11px;
   font-weight: 650;
 
   cursor: pointer;
@@ -683,8 +373,13 @@
 
 .refresh-button:hover {
   border-color: #c6d0df;
-
   color: #4777ff;
+}
+
+
+.refresh-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 
@@ -694,14 +389,14 @@
 
 .employee-toolbar {
   display: flex;
-
   align-items: center;
 
   gap: 10px;
 
   padding: 17px 23px;
 
-  border-bottom: 1px solid #edf0f4;
+  border-bottom:
+    1px solid #edf0f4;
 }
 
 
@@ -711,14 +406,14 @@
   height: 40px;
 
   display: flex;
-
   align-items: center;
 
   gap: 9px;
 
   padding: 0 12px;
 
-  border: 1px solid #e0e5ec;
+  border:
+    1px solid #e0e5ec;
 
   border-radius: 7px;
 
@@ -737,32 +432,33 @@
   width: 100%;
 
   border: none;
-
   outline: none;
 
   background: transparent;
 
-  color: #344158;
+  color: #344054;
 
   font-family: inherit;
 
-  font-size: 11px;
+  font-size: 15px;
 }
 
 
 .employee-search input::placeholder {
-  color: #9aa5b5;
+  color: #7b8799;
+
+  font-size: 15px;
 }
 
 
 .employee-filter {
   width: 150px;
-
   height: 40px;
 
   padding: 0 10px;
 
-  border: 1px solid #e0e5ec;
+  border:
+    1px solid #e0e5ec;
 
   border-radius: 7px;
 
@@ -774,7 +470,8 @@
 
   font-family: inherit;
 
-  font-size: 10px;
+  font-size: 14px;
+  font-weight: 600;
 
   cursor: pointer;
 }
@@ -802,20 +499,22 @@
 }
 
 
-.employees-table th {
-  padding: 14px 16px;
+/* TABLE HEADER */
 
-  border-bottom: 1px solid #edf0f4;
+.employees-table thead th {
+  padding: 15px 14px;
+
+  border-bottom:
+    1px solid #edf0f4;
 
   background: #fafbfd;
 
-  color: #7a879a;
+  color: #667085;
 
-  font-size: 8px;
+  font-size: 13px;
+  font-weight: 700;
 
-  font-weight: 800;
-
-  letter-spacing: 0.8px;
+  letter-spacing: 0.3px;
 
   text-align: left;
 
@@ -823,16 +522,22 @@
 }
 
 
-.employees-table td {
-  padding: 15px 16px;
+/* TABLE DATA */
 
-  border-bottom: 1px solid #f0f2f5;
+.employees-table tbody td {
+  padding: 17px 14px;
 
-  color: #59677b;
+  border-bottom:
+    1px solid #f0f2f5;
 
-  font-size: 10px;
+  color: #344054;
 
-  font-weight: 550;
+  font-size: 15px;
+  font-weight: 500;
+
+  line-height: 1.4;
+
+  vertical-align: middle;
 
   white-space: nowrap;
 }
@@ -849,18 +554,12 @@
 }
 
 
-.employees-table tbody tr.inactive-row {
-  opacity: 0.65;
-}
-
-
 /* =========================================================
    EMPLOYEE PERSON
 ========================================================= */
 
 .employee-person {
   display: flex;
-
   align-items: center;
 
   gap: 10px;
@@ -872,7 +571,6 @@
   height: 34px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
@@ -884,20 +582,18 @@
 
   color: #527dff;
 
-  font-size: 11px;
-
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 
 .employee-person strong {
   display: block;
 
-  color: #2d384c;
+  color: #172033;
 
-  font-size: 10px;
-
-  font-weight: 750;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 
@@ -906,14 +602,28 @@
 
   margin-top: 3px;
 
-  color: #8995a7;
+  color: #667085;
 
-  font-size: 8px;
+  font-size: 13px;
+  font-weight: 500;
 }
 
 
 .employee-email {
-  color: #5f6d82;
+  color: #344054;
+}
+
+
+/* =========================================================
+   TABLE COLUMN STYLES
+========================================================= */
+
+.employees-table tbody td:nth-child(3),
+.employees-table tbody td:nth-child(4),
+.employees-table tbody td:nth-child(5) {
+  font-size: 15px;
+  font-weight: 500;
+  color: #344054;
 }
 
 
@@ -932,9 +642,10 @@
 
   border-radius: 20px;
 
-  font-size: 8px;
+  font-size: 13px;
+  font-weight: 700;
 
-  font-weight: 750;
+  white-space: nowrap;
 }
 
 
@@ -976,19 +687,19 @@
 
 .employee-actions {
   display: flex;
-
   align-items: center;
 
-  gap: 5px;
+  gap: 6px;
 }
 
 
 .employee-actions button {
-  height: 29px;
+  min-height: 34px;
 
-  padding: 0 8px;
+  padding: 7px 11px;
 
-  border: 1px solid #dfe4eb;
+  border:
+    1px solid #dfe4eb;
 
   border-radius: 5px;
 
@@ -998,9 +709,10 @@
 
   font-family: inherit;
 
-  font-size: 8px;
-
+  font-size: 13px;
   font-weight: 700;
+
+  white-space: nowrap;
 
   cursor: pointer;
 }
@@ -1014,7 +726,7 @@
 
 
 .employee-actions button:disabled {
-  opacity: 0.4;
+  opacity: 0.45;
 
   cursor: not-allowed;
 }
@@ -1026,6 +738,40 @@
   background: #fff6f6;
 
   color: #c95353;
+}
+
+
+/* =========================================================
+   INACTIVE ROW
+========================================================= */
+
+.employees-table tbody tr.inactive-row {
+  opacity: 1;
+}
+
+
+.employees-table tbody tr.inactive-row td {
+  color: #667085;
+}
+
+
+.employees-table tbody tr.inactive-row
+.employee-person strong {
+  color: #344054;
+
+  font-weight: 700;
+}
+
+
+.employees-table tbody tr.inactive-row
+.employee-person span {
+  color: #7b8799;
+}
+
+
+.employees-table tbody tr.inactive-row
+.employee-email {
+  color: #667085;
 }
 
 
@@ -1055,14 +801,19 @@
   width: 27px;
   height: 27px;
 
-  border: 3px solid #e5eaf2;
+  border:
+    3px solid #e5eaf2;
 
-  border-top-color: #527dff;
+  border-top-color:
+    #527dff;
 
   border-radius: 50%;
 
   animation:
-    employee-spin 0.8s linear infinite;
+    employee-spin
+    0.8s
+    linear
+    infinite;
 }
 
 
@@ -1096,7 +847,6 @@
   height: 55px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
@@ -1144,7 +894,6 @@
   font-family: inherit;
 
   font-size: 10px;
-
   font-weight: 700;
 
   cursor: pointer;
@@ -1152,7 +901,7 @@
 
 
 /* =========================================================
-   MODAL
+   MODAL BACKDROP
 ========================================================= */
 
 .employee-modal-backdrop {
@@ -1176,6 +925,10 @@
   z-index: 1000;
 }
 
+
+/* =========================================================
+   ADD / EDIT MODAL
+========================================================= */
 
 .employee-modal {
   width: 100%;
@@ -1205,9 +958,13 @@
 
   gap: 20px;
 
-  padding: 24px 26px 20px;
+  padding:
+    24px
+    26px
+    20px;
 
-  border-bottom: 1px solid #edf0f4;
+  border-bottom:
+    1px solid #edf0f4;
 }
 
 
@@ -1215,7 +972,6 @@
   color: #6c8cff;
 
   font-size: 8px;
-
   font-weight: 800;
 
   letter-spacing: 1.5px;
@@ -1270,7 +1026,10 @@
 ========================================================= */
 
 .employee-form {
-  padding: 23px 26px 26px;
+  padding:
+    23px
+    26px
+    26px;
 }
 
 
@@ -1297,7 +1056,6 @@
   color: #55647a;
 
   font-size: 10px;
-
   font-weight: 700;
 }
 
@@ -1309,7 +1067,8 @@
 
   padding: 0 12px;
 
-  border: 1px solid #dfe4eb;
+  border:
+    1px solid #dfe4eb;
 
   border-radius: 7px;
 
@@ -1375,7 +1134,8 @@
 
   padding-top: 19px;
 
-  border-top: 1px solid #edf0f4;
+  border-top:
+    1px solid #edf0f4;
 }
 
 
@@ -1390,7 +1150,6 @@
   font-family: inherit;
 
   font-size: 10px;
-
   font-weight: 700;
 
   cursor: pointer;
@@ -1398,7 +1157,8 @@
 
 
 .cancel-button {
-  border: 1px solid #dfe4eb;
+  border:
+    1px solid #dfe4eb;
 
   background: white;
 
@@ -1438,20 +1198,25 @@
 
 .modal-error,
 .modal-success {
-  margin: 16px 26px 0;
+  margin:
+    16px
+    26px
+    0;
 
-  padding: 10px 12px;
+  padding:
+    10px
+    12px;
 
   border-radius: 7px;
 
   font-size: 10px;
-
   font-weight: 650;
 }
 
 
 .modal-error {
-  border: 1px solid #f0d0d0;
+  border:
+    1px solid #f0d0d0;
 
   background: #fff6f6;
 
@@ -1460,7 +1225,8 @@
 
 
 .modal-success {
-  border: 1px solid #cbe9d8;
+  border:
+    1px solid #cbe9d8;
 
   background: #f1fbf5;
 
@@ -1498,7 +1264,8 @@
 
   padding-bottom: 20px;
 
-  border-bottom: 1px solid #edf0f4;
+  border-bottom:
+    1px solid #edf0f4;
 }
 
 
@@ -1518,7 +1285,6 @@
   color: #527dff;
 
   font-size: 16px;
-
   font-weight: 800;
 }
 
@@ -1532,7 +1298,6 @@
   color: #708097;
 
   font-size: 8px;
-
   font-weight: 800;
 
   letter-spacing: 1px;
@@ -1575,7 +1340,6 @@
   color: #8490a1;
 
   font-size: 8px;
-
   font-weight: 800;
 
   letter-spacing: 0.8px;
@@ -1607,6 +1371,10 @@
 }
 
 
+/* =========================================================
+   VIEW MODAL ACTIONS
+========================================================= */
+
 .employee-view-actions {
   display: flex;
 
@@ -1616,7 +1384,8 @@
 
   padding-top: 17px;
 
-  border-top: 1px solid #edf0f4;
+  border-top:
+    1px solid #edf0f4;
 }
 
 
@@ -1636,7 +1405,6 @@
   font-family: inherit;
 
   font-size: 10px;
-
   font-weight: 700;
 
   cursor: pointer;
@@ -1650,88 +1418,24 @@
 @media (max-width: 1100px) {
 
   .employees-main {
-    padding-left: 25px;
-    padding-right: 25px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
   .employees-table {
     min-width: 900px;
   }
-}
 
-
-@media (max-width: 850px) {
-
-  .employees-sidebar {
-    width: 75px;
-
-    padding: 20px 9px;
-  }
-
-  .employees-brand {
-    justify-content: center;
-
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .employees-brand > div:last-child {
-    display: none;
-  }
-
-  .employees-nav button {
-    justify-content: center;
-
-    padding: 0;
-  }
-
-  .employees-nav button span {
-    width: auto;
-  }
-
-  .employees-nav button {
-    font-size: 0;
-  }
-
-  .employees-nav button span {
-    font-size: 17px;
-  }
-
-  .employees-user > div:last-child,
-  .employees-logout {
-    font-size: 0;
-  }
-
-  .employees-user {
-    justify-content: center;
-  }
-
-  .employees-main {
-    width: calc(100% - 75px);
-
-    margin-left: 75px;
-
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
-  .employee-stat-grid {
-    grid-template-columns:
-      1fr 1fr;
-  }
-
-  .employee-stat-card:last-child {
-    grid-column: 1 / -1;
-  }
 }
 
 
 @media (max-width: 650px) {
 
   .employees-main {
-    padding-left: 14px;
-    padding-right: 14px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
+
 
   .employees-header {
     align-items: flex-start;
@@ -1743,9 +1447,16 @@
     padding: 20px 0;
   }
 
+
   .employees-header h1 {
-    font-size: 27px;
+    font-size: 30px;
   }
+
+
+  .employees-header p {
+    font-size: 14px;
+  }
+
 
   .add-employee-button {
     width: 100%;
@@ -1753,511 +1464,115 @@
     justify-content: center;
   }
 
+
   .employee-stat-grid {
     grid-template-columns: 1fr;
   }
 
-  .employee-stat-card:last-child {
-    grid-column: auto;
-  }
 
   .employee-toolbar {
     flex-direction: column;
   }
+
 
   .employee-search,
   .employee-filter {
     width: 100%;
   }
 
+
   .employee-form-row {
     grid-template-columns: 1fr;
   }
 
+
   .employee-view-grid {
     grid-template-columns: 1fr;
   }
+
 }
-/* =========================================================
-   FINAL EMPLOYEE TABLE READABILITY FIX
-   ========================================================= */
-
-/* Table itself */
-.employees-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-
-/* =========================================================
-   TABLE HEADER
-   ========================================================= */
-
-.employees-table thead th {
-    font-size: 14px !important;
-    font-weight: 700 !important;
-    color: #667085 !important;
-    letter-spacing: 0.5px;
-    padding: 18px 16px !important;
+.reactivate-button {
+  background: #eefbf3;
+  color: #16834b;
+  border: 1px solid #b7e4c7;
+  padding: 9px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
+.reactivate-button:hover {
+  background: #dff7e9;
+  border-color: #8ed3a8;
+}
+/* =====================================================
+   EMPLOYEE REQUEST ACTIONS
+===================================================== */
 
-/* =========================================================
-   ALL EMPLOYEE DATA
-   ========================================================= */
-
-.employees-table tbody td {
-    font-size: 16px !important;
-    font-weight: 500 !important;
-    color: #344054 !important;
-    padding: 22px 16px !important;
-    line-height: 1.5 !important;
-    vertical-align: middle !important;
+.approve-button {
+  border: 1px solid #b7e4c7;
+  background: #ecfdf3;
+  color: #16834b;
+  padding: 7px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
 }
 
-
-/* =========================================================
-   EMPLOYEE NAME
-   ========================================================= */
-
-.employees-table .employee-person strong {
-    display: block;
-    font-size: 17px !important;
-    font-weight: 700 !important;
-    color: #172033 !important;
+.approve-button:hover {
+  background: #dff8e9;
 }
 
 
-/* Employee code */
+.reject-button {
+  border: 1px solid #fecdd3;
+  background: #fff1f2;
+  color: #be123c;
+  padding: 7px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
 
-.employees-table .employee-person span {
-    display: block;
-    margin-top: 4px;
-    font-size: 14px !important;
-    font-weight: 500 !important;
-    color: #667085 !important;
+.reject-button:hover {
+  background: #ffe4e6;
 }
 
 
-/* =========================================================
-   EMAIL
-   ========================================================= */
+/* =====================================================
+   PENDING STATUS
+===================================================== */
 
-.employees-table .employee-email {
-    font-size: 13px !important;
-    font-weight: 500 !important;
-    color: #344054 !important;
+.employee-status.pending {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.employee-status.pending i {
+  background: #f97316;
 }
 
 
-/* =========================================================
-   DEPARTMENT
-   ========================================================= */
+/* =====================================================
+   REJECTED STATUS
+===================================================== */
 
-.employees-table tbody td:nth-child(3) {
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    color: #344054 !important;
+.employee-status.rejected {
+  background: #fff1f2;
+  color: #be123c;
+}
+
+.employee-status.rejected i {
+  background: #e11d48;
 }
 
 
-/* =========================================================
-   DESIGNATION
-   ========================================================= */
-
-.employees-table tbody td:nth-child(4) {
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    color: #344054 !important;
-}
-
-
-/* =========================================================
-   JOINING DATE
-   ========================================================= */
-
-.employees-table tbody td:nth-child(5) {
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    color: #344054 !important;
-}
-
-
-/* =========================================================
-   STATUS
-   ========================================================= */
-
-.employees-table .employee-status {
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    white-space: nowrap;
-}
-
-
-/* =========================================================
-   ACTION BUTTONS
-   ========================================================= */
-
-.employees-table .employee-actions button {
-    font-size: 11px !important;
-    font-weight: 600 !important;
-    padding: 9px 13px !important;
-}
-
-
-/* =========================================================
-   VERY IMPORTANT:
-   INACTIVE ROW SHOULD NOT BECOME TOO FADED
-   ========================================================= */
-
-.employees-table tbody tr.inactive-row {
-    opacity: 1 !important;
-}
-
-
-/* Inactive employee text */
-
-.employees-table tbody tr.inactive-row td {
-    color: #667085 !important;
-}
-
-
-/* Inactive employee name should remain clearly visible */
-
-.employees-table tbody tr.inactive-row
-.employee-person strong {
-    color: #344054 !important;
-    font-weight: 700 !important;
-}
-
-
-/* Inactive employee code */
-
-.employees-table tbody tr.inactive-row
-.employee-person span {
-    color: #7b8799 !important;
-}
-
-
-/* Inactive email */
-
-.employees-table tbody tr.inactive-row
-.employee-email {
-    color: #667085 !important;
-}
-
-
-/* =========================================================
-   EMPLOYEE AVATAR
-   ========================================================= */
-
-.employees-table .employee-person-avatar {
-    font-size: 12px !important;
-    font-weight: 700 !important;
-}
-
-
-/* =========================================================
-   SEARCH BOX
-   ========================================================= */
-
-.employee-search input {
-    font-size: 13px !important;
-    color: #344054 !important;
-}
-
-.employee-search input::placeholder {
-    font-size: 13px !important;
-    color: #7b8799 !important;
-}
-
-
-/* =========================================================
-   FILTER
-   ========================================================= */
-
-.employee-filter {
-    font-size: 12px !important;
-    font-weight: 600 !important;
-}
-
-
-/* =========================================================
-   DIRECTORY TITLE
-   ========================================================= */
-
-.employees-panel-header h2 {
-    font-size: 23px !important;
-    font-weight: 700 !important;
-    color: #172033 !important;
-}
-
-
-/* Workforce label */
-
-.employees-panel-header > div > span {
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    color: #667085 !important;
-    letter-spacing: 1.5px;
-}
-
-
-/* =========================================================
-   PAGE HEADER
-   ========================================================= */
-
-.employees-header h1 {
-    font-size: 35px !important;
-    font-weight: 700 !important;
-    color: #172033 !important;
-}
-
-.employees-header p {
-    font-size: 15px !important;
-    color: #667085 !important;
-}
-
-
-/* =========================================================
-   STAT CARDS
-   ========================================================= */
-
-.employee-stat-card span {
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    color: #667085 !important;
-    letter-spacing: 1px;
-}
-
-.employee-stat-card strong {
-    font-size: 28px !important;
-    font-weight: 700 !important;
-    color: #172033 !important;
-}
-/* =========================================================
-   EMPLOYEES TABLE - CLEAN & READABLE
-   ========================================================= */
-
-/* Table header */
-.employees-table thead th {
-    font-size: 13px !important;
-    font-weight: 700 !important;
-    color: #667085 !important;
-    padding: 15px 14px !important;
-    letter-spacing: 0.3px;
-}
-
-
-/* Employee table data */
-.employees-table tbody td {
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: #344054 !important;
-    padding: 17px 14px !important;
-    line-height: 1.4 !important;
-    vertical-align: middle !important;
-}
-
-
-/* Employee name */
-.employees-table .employee-person strong {
-    font-size: 15px !important;
-    font-weight: 700 !important;
-    color: #172033 !important;
-}
-
-
-/* Employee code */
-.employees-table .employee-person span {
-    font-size: 13px !important;
-    font-weight: 500 !important;
-    color: #667085 !important;
-    margin-top: 3px !important;
-}
-
-
-/* Email */
-.employees-table .employee-email {
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: #344054 !important;
-}
-
-
-/* Department */
-.employees-table tbody td:nth-child(3) {
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: #344054 !important;
-}
-
-
-/* Designation */
-.employees-table tbody td:nth-child(4) {
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: #344054 !important;
-}
-
-
-/* Joining date */
-.employees-table tbody td:nth-child(5) {
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    color: #344054 !important;
-}
-
-
-/* =========================================================
-   STATUS
-   ========================================================= */
-
-.employees-table .employee-status {
-    font-size: 13px !important;
-    font-weight: 700 !important;
-}
-
-
-/* =========================================================
-   ACTION BUTTONS
-   ========================================================= */
-
-.employees-table .employee-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-
-/* View / Edit / Deactivate */
-.employees-table .employee-actions button {
-    font-size: 13px !important;
-    font-weight: 700 !important;
-    padding: 7px 11px !important;
-    min-height: 34px !important;
-    white-space: nowrap;
-}
-
-
-/* Deactivate specifically */
-.employees-table .employee-actions .danger {
-    font-weight: 700 !important;
-}
-
-
-/* Disabled Edit */
-.employees-table .employee-actions button:disabled {
-    font-weight: 700 !important;
-    opacity: 0.45;
-}
-
-
-/* =========================================================
-   INACTIVE ROW
-   ========================================================= */
-
-/* Don't fade the entire row */
-.employees-table tbody tr.inactive-row {
-    opacity: 1 !important;
-}
-
-
-/* Inactive employee data */
-.employees-table tbody tr.inactive-row td {
-    color: #667085 !important;
-}
-
-
-/* Inactive employee name */
-.employees-table tbody tr.inactive-row
-.employee-person strong {
-    color: #344054 !important;
-    font-weight: 700 !important;
-}
-
-
-/* Inactive employee code */
-.employees-table tbody tr.inactive-row
-.employee-person span {
-    color: #7b8799 !important;
-}
-
-
-/* =========================================================
-   AVATAR
-   ========================================================= */
-
-.employees-table .employee-person-avatar {
-    font-size: 14px !important;
-    font-weight: 700 !important;
-}
-
-
-/* =========================================================
-   SEARCH
-   ========================================================= */
-
-.employee-search input {
-    font-size: 15px !important;
-}
-
-.employee-search input::placeholder {
-    font-size: 15px !important;
-}
-
-
-/* =========================================================
-   FILTER
-   ========================================================= */
-
-.employee-filter {
-    font-size: 14px !important;
-    font-weight: 600 !important;
-}
-
-
-/* =========================================================
-   EMPLOYEE DIRECTORY
-   ========================================================= */
-
-.employees-panel-header h2 {
-    font-size: 24px !important;
-    font-weight: 700 !important;
-}
-
-
-/* Workforce label */
-.employees-panel-header > div > span {
-    font-size: 12px !important;
-    font-weight: 700 !important;
-}
-
-
-/* =========================================================
-   PAGE TITLE
-   ========================================================= */
-
-.employees-header h1 {
-    font-size: 36px !important;
-    font-weight: 700 !important;
-}
-
-.employees-header p {
-    font-size: 16px !important;
-}
-
-
-/* =========================================================
-   STAT CARDS
-   ========================================================= */
-
-.employee-stat-card span {
-    font-size: 12px !important;
-    font-weight: 700 !important;
-}
-
-.employee-stat-card strong {
-    font-size: 30px !important;
-    font-weight: 700 !important;
+.employee-request-rejected {
+  color: #be123c;
+  font-size: 12px;
+  font-weight: 700;
 }

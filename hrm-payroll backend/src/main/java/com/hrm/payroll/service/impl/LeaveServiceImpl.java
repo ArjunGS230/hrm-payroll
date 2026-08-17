@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -30,22 +30,21 @@ import java.util.List;
 @Transactional
 public class LeaveServiceImpl implements LeaveService {
 
+
+    private final LeaveApplicationRepository leaveApplicationRepository;
+
     private final EmployeeRepository employeeRepository;
 
     private final LeaveBalanceRepository leaveBalanceRepository;
 
-    private final LeaveApplicationRepository leaveApplicationRepository;
 
-
-    // =========================================================
+    // =====================================================
     // APPLY LEAVE
-    // =========================================================
+    // =====================================================
 
     @Override
     public LeaveResponse applyLeave(
             LeaveRequest request) {
-
-        // Validate request
 
         if (request == null) {
 
@@ -54,23 +53,49 @@ public class LeaveServiceImpl implements LeaveService {
             );
         }
 
-        if (request.getEmployeeId() == null) {
+
+        // -------------------------------------------------
+        // FIND EMPLOYEE
+        // -------------------------------------------------
+
+        Employee employee =
+                employeeRepository
+                        .findById(
+                                request.getEmployeeId()
+                        )
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Employee not found with id: "
+                                                + request.getEmployeeId()
+                                )
+                        );
+
+
+        // -------------------------------------------------
+        // CHECK EMPLOYEE ACTIVE
+        // -------------------------------------------------
+
+        if (!employee.isActive()) {
 
             throw new BadRequestException(
-                    "Employee ID is required"
+                    "Inactive employees cannot apply for leave"
             );
         }
 
-        if (request.getLeaveType() == null ||
-                request.getLeaveType().trim().isEmpty()) {
 
-            throw new BadRequestException(
-                    "Leave type is required"
-            );
-        }
+        // -------------------------------------------------
+        // VALIDATE DATES
+        // -------------------------------------------------
 
-        if (request.getStartDate() == null ||
-                request.getEndDate() == null) {
+        LocalDate startDate =
+                request.getStartDate();
+
+        LocalDate endDate =
+                request.getEndDate();
+
+
+        if (startDate == null ||
+                endDate == null) {
 
             throw new BadRequestException(
                     "Start date and end date are required"
@@ -78,40 +103,7 @@ public class LeaveServiceImpl implements LeaveService {
         }
 
 
-        // =====================================================
-        // FIND EMPLOYEE
-        // =====================================================
-
-        Employee employee =
-                employeeRepository.findById(
-                        request.getEmployeeId()
-                )
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Employee not found with id: "
-                                        + request.getEmployeeId()
-                        )
-                );
-
-
-        // =====================================================
-        // CHECK ACTIVE EMPLOYEE
-        // =====================================================
-
-        if (!employee.isActive()) {
-
-            throw new BadRequestException(
-                    "Inactive employee cannot apply for leave"
-            );
-        }
-
-
-        // =====================================================
-        // VALIDATE DATES
-        // =====================================================
-
-        if (request.getEndDate()
-                .isBefore(request.getStartDate())) {
+        if (endDate.isBefore(startDate)) {
 
             throw new BadRequestException(
                     "End date cannot be before start date"
@@ -119,9 +111,30 @@ public class LeaveServiceImpl implements LeaveService {
         }
 
 
-        // =====================================================
+        // -------------------------------------------------
+        // CALCULATE NUMBER OF DAYS
+        // -------------------------------------------------
+
+        int numberOfDays =
+                (int) (
+                        endDate.toEpochDay()
+                                -
+                        startDate.toEpochDay()
+                                + 1
+                );
+
+
+        if (numberOfDays <= 0) {
+
+            throw new BadRequestException(
+                    "Number of leave days must be greater than zero"
+            );
+        }
+
+
+        // -------------------------------------------------
         // NORMALIZE LEAVE TYPE
-        // =====================================================
+        // -------------------------------------------------
 
         String leaveType =
                 normalizeLeaveType(
@@ -129,49 +142,25 @@ public class LeaveServiceImpl implements LeaveService {
                 );
 
 
-        // =====================================================
-        // CALCULATE NUMBER OF DAYS
-        // =====================================================
-
-        int numberOfDays =
-                (int) ChronoUnit.DAYS.between(
-                        request.getStartDate(),
-                        request.getEndDate()
-                ) + 1;
-
-
-        if (numberOfDays <= 0) {
-
-            throw new BadRequestException(
-                    "Leave duration must be greater than zero"
-            );
-        }
-
-
-        // =====================================================
-        // FIND LEAVE BALANCE
-        // =====================================================
+        // -------------------------------------------------
+        // GET OR CREATE LEAVE BALANCE
+        // -------------------------------------------------
 
         LeaveBalance balance =
-                leaveBalanceRepository
-                        .findByEmployeeId(
-                                employee.getId()
-                        )
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException(
-                                        "Leave balance not found "
-                                                + "for employee: "
-                                                + employee.getId()
-                                )
-                        );
+                getOrCreateLeaveBalance(
+                        employee
+                );
 
 
-        // =====================================================
+        // -------------------------------------------------
         // CHECK AVAILABLE BALANCE
-        // =====================================================
+        //
+        // Balance is NOT deducted here.
+        // It is deducted only when HR approves.
+        // -------------------------------------------------
 
         int availableBalance =
-                getBalanceByType(
+                getAvailableBalance(
                         balance,
                         leaveType
                 );
@@ -180,109 +169,75 @@ public class LeaveServiceImpl implements LeaveService {
         if (numberOfDays > availableBalance) {
 
             throw new BadRequestException(
-                    "Insufficient leave balance. "
-                            + "Available: "
+                    "Insufficient "
+                            + getDisplayLeaveType(
+                                    leaveType
+                            )
+                            + " leave balance. Available: "
                             + availableBalance
-                            + ", Requested: "
-                            + numberOfDays
             );
         }
 
 
-        // =====================================================
+        // -------------------------------------------------
         // CREATE LEAVE APPLICATION
-        // =====================================================
+        // -------------------------------------------------
 
-        LeaveApplication application =
+        LeaveApplication leaveApplication =
                 LeaveApplication.builder()
-                        .employee(employee)
-                        .leaveType(leaveType)
+
+                        .employee(
+                                employee
+                        )
+
+                        .leaveType(
+                                leaveType
+                        )
+
                         .startDate(
-                                request.getStartDate()
+                                startDate
                         )
+
                         .endDate(
-                                request.getEndDate()
+                                endDate
                         )
-                        .numberOfDays(numberOfDays)
-                        .status("PENDING")
-                        .reason(request.getReason())
+
+                        .numberOfDays(
+                                numberOfDays
+                        )
+
+                        .status(
+                                "PENDING"
+                        )
+
+                        .reason(
+                                request.getReason()
+                        )
+
                         .build();
 
 
+        // -------------------------------------------------
+        // SAVE
+        // -------------------------------------------------
+
         LeaveApplication saved =
                 leaveApplicationRepository.save(
-                        application
+                        leaveApplication
                 );
 
 
-        return mapToResponse(saved);
+        return mapToResponse(
+                saved
+        );
     }
 
 
-    // =========================================================
-    // NORMALIZE LEAVE TYPE
-    // =========================================================
-
-    private String normalizeLeaveType(
-            String leaveType) {
-
-        if (leaveType == null ||
-                leaveType.trim().isEmpty()) {
-
-            throw new BadRequestException(
-                    "Leave type is required"
-            );
-        }
-
-
-        String type =
-                leaveType
-                        .trim()
-                        .toUpperCase();
-
-
-        return switch (type) {
-
-            // Casual Leave
-
-            case "CL",
-                 "CASUAL",
-                 "CASUAL LEAVE" -> "CL";
-
-
-            // Sick Leave
-
-            case "SL",
-                 "SICK",
-                 "SICK LEAVE" -> "SL";
-
-
-            // Earned Leave
-
-            case "EL",
-                 "EARNED",
-                 "EARNED LEAVE" -> "EL";
-
-
-            // Invalid
-
-            default ->
-                    throw new BadRequestException(
-                            "Invalid leave type. Use "
-                                    + "CL/Casual Leave, "
-                                    + "SL/Sick Leave, or "
-                                    + "EL/Earned Leave"
-                    );
-        };
-    }
-
-
-    // =========================================================
+    // =====================================================
     // GET LEAVE BALANCE
-    // =========================================================
+    // =====================================================
 
     @Override
-    @Transactional(readOnly = true)
     public LeaveBalanceResponse getLeaveBalance(
             Long employeeId) {
 
@@ -294,31 +249,34 @@ public class LeaveServiceImpl implements LeaveService {
         }
 
 
+        // -------------------------------------------------
+        // FIND EMPLOYEE
+        // -------------------------------------------------
+
         Employee employee =
-                employeeRepository.findById(
-                        employeeId
-                )
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Employee not found with id: "
-                                        + employeeId
-                        )
-                );
-
-
-        LeaveBalance balance =
-                leaveBalanceRepository
-                        .findByEmployeeId(
-                                employeeId
-                        )
+                employeeRepository
+                        .findById(employeeId)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
-                                        "Leave balance not found "
-                                                + "for employee: "
+                                        "Employee not found with id: "
                                                 + employeeId
                                 )
                         );
 
+
+        // -------------------------------------------------
+        // GET OR CREATE BALANCE
+        // -------------------------------------------------
+
+        LeaveBalance balance =
+                getOrCreateLeaveBalance(
+                        employee
+                );
+
+
+        // -------------------------------------------------
+        // RESPONSE
+        // -------------------------------------------------
 
         return LeaveBalanceResponse.builder()
 
@@ -346,9 +304,9 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
 
-    // =========================================================
+    // =====================================================
     // GET EMPLOYEE LEAVES
-    // =========================================================
+    // =====================================================
 
     @Override
     @Transactional(readOnly = true)
@@ -363,43 +321,55 @@ public class LeaveServiceImpl implements LeaveService {
         }
 
 
-        if (!employeeRepository.existsById(
-                employeeId)) {
+        // -------------------------------------------------
+        // CHECK EMPLOYEE
+        // -------------------------------------------------
 
-            throw new ResourceNotFoundException(
-                    "Employee not found with id: "
-                            + employeeId
-            );
-        }
+        employeeRepository
+                .findById(employeeId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Employee not found with id: "
+                                        + employeeId
+                        )
+                );
 
+
+        // -------------------------------------------------
+        // GET LEAVES
+        // -------------------------------------------------
 
         return leaveApplicationRepository
-                .findByEmployeeId(employeeId)
+                .findByEmployeeId(
+                        employeeId
+                )
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
     }
 
 
-    // =========================================================
+    // =====================================================
     // GET PENDING LEAVES
-    // =========================================================
+    // =====================================================
 
     @Override
     @Transactional(readOnly = true)
     public List<LeaveResponse> getPendingLeaves() {
 
         return leaveApplicationRepository
-                .findByStatus("PENDING")
+                .findByStatus(
+                        "PENDING"
+                )
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
     }
 
 
-    // =========================================================
+    // =====================================================
     // APPROVE LEAVE
-    // =========================================================
+    // =====================================================
 
     @Override
     public LeaveResponse approveLeave(
@@ -413,108 +383,192 @@ public class LeaveServiceImpl implements LeaveService {
         }
 
 
-        LeaveApplication application =
+        // -------------------------------------------------
+        // FIND LEAVE APPLICATION
+        // -------------------------------------------------
+
+        LeaveApplication leaveApplication =
                 leaveApplicationRepository
                         .findById(leaveId)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
-                                        "Leave application not found "
-                                                + "with id: "
+                                        "Leave application not found with id: "
                                                 + leaveId
                                 )
                         );
 
 
-        // Only pending leave can be approved
+        // -------------------------------------------------
+        // CHECK STATUS
+        // -------------------------------------------------
 
-        if (!"PENDING".equals(
-                application.getStatus())) {
+        if (!"PENDING".equalsIgnoreCase(
+                leaveApplication.getStatus()
+        )) {
 
             throw new BadRequestException(
-                    "Only pending leave can be approved"
+                    "Only pending leave applications can be approved"
             );
         }
 
+
+        // -------------------------------------------------
+        // GET EMPLOYEE
+        // -------------------------------------------------
 
         Employee employee =
-                application.getEmployee();
+                leaveApplication.getEmployee();
 
 
-        if (employee == null) {
-
-            throw new ResourceNotFoundException(
-                    "Employee not found for leave application: "
-                            + leaveId
-            );
-        }
-
+        // -------------------------------------------------
+        // GET BALANCE
+        // -------------------------------------------------
 
         LeaveBalance balance =
-                leaveBalanceRepository
-                        .findByEmployeeId(
-                                employee.getId()
-                        )
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException(
-                                        "Leave balance not found "
-                                                + "for employee: "
-                                                + employee.getId()
-                                )
-                        );
-
-
-        int available =
-                getBalanceByType(
-                        balance,
-                        application.getLeaveType()
+                getOrCreateLeaveBalance(
+                        employee
                 );
 
 
-        if (application.getNumberOfDays()
-                > available) {
+        // -------------------------------------------------
+        // NORMALIZE LEAVE TYPE
+        //
+        // This is important because old records may contain
+        // CL / SL / EL OR full names.
+        // -------------------------------------------------
 
-            throw new BadRequestException(
-                    "Insufficient leave balance. "
-                            + "Available: "
-                            + available
-                            + ", Requested: "
-                            + application.getNumberOfDays()
-            );
+        String leaveType =
+                normalizeLeaveType(
+                        leaveApplication.getLeaveType()
+                );
+
+
+        int numberOfDays =
+                leaveApplication.getNumberOfDays();
+
+
+        // -------------------------------------------------
+        // CHECK AND DEDUCT BALANCE
+        // -------------------------------------------------
+
+        switch (leaveType) {
+
+
+            // -------------------------------------------------
+            // CASUAL LEAVE
+            // -------------------------------------------------
+
+            case "CL":
+
+                if (numberOfDays >
+                        balance.getCasualLeave()) {
+
+                    throw new BadRequestException(
+                            "Insufficient casual leave balance"
+                    );
+                }
+
+
+                balance.setCasualLeave(
+                        balance.getCasualLeave()
+                                - numberOfDays
+                );
+
+                break;
+
+
+            // -------------------------------------------------
+            // SICK LEAVE
+            // -------------------------------------------------
+
+            case "SL":
+
+                if (numberOfDays >
+                        balance.getSickLeave()) {
+
+                    throw new BadRequestException(
+                            "Insufficient sick leave balance"
+                    );
+                }
+
+
+                balance.setSickLeave(
+                        balance.getSickLeave()
+                                - numberOfDays
+                );
+
+                break;
+
+
+            // -------------------------------------------------
+            // EARNED LEAVE
+            // -------------------------------------------------
+
+            case "EL":
+
+                if (numberOfDays >
+                        balance.getEarnedLeave()) {
+
+                    throw new BadRequestException(
+                            "Insufficient earned leave balance"
+                    );
+                }
+
+
+                balance.setEarnedLeave(
+                        balance.getEarnedLeave()
+                                - numberOfDays
+                );
+
+                break;
+
+
+            default:
+
+                throw new BadRequestException(
+                        "Invalid leave type: "
+                                + leaveType
+                );
         }
 
 
-        // Deduct leave balance
-
-        deductBalance(
-                balance,
-                application.getLeaveType(),
-                application.getNumberOfDays()
-        );
-
-
-        // Approve application
-
-        application.setStatus("APPROVED");
-
+        // -------------------------------------------------
+        // SAVE UPDATED BALANCE
+        // -------------------------------------------------
 
         leaveBalanceRepository.save(
                 balance
         );
 
 
-        LeaveApplication saved =
+        // -------------------------------------------------
+        // APPROVE APPLICATION
+        // -------------------------------------------------
+
+        leaveApplication.setLeaveType(
+                leaveType
+        );
+
+        leaveApplication.setStatus(
+                "APPROVED"
+        );
+
+
+        LeaveApplication updated =
                 leaveApplicationRepository.save(
-                        application
+                        leaveApplication
                 );
 
 
-        return mapToResponse(saved);
+        return mapToResponse(
+                updated
+        );
     }
 
 
-    // =========================================================
+    // =====================================================
     // REJECT LEAVE
-    // =========================================================
+    // =====================================================
 
     @Override
     public LeaveResponse rejectLeave(
@@ -528,233 +582,285 @@ public class LeaveServiceImpl implements LeaveService {
         }
 
 
-        LeaveApplication application =
+        // -------------------------------------------------
+        // FIND APPLICATION
+        // -------------------------------------------------
+
+        LeaveApplication leaveApplication =
                 leaveApplicationRepository
                         .findById(leaveId)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
-                                        "Leave application not found "
-                                                + "with id: "
+                                        "Leave application not found with id: "
                                                 + leaveId
-                                )
-                        );
+                        )
+                );
 
 
-        // Only pending leave can be rejected
+        // -------------------------------------------------
+        // CHECK STATUS
+        // -------------------------------------------------
 
-        if (!"PENDING".equals(
-                application.getStatus())) {
+        if (!"PENDING".equalsIgnoreCase(
+                leaveApplication.getStatus()
+        )) {
 
             throw new BadRequestException(
-                    "Only pending leave can be rejected"
+                    "Only pending leave applications can be rejected"
             );
         }
 
 
-        application.setStatus(
+        // -------------------------------------------------
+        // REJECT
+        // -------------------------------------------------
+
+        leaveApplication.setStatus(
                 "REJECTED"
         );
 
 
-        LeaveApplication saved =
+        LeaveApplication updated =
                 leaveApplicationRepository.save(
-                        application
+                        leaveApplication
                 );
 
 
-        return mapToResponse(saved);
+        return mapToResponse(
+                updated
+        );
     }
 
 
-    // =========================================================
-    // GET BALANCE BY TYPE
-    // =========================================================
+    // =====================================================
+    // GET OR CREATE LEAVE BALANCE
+    // =====================================================
 
-    private int getBalanceByType(
+    private LeaveBalance getOrCreateLeaveBalance(
+            Employee employee) {
+
+        return leaveBalanceRepository
+
+                .findByEmployee(
+                        employee
+                )
+
+                .orElseGet(() -> {
+
+                    LeaveBalance balance =
+                            LeaveBalance.builder()
+
+                                    .employee(
+                                            employee
+                                    )
+
+                                    .casualLeave(
+                                            12
+                                    )
+
+                                    .sickLeave(
+                                            12
+                                    )
+
+                                    .earnedLeave(
+                                            15
+                                    )
+
+                                    .build();
+
+
+                    return leaveBalanceRepository.save(
+                            balance
+                    );
+                });
+    }
+
+
+    // =====================================================
+    // NORMALIZE LEAVE TYPE
+    // =====================================================
+
+    private String normalizeLeaveType(
+            String leaveType) {
+
+        if (leaveType == null ||
+                leaveType.trim().isEmpty()) {
+
+            throw new BadRequestException(
+                    "Leave type is required"
+            );
+        }
+
+
+        String type =
+                leaveType
+                        .trim()
+                        .toUpperCase();
+
+
+        switch (type) {
+
+
+            // -------------------------------------------------
+            // CASUAL
+            // -------------------------------------------------
+
+            case "CL":
+            case "CASUAL":
+            case "CASUAL_LEAVE":
+
+                return "CL";
+
+
+            // -------------------------------------------------
+            // SICK
+            // -------------------------------------------------
+
+            case "SL":
+            case "SICK":
+            case "SICK_LEAVE":
+
+                return "SL";
+
+
+            // -------------------------------------------------
+            // EARNED
+            // -------------------------------------------------
+
+            case "EL":
+            case "EARNED":
+            case "EARNED_LEAVE":
+
+                return "EL";
+
+
+            // -------------------------------------------------
+            // INVALID
+            // -------------------------------------------------
+
+            default:
+
+                throw new BadRequestException(
+                        "Invalid leave type: "
+                                + leaveType
+                );
+        }
+    }
+
+
+    // =====================================================
+    // GET AVAILABLE BALANCE
+    // =====================================================
+
+    private int getAvailableBalance(
             LeaveBalance balance,
             String leaveType) {
 
-        if (balance == null) {
+        switch (leaveType) {
 
-            throw new ResourceNotFoundException(
-                    "Leave balance not found"
-            );
+            case "CL":
+
+                return balance.getCasualLeave();
+
+
+            case "SL":
+
+                return balance.getSickLeave();
+
+
+            case "EL":
+
+                return balance.getEarnedLeave();
+
+
+            default:
+
+                throw new BadRequestException(
+                        "Invalid leave type: "
+                                + leaveType
+                );
         }
-
-
-        return switch (leaveType) {
-
-            case "CL" ->
-                    balance.getCasualLeave();
-
-            case "SL" ->
-                    balance.getSickLeave();
-
-            case "EL" ->
-                    balance.getEarnedLeave();
-
-            default ->
-                    throw new BadRequestException(
-                            "Invalid leave type. "
-                                    + "Use CL, SL or EL"
-                    );
-        };
     }
 
 
-    // =========================================================
-    // DEDUCT BALANCE
-    // =========================================================
+    // =====================================================
+    // DISPLAY LEAVE TYPE
+    // =====================================================
 
-    private void deductBalance(
-            LeaveBalance balance,
-            String leaveType,
-            int days) {
-
-        if (days <= 0) {
-
-            throw new BadRequestException(
-                    "Leave days must be greater than zero"
-            );
-        }
-
+    private String getDisplayLeaveType(
+            String leaveType) {
 
         switch (leaveType) {
 
-            // Casual Leave
+            case "CL":
 
-            case "CL" -> {
-
-                int remaining =
-                        balance.getCasualLeave()
-                                - days;
+                return "Casual";
 
 
-                if (remaining < 0) {
+            case "SL":
 
-                    throw new BadRequestException(
-                            "Casual leave balance cannot "
-                                    + "be negative"
-                    );
-                }
+                return "Sick";
 
 
-                balance.setCasualLeave(
-                        remaining
-                );
-            }
+            case "EL":
+
+                return "Earned";
 
 
-            // Sick Leave
+            default:
 
-            case "SL" -> {
-
-                int remaining =
-                        balance.getSickLeave()
-                                - days;
-
-
-                if (remaining < 0) {
-
-                    throw new BadRequestException(
-                            "Sick leave balance cannot "
-                                    + "be negative"
-                    );
-                }
-
-
-                balance.setSickLeave(
-                        remaining
-                );
-            }
-
-
-            // Earned Leave
-
-            case "EL" -> {
-
-                int remaining =
-                        balance.getEarnedLeave()
-                                - days;
-
-
-                if (remaining < 0) {
-
-                    throw new BadRequestException(
-                            "Earned leave balance cannot "
-                                    + "be negative"
-                    );
-                }
-
-
-                balance.setEarnedLeave(
-                        remaining
-                );
-            }
-
-
-            default ->
-                    throw new BadRequestException(
-                            "Invalid leave type. "
-                                    + "Use CL, SL or EL"
-                    );
+                return leaveType;
         }
     }
 
 
-    // =========================================================
-    // MAP ENTITY → RESPONSE
-    // =========================================================
+    // =====================================================
+    // ENTITY → RESPONSE
+    // =====================================================
 
     private LeaveResponse mapToResponse(
-            LeaveApplication application) {
+            LeaveApplication leaveApplication) {
+
+        Employee employee =
+                leaveApplication.getEmployee();
+
 
         return LeaveResponse.builder()
 
                 .id(
-                        application.getId()
+                        leaveApplication.getId()
                 )
 
                 .employeeId(
-                        application
-                                .getEmployee()
-                                .getId()
+                        employee.getId()
                 )
 
                 .employeeName(
-                        application
-                                .getEmployee()
-                                .getName()
+                        employee.getName()
                 )
 
                 .leaveType(
-                        application
-                                .getLeaveType()
+                        leaveApplication.getLeaveType()
                 )
 
                 .startDate(
-                        application
-                                .getStartDate()
+                        leaveApplication.getStartDate()
                 )
 
                 .endDate(
-                        application
-                                .getEndDate()
+                        leaveApplication.getEndDate()
                 )
 
                 .numberOfDays(
-                        application
-                                .getNumberOfDays()
+                        leaveApplication.getNumberOfDays()
                 )
 
                 .status(
-                        application
-                                .getStatus()
+                        leaveApplication.getStatus()
                 )
 
                 .reason(
-                        application
-                                .getReason()
+                        leaveApplication.getReason()
                 )
 
                 .build();

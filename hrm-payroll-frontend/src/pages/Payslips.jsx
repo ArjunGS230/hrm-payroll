@@ -2,18 +2,28 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/Payslips.css";
+import toast from "react-hot-toast";
+
 
 function Payslips() {
 
     const navigate = useNavigate();
 
+
+    // =====================================================
+    // STATE
+    // =====================================================
+
     const [employees, setEmployees] = useState([]);
+
     const [payslips, setPayslips] = useState([]);
 
     const [loading, setLoading] = useState(true);
+
     const [saving, setSaving] = useState(false);
 
     const [error, setError] = useState("");
+
     const [success, setSuccess] = useState("");
 
     const [showGenerate, setShowGenerate] =
@@ -22,16 +32,38 @@ function Payslips() {
     const [selectedPayslip, setSelectedPayslip] =
         useState(null);
 
+
     const [formData, setFormData] = useState({
         employeeId: "",
         payPeriod: ""
     });
 
-    const token = localStorage.getItem("token");
+
+    // =====================================================
+    // AUTH
+    // =====================================================
+
+    const token =
+        localStorage.getItem("token");
+
+
+    const role =
+        localStorage
+            .getItem("role")
+            ?.toUpperCase() || "EMPLOYEE";
+
+
+    const isHR =
+        role === "HR" ||
+        role === "ADMIN";
+
 
     const authConfig = {
+
         headers: {
-            Authorization: `Bearer ${token}`
+
+            Authorization:
+                `Bearer ${token}`
         }
     };
 
@@ -42,14 +74,25 @@ function Payslips() {
 
     const fetchEmployees = async () => {
 
-        const response = await axios.get(
-            "http://localhost:8090/api/employees",
-            authConfig
-        );
+        if (!isHR) {
+
+            setEmployees([]);
+
+            return;
+        }
+
+
+        const response =
+            await axios.get(
+                "http://localhost:8090/api/employees",
+                authConfig
+            );
+
 
         setEmployees(
             response.data.filter(
-                (employee) => employee.active
+                (employee) =>
+                    employee.active
             )
         );
     };
@@ -58,20 +101,35 @@ function Payslips() {
     // =====================================================
     // FETCH PAYSLIPS
     // =====================================================
-const fetchPayslips = async () => {
 
-    const response = await axios.get(
-        "http://localhost:8090/api/payslips",
-        authConfig
-    );
+    const fetchPayslips = async () => {
 
-    const sortedPayslips = [...response.data].sort(
-        (a, b) =>
-            b.payMonth.localeCompare(a.payMonth)
-    );
+        const url =
+            isHR
+                ? "http://localhost:8090/api/payslips"
+                : "http://localhost:8090/api/payslips/my";
 
-    setPayslips(sortedPayslips);
-};
+
+        const response =
+            await axios.get(
+                url,
+                authConfig
+            );
+
+
+        const sortedPayslips =
+            [...response.data].sort(
+                (a, b) =>
+                    b.payMonth.localeCompare(
+                        a.payMonth
+                    )
+            );
+
+
+        setPayslips(
+            sortedPayslips
+        );
+    };
 
 
     // =====================================================
@@ -83,12 +141,15 @@ const fetchPayslips = async () => {
         try {
 
             setLoading(true);
+
             setError("");
+
 
             await Promise.all([
                 fetchEmployees(),
                 fetchPayslips()
             ]);
+
 
         } catch (err) {
 
@@ -96,6 +157,7 @@ const fetchPayslips = async () => {
                 "Payslip loading error:",
                 err
             );
+
 
             if (
                 err.response?.status === 401
@@ -112,6 +174,7 @@ const fetchPayslips = async () => {
                     "Unable to load payslips."
                 );
             }
+
 
         } finally {
 
@@ -133,6 +196,7 @@ const fetchPayslips = async () => {
             return;
         }
 
+
         loadData();
 
     }, []);
@@ -149,6 +213,7 @@ const fetchPayslips = async () => {
             value
         } = e.target;
 
+
         setFormData(
             (previous) => ({
                 ...previous,
@@ -156,7 +221,9 @@ const fetchPayslips = async () => {
             })
         );
 
+
         setError("");
+
         setSuccess("");
     };
 
@@ -172,8 +239,11 @@ const fetchPayslips = async () => {
             payPeriod: ""
         });
 
+
         setError("");
+
         setSuccess("");
+
 
         setShowGenerate(true);
     };
@@ -186,12 +256,15 @@ const fetchPayslips = async () => {
     const closeGenerateModal = () => {
 
         if (saving) {
+
             return;
         }
+
 
         setShowGenerate(false);
 
         setError("");
+
         setSuccess("");
     };
 
@@ -204,13 +277,19 @@ const fetchPayslips = async () => {
 
         e.preventDefault();
 
+
         setError("");
+
         setSuccess("");
 
 
+        // =================================================
+        // VALIDATE EMPLOYEE
+        // =================================================
+
         if (!formData.employeeId) {
 
-            setError(
+            toast.error(
                 "Please select an employee."
             );
 
@@ -218,9 +297,13 @@ const fetchPayslips = async () => {
         }
 
 
+        // =================================================
+        // VALIDATE PAY PERIOD
+        // =================================================
+
         if (!formData.payPeriod) {
 
-            setError(
+            toast.error(
                 "Please select a pay period."
             );
 
@@ -233,41 +316,137 @@ const fetchPayslips = async () => {
             setSaving(true);
 
 
-            const response = await axios.post(
-                `http://localhost:8090/api/payslips/generate/${formData.employeeId}?payPeriod=${formData.payPeriod}`,
-                {},
-                authConfig
+            console.log(
+                "======================================"
+            );
+
+            console.log(
+                "GENERATING PAYSLIP"
+            );
+
+            console.log(
+                "Employee ID:",
+                formData.employeeId
+            );
+
+            console.log(
+                "Pay Period:",
+                formData.payPeriod
+            );
+
+            console.log(
+                "======================================"
             );
 
 
-            setSuccess(
-                "Payslip generated and email sent successfully."
+            // =================================================
+            // GENERATE PAYSLIP
+            // =================================================
+
+            const response =
+                await axios.post(
+
+                    `http://localhost:8090/api/payslips/generate/${formData.employeeId}?payPeriod=${formData.payPeriod}`,
+
+                    {},
+
+                    authConfig
+                );
+
+
+            console.log(
+                "GENERATE PAYSLIP RESPONSE:",
+                response.data
             );
 
+
+            // =================================================
+            // STORE GENERATED PAYSLIP
+            // =================================================
 
             setSelectedPayslip(
                 response.data
             );
 
 
+            // =================================================
+            // SUCCESS TOAST
+            // =================================================
+
+            toast.success(
+                response.data?.message ||
+                "Payslip generated successfully."
+            );
+
+
+            setSuccess(
+                response.data?.message ||
+                "Payslip generated successfully."
+            );
+
+
+            // =================================================
+            // REFRESH PAYSLIPS
+            // =================================================
+
             await fetchPayslips();
 
+
+            // =================================================
+            // CLOSE MODAL
+            // =================================================
 
             setTimeout(() => {
 
                 setShowGenerate(false);
-                setSuccess("");
 
-            }, 1200);
+                setSelectedPayslip(null);
+
+            }, 1000);
 
 
         } catch (err) {
 
+            // =================================================
+            // PRINT COMPLETE ERROR
+            // =================================================
+
             console.error(
-                "Generate payslip error:",
+                "======================================"
+            );
+
+            console.error(
+                "GENERATE PAYSLIP ERROR"
+            );
+
+            console.error(
+                "======================================"
+            );
+
+            console.error(
+                "Status:",
+                err.response?.status
+            );
+
+            console.error(
+                "Response:",
+                err.response?.data
+            );
+
+            console.error(
+                "Message:",
+                err.response?.data?.message
+            );
+
+            console.error(
+                "Full Axios Error:",
                 err
             );
 
+
+            // =================================================
+            // UNAUTHORIZED
+            // =================================================
 
             if (
                 err.response?.status === 401
@@ -277,29 +456,97 @@ const fetchPayslips = async () => {
 
                 navigate("/login");
 
-            } else if (
-                err.response?.data?.message
+                return;
+            }
+
+
+            // =================================================
+            // EXTRACT BACKEND MESSAGE
+            // =================================================
+
+            let backendMessage = null;
+
+
+            if (
+                err.response?.data
             ) {
 
-                setError(
-                    err.response.data.message
-                );
+                // ---------------------------------------------
+                // Backend response:
+                //
+                // {
+                //     "message": "Some error"
+                // }
+                // ---------------------------------------------
 
-            } else if (
-                typeof err.response?.data ===
-                "string"
+                if (
+                    typeof err.response.data.message ===
+                    "string"
+                ) {
+
+                    backendMessage =
+                        err.response.data.message;
+                }
+
+
+                // ---------------------------------------------
+                // Backend response is plain String
+                // ---------------------------------------------
+
+                else if (
+                    typeof err.response.data ===
+                    "string"
+                ) {
+
+                    backendMessage =
+                        err.response.data;
+                }
+            }
+
+
+            // =================================================
+            // SHOW ACTUAL BACKEND ERROR
+            // =================================================
+
+            if (
+                backendMessage &&
+                backendMessage.trim()
             ) {
 
-                setError(
-                    err.response.data
+                console.error(
+                    "BACKEND ERROR:",
+                    backendMessage
                 );
+
+
+                toast.error(
+                    backendMessage,
+                    {
+                        duration: 7000
+                    }
+                );
+
+
+                setError(
+                    backendMessage
+                );
+
 
             } else {
 
+                toast.error(
+                    "Unable to generate payslip. Check the backend console.",
+                    {
+                        duration: 5000
+                    }
+                );
+
+
                 setError(
-                    "Unable to generate payslip."
+                    "Unable to generate payslip. Check the backend console."
                 );
             }
+
 
         } finally {
 
@@ -317,13 +564,22 @@ const fetchPayslips = async () => {
         try {
 
             setError("");
+
             setSuccess("");
 
 
             await axios.post(
+
                 `http://localhost:8090/api/payslips/${id}/send-email`,
+
                 {},
+
                 authConfig
+            );
+
+
+            toast.success(
+                "Payslip email sent successfully."
             );
 
 
@@ -332,8 +588,13 @@ const fetchPayslips = async () => {
             );
 
 
+            await fetchPayslips();
+
+
             setTimeout(() => {
+
                 setSuccess("");
+
             }, 3000);
 
 
@@ -345,8 +606,39 @@ const fetchPayslips = async () => {
             );
 
 
-            setError(
+            if (
+                err.response?.status === 401
+            ) {
+
+                localStorage.clear();
+
+                navigate("/login");
+
+                return;
+            }
+
+
+            const backendMessage =
                 err.response?.data?.message ||
+                (
+                    typeof err.response?.data ===
+                    "string"
+                        ? err.response.data
+                        : null
+                );
+
+
+            toast.error(
+                backendMessage ||
+                "Unable to send payslip email.",
+                {
+                    duration: 7000
+                }
+            );
+
+
+            setError(
+                backendMessage ||
                 "Unable to send payslip email."
             );
         }
@@ -357,21 +649,35 @@ const fetchPayslips = async () => {
     // VIEW PAYSLIP
     // =====================================================
 
-    const handleView = async (id) => {
+    const handleView = (id) => {
 
         try {
 
             setError("");
 
-            const response =
-                await axios.get(
-                    `http://localhost:8090/api/payslips/${id}`,
-                    authConfig
+
+            const payslip =
+                payslips.find(
+                    (item) =>
+                        Number(item.id) ===
+                        Number(id)
                 );
 
+
+            if (!payslip) {
+
+                setError(
+                    "Payslip not found."
+                );
+
+                return;
+            }
+
+
             setSelectedPayslip(
-                response.data
+                payslip
             );
+
 
         } catch (err) {
 
@@ -380,25 +686,11 @@ const fetchPayslips = async () => {
                 err
             );
 
+
             setError(
-                err.response?.data?.message ||
                 "Unable to load payslip."
             );
         }
-    };
-
-
-    // =====================================================
-    // LOGOUT
-    // =====================================================
-
-    const handleLogout = () => {
-
-        localStorage.removeItem("token");
-        localStorage.removeItem("username");
-        localStorage.removeItem("role");
-
-        navigate("/login");
     };
 
 
@@ -412,8 +704,10 @@ const fetchPayslips = async () => {
             value === null ||
             value === undefined
         ) {
+
             return "₹0.00";
         }
+
 
         return `₹${Number(value).toLocaleString(
             "en-IN",
@@ -435,234 +729,44 @@ const fetchPayslips = async () => {
 
 
             {/* =================================================
-                SIDEBAR
-            ================================================= */}
-
-            <aside className="payslip-sidebar">
-
-                <div className="payslip-brand">
-
-                    <div className="payslip-logo">
-                        H
-                    </div>
-
-                    <div>
-
-                        <div className="payslip-brand-name">
-                            HRM
-                        </div>
-
-                        <div className="payslip-brand-subtitle">
-                            PAYROLL
-                            <br />
-                            AUTOMATION
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <nav className="payslip-navigation">
-
-                    <button
-                        className="payslip-menu-item"
-                        onClick={() =>
-                            navigate("/dashboard")
-                        }
-                    >
-                        <span className="payslip-menu-icon">
-                            ⌂
-                        </span>
-
-                        Dashboard
-                    </button>
-
-
-                    <button
-                        className="payslip-menu-item"
-                        onClick={() =>
-                            navigate("/employees")
-                        }
-                    >
-                        <span className="payslip-menu-icon">
-                            ♙
-                        </span>
-
-                        Employees
-                    </button>
-
-
-                    <button
-                        className="payslip-menu-item"
-                        onClick={() =>
-                            navigate("/salary-structures")
-                        }
-                    >
-                        <span className="payslip-menu-icon">
-                            ₹
-                        </span>
-
-                        Salary Structures
-                    </button>
-
-
-                    <button
-                        className="payslip-menu-item"
-                        onClick={() =>
-                            navigate("/leave-management")
-                        }
-                    >
-                        <span className="payslip-menu-icon">
-                            ◷
-                        </span>
-
-                        Leave Management
-                    </button>
-
-
-                    <button
-                        className="payslip-menu-item"
-                        onClick={() =>
-                            navigate("/payroll")
-                        }
-                    >
-                        <span className="payslip-menu-icon">
-                            ▣
-                        </span>
-
-                        Payroll
-                    </button>
-
-
-                    <button
-                        className="payslip-menu-item active"
-                        onClick={() =>
-                            navigate("/payslips")
-                        }
-                    >
-                        <span className="payslip-menu-icon">
-                            ▤
-                        </span>
-
-                        Payslips
-                    </button>
-
-
-                    <button
-                        className="payslip-menu-item"
-                        onClick={() =>
-                            navigate("/email-logs")
-                        }
-                    >
-                        <span className="payslip-menu-icon">
-                            ✉
-                        </span>
-
-                        Email Logs
-                    </button>
-
-
-                    <button
-                        className="payslip-menu-item"
-                        onClick={() =>
-                            navigate("/reports")
-                        }
-                    >
-                        <span className="payslip-menu-icon">
-                            ▥
-                        </span>
-
-                        Reports
-                    </button>
-
-
-                    <button
-                        className="payslip-menu-item"
-                        onClick={() =>
-                            navigate("/settings")
-                        }
-                    >
-                        <span className="payslip-menu-icon">
-                            ⚙
-                        </span>
-
-                        Settings
-                    </button>
-
-                </nav>
-
-
-                {/* USER */}
-
-                <div className="payslip-sidebar-footer">
-
-                    <div className="payslip-user">
-
-                        <div className="payslip-user-avatar">
-
-                            {(
-                                localStorage.getItem(
-                                    "username"
-                                ) || "A"
-                            )
-                                .charAt(0)
-                                .toUpperCase()}
-
-                        </div>
-
-                        <div>
-
-                            <div className="payslip-user-name">
-                                {localStorage.getItem(
-                                    "username"
-                                ) || "Admin"}
-                            </div>
-
-                            <div className="payslip-user-role">
-                                {localStorage.getItem(
-                                    "role"
-                                ) || "HR"}
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <button
-                        className="payslip-logout"
-                        onClick={handleLogout}
-                    >
-                        ↪ Logout
-                    </button>
-
-                </div>
-
-            </aside>
-
-
-            {/* =================================================
                 MAIN
             ================================================= */}
 
             <div className="payslip-main">
 
 
+                {/* =================================================
+                    TOPBAR
+                ================================================= */}
+
                 <header className="payslip-topbar">
 
                     <div>
 
                         <div className="payslip-eyebrow">
-                            HR WORKSPACE
+
+                            {isHR
+                                ? "HR WORKSPACE"
+                                : "EMPLOYEE WORKSPACE"}
+
                         </div>
 
+
                         <h1>
-                            Payslips
+
+                            {isHR
+                                ? "Payslips"
+                                : "My Payslips"}
+
                         </h1>
 
+
                         <p>
-                            Generate, view and send employee payslips.
+
+                            {isHR
+                                ? "Generate, view and send employee payslips."
+                                : "View your generated payslips and payroll information."}
+
                         </p>
 
                     </div>
@@ -670,48 +774,72 @@ const fetchPayslips = async () => {
                 </header>
 
 
+                {/* =================================================
+                    CONTENT
+                ================================================= */}
+
                 <main className="payslip-content">
 
 
-                    {/* HEADER */}
+                    {/* =================================================
+                        HEADER
+                    ================================================= */}
 
                     <div className="payslip-section-header">
 
                         <div>
 
                             <div className="payslip-eyebrow">
+
                                 PAYROLL
+
                             </div>
 
+
                             <h2>
+
                                 Payslip Directory
+
                             </h2>
 
+
                             <p>
+
                                 Manage monthly employee payslips.
+
                             </p>
 
                         </div>
 
 
-                        <button
-                            className="payslip-generate-button"
-                            onClick={
-                                openGenerateModal
-                            }
-                        >
-                            + Generate Payslip
-                        </button>
+                        {isHR && (
+
+                            <button
+                                className="payslip-generate-button"
+                                onClick={
+                                    openGenerateModal
+                                }
+                            >
+
+                                + Generate Payslip
+
+                            </button>
+
+                        )}
 
                     </div>
 
 
-                    {/* MESSAGES */}
+                    {/* =================================================
+                        MESSAGES
+                    ================================================= */}
 
                     {error && (
 
                         <div className="payslip-error">
+
                             {error}
+
                         </div>
 
                     )}
@@ -720,45 +848,80 @@ const fetchPayslips = async () => {
                     {success && (
 
                         <div className="payslip-success">
+
                             {success}
+
                         </div>
 
                     )}
 
 
-                    {/* LOADING */}
+                    {/* =================================================
+                        LOADING
+                    ================================================= */}
 
                     {loading ? (
 
                         <div className="payslip-loading">
+
                             Loading payslips...
+
                         </div>
 
                     ) : (
 
                         <section className="payslip-card">
 
+
+                            {/* =================================================
+                                CARD HEADING
+                            ================================================= */}
+
                             <div className="payslip-card-heading">
 
                                 <div>
 
                                     <h3>
+
                                         Employee Payslips
+
                                     </h3>
 
+
                                     <p>
-                                        All generated payslips
+
+                                        {isHR
+                                            ? "All generated employee payslips."
+                                            : "Your generated payslips."}
+
                                     </p>
 
                                 </div>
 
+
                                 <div className="payslip-total-count">
-    <span>Total Payslips:</span>
-    <strong>{payslips.length}</strong>
-</div>
+
+                                    <span>
+
+                                        Total Payslips:
+
+                                    </span>
+
+
+                                    <strong>
+
+                                        {payslips.length}
+
+                                    </strong>
+
+                                </div>
 
                             </div>
 
+
+                            {/* =================================================
+                                TABLE
+                            ================================================= */}
 
                             <div className="payslip-table-wrapper">
 
@@ -811,7 +974,9 @@ const fetchPayslips = async () => {
                                                     colSpan="7"
                                                     className="payslip-empty"
                                                 >
+
                                                     No payslips generated yet.
+
                                                 </td>
 
                                             </tr>
@@ -827,16 +992,28 @@ const fetchPayslips = async () => {
                                                         }
                                                     >
 
+
+                                                        {/* EMPLOYEE */}
+
                                                         <td>
 
                                                             <div className="payslip-employee">
 
                                                                 <div className="payslip-employee-code">
-                                                                    {payslip.employeeCode}
+
+                                                                    {
+                                                                        payslip.employeeCode
+                                                                    }
+
                                                                 </div>
 
+
                                                                 <div className="payslip-employee-name">
-                                                                    {payslip.employeeName}
+
+                                                                    {
+                                                                        payslip.employeeName
+                                                                    }
+
                                                                 </div>
 
                                                             </div>
@@ -844,44 +1021,73 @@ const fetchPayslips = async () => {
                                                         </td>
 
 
+                                                        {/* PAY MONTH */}
+
                                                         <td>
-                                                            {payslip.payMonth}
+
+                                                            {
+                                                                payslip.payMonth
+                                                            }
+
                                                         </td>
 
 
+                                                        {/* GROSS */}
+
                                                         <td>
+
                                                             {formatMoney(
                                                                 payslip.grossSalary
                                                             )}
+
                                                         </td>
 
 
+                                                        {/* DEDUCTIONS */}
+
                                                         <td>
+
                                                             {formatMoney(
                                                                 payslip.totalDeductions
                                                             )}
+
                                                         </td>
 
 
+                                                        {/* NET */}
+
                                                         <td className="payslip-net">
+
                                                             {formatMoney(
                                                                 payslip.netSalary
                                                             )}
+
                                                         </td>
 
+
+                                                        {/* STATUS */}
 
                                                         <td>
 
                                                             <span className="payslip-status">
-                                                                {payslip.status}
+
+                                                                {
+                                                                    payslip.status
+                                                                }
+
                                                             </span>
 
                                                         </td>
 
 
+                                                        {/* ACTIONS */}
+
                                                         <td>
 
                                                             <div className="payslip-actions">
+
+
+                                                                {/* VIEW */}
 
                                                                 <button
                                                                     className="payslip-view-button"
@@ -891,20 +1097,30 @@ const fetchPayslips = async () => {
                                                                         )
                                                                     }
                                                                 >
+
                                                                     View
+
                                                                 </button>
 
 
-                                                                <button
-                                                                    className="payslip-email-button"
-                                                                    onClick={() =>
-                                                                        handleSendEmail(
-                                                                            payslip.id
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    Email
-                                                                </button>
+                                                                {/* EMAIL */}
+
+                                                                {isHR && (
+
+                                                                    <button
+                                                                        className="payslip-email-button"
+                                                                        onClick={() =>
+                                                                            handleSendEmail(
+                                                                                payslip.id
+                                                                            )
+                                                                        }
+                                                                    >
+
+                                                                        Email
+
+                                                                    </button>
+
+                                                                )}
 
                                                             </div>
 
@@ -942,20 +1158,31 @@ const fetchPayslips = async () => {
 
                     <div className="payslip-modal">
 
+
+                        {/* HEADER */}
+
                         <div className="payslip-modal-header">
 
                             <div>
 
                                 <div className="payslip-eyebrow">
+
                                     PAYROLL
+
                                 </div>
 
+
                                 <h2>
+
                                     Generate Payslip
+
                                 </h2>
 
+
                                 <p>
+
                                     Generate the monthly payslip for an employee.
+
                                 </p>
 
                             </div>
@@ -968,22 +1195,34 @@ const fetchPayslips = async () => {
                                 }
                                 disabled={saving}
                             >
+
                                 ×
+
                             </button>
 
                         </div>
 
 
+                        {/* FORM */}
+
                         <form
                             className="payslip-form"
-                            onSubmit={handleGenerate}
+                            onSubmit={
+                                handleGenerate
+                            }
                         >
+
+
+                            {/* EMPLOYEE */}
 
                             <div className="payslip-form-group">
 
                                 <label>
+
                                     Employee
+
                                 </label>
+
 
                                 <select
                                     name="employeeId"
@@ -998,7 +1237,9 @@ const fetchPayslips = async () => {
                                 >
 
                                     <option value="">
+
                                         Select employee
+
                                     </option>
 
 
@@ -1013,9 +1254,17 @@ const fetchPayslips = async () => {
                                                     employee.id
                                                 }
                                             >
-                                                {employee.employeeCode}
+
+                                                {
+                                                    employee.employeeCode
+                                                }
+
                                                 {" — "}
-                                                {employee.name}
+
+                                                {
+                                                    employee.name
+                                                }
+
                                             </option>
 
                                         )
@@ -1026,11 +1275,16 @@ const fetchPayslips = async () => {
                             </div>
 
 
+                            {/* PAY PERIOD */}
+
                             <div className="payslip-form-group">
 
                                 <label>
+
                                     Pay Period
+
                                 </label>
+
 
                                 <input
                                     type="month"
@@ -1048,23 +1302,33 @@ const fetchPayslips = async () => {
                             </div>
 
 
+                            {/* FORM ERROR */}
+
                             {error && (
 
                                 <div className="payslip-form-error">
+
                                     {error}
+
                                 </div>
 
                             )}
 
+
+                            {/* FORM SUCCESS */}
 
                             {success && (
 
                                 <div className="payslip-form-success">
+
                                     {success}
+
                                 </div>
 
                             )}
 
+
+                            {/* BUTTONS */}
 
                             <div className="payslip-form-actions">
 
@@ -1076,7 +1340,9 @@ const fetchPayslips = async () => {
                                     }
                                     disabled={saving}
                                 >
+
                                     Cancel
+
                                 </button>
 
 
@@ -1085,9 +1351,11 @@ const fetchPayslips = async () => {
                                     className="payslip-save-button"
                                     disabled={saving}
                                 >
+
                                     {saving
                                         ? "Generating..."
                                         : "Generate Payslip"}
+
                                 </button>
 
                             </div>
@@ -1111,22 +1379,41 @@ const fetchPayslips = async () => {
 
                     <div className="payslip-view-modal">
 
+
+                        {/* HEADER */}
+
                         <div className="payslip-modal-header">
 
                             <div>
 
                                 <div className="payslip-eyebrow">
+
                                     PAYSLIP
+
                                 </div>
 
+
                                 <h2>
-                                    {selectedPayslip.employeeName}
+
+                                    {
+                                        selectedPayslip.employeeName
+                                    }
+
                                 </h2>
 
+
                                 <p>
-                                    {selectedPayslip.employeeCode}
+
+                                    {
+                                        selectedPayslip.employeeCode
+                                    }
+
                                     {" • "}
-                                    {selectedPayslip.payMonth}
+
+                                    {
+                                        selectedPayslip.payMonth
+                                    }
+
                                 </p>
 
                             </div>
@@ -1138,40 +1425,62 @@ const fetchPayslips = async () => {
                                     setSelectedPayslip(null)
                                 }
                             >
+
                                 ×
+
                             </button>
 
                         </div>
 
 
+                        {/* DETAILS */}
+
                         <div className="payslip-details">
 
+
+                            {/* EMPLOYEE DETAILS */}
 
                             <div className="payslip-detail-grid">
 
                                 <div>
+
                                     <span>
                                         Department
                                     </span>
 
+
                                     <strong>
-                                        {selectedPayslip.department}
+
+                                        {
+                                            selectedPayslip.department
+                                        }
+
                                     </strong>
+
                                 </div>
 
 
                                 <div>
+
                                     <span>
                                         Designation
                                     </span>
 
+
                                     <strong>
-                                        {selectedPayslip.designation}
+
+                                        {
+                                            selectedPayslip.designation
+                                        }
+
                                     </strong>
+
                                 </div>
 
                             </div>
 
+
+                            {/* EARNINGS */}
 
                             <div className="payslip-detail-section">
 
@@ -1179,59 +1488,82 @@ const fetchPayslips = async () => {
                                     Earnings
                                 </h3>
 
+
                                 <div className="payslip-detail-row">
+
                                     <span>
                                         Basic Salary
                                     </span>
 
+
                                     <strong>
+
                                         {formatMoney(
                                             selectedPayslip.basicSalary
                                         )}
+
                                     </strong>
+
                                 </div>
 
 
                                 <div className="payslip-detail-row">
+
                                     <span>
                                         HRA
                                     </span>
 
+
                                     <strong>
+
                                         {formatMoney(
                                             selectedPayslip.hra
                                         )}
+
                                     </strong>
+
                                 </div>
 
 
                                 <div className="payslip-detail-row">
+
                                     <span>
                                         Special Allowance
                                     </span>
 
+
                                     <strong>
+
                                         {formatMoney(
                                             selectedPayslip.specialAllowance
                                         )}
+
                                     </strong>
+
                                 </div>
 
 
                                 <div className="payslip-detail-row total">
+
                                     <span>
                                         Gross Salary
                                     </span>
 
+
                                     <strong>
+
                                         {formatMoney(
                                             selectedPayslip.grossSalary
                                         )}
+
                                     </strong>
+
                                 </div>
 
                             </div>
 
+
+                            {/* DEDUCTIONS */}
 
                             <div className="payslip-detail-section">
 
@@ -1241,58 +1573,80 @@ const fetchPayslips = async () => {
 
 
                                 <div className="payslip-detail-row">
+
                                     <span>
                                         PF
                                     </span>
 
+
                                     <strong>
+
                                         {formatMoney(
                                             selectedPayslip.pf
                                         )}
+
                                     </strong>
+
                                 </div>
 
 
                                 <div className="payslip-detail-row">
+
                                     <span>
                                         ESI
                                     </span>
 
+
                                     <strong>
+
                                         {formatMoney(
                                             selectedPayslip.esi
                                         )}
+
                                     </strong>
+
                                 </div>
 
 
                                 <div className="payslip-detail-row">
+
                                     <span>
                                         Professional Tax
                                     </span>
 
+
                                     <strong>
+
                                         {formatMoney(
                                             selectedPayslip.professionalTax
                                         )}
+
                                     </strong>
+
                                 </div>
 
 
                                 <div className="payslip-detail-row total">
+
                                     <span>
                                         Total Deductions
                                     </span>
 
+
                                     <strong>
+
                                         {formatMoney(
                                             selectedPayslip.totalDeductions
                                         )}
+
                                     </strong>
+
                                 </div>
 
                             </div>
 
+
+                            {/* LEAVE BALANCE */}
 
                             <div className="payslip-leave-summary">
 
@@ -1300,38 +1654,60 @@ const fetchPayslips = async () => {
                                     Leave Balance
                                 </h3>
 
+
                                 <div className="payslip-leave-grid">
 
                                     <div>
+
                                         <span>
                                             Casual
                                         </span>
 
+
                                         <strong>
-                                            {selectedPayslip.casualLeave}
+
+                                            {
+                                                selectedPayslip.casualLeave
+                                            }
+
                                         </strong>
+
                                     </div>
 
 
                                     <div>
+
                                         <span>
                                             Sick
                                         </span>
 
+
                                         <strong>
-                                            {selectedPayslip.sickLeave}
+
+                                            {
+                                                selectedPayslip.sickLeave
+                                            }
+
                                         </strong>
+
                                     </div>
 
 
                                     <div>
+
                                         <span>
                                             Earned
                                         </span>
 
+
                                         <strong>
-                                            {selectedPayslip.earnedLeave}
+
+                                            {
+                                                selectedPayslip.earnedLeave
+                                            }
+
                                         </strong>
+
                                     </div>
 
                                 </div>
@@ -1339,31 +1715,87 @@ const fetchPayslips = async () => {
                             </div>
 
 
+                            {/* NET SALARY */}
+
                             <div className="payslip-final">
 
                                 <span>
                                     Net Salary
                                 </span>
 
+
                                 <strong>
+
                                     {formatMoney(
                                         selectedPayslip.netSalary
                                     )}
+
                                 </strong>
 
                             </div>
 
 
-                            <button
-                                className="payslip-email-full-button"
-                                onClick={() =>
-                                    handleSendEmail(
-                                        selectedPayslip.id
-                                    )
-                                }
-                            >
-                                ✉ Resend Payslip Email
-                            </button>
+                            {/* EMAIL STATUS */}
+
+                            {selectedPayslip.emailStatus && (
+
+                                <div
+                                    className={
+                                        selectedPayslip.emailStatus === "SENT"
+                                            ? "payslip-email-status sent"
+                                            : "payslip-email-status failed"
+                                    }
+                                >
+
+                                    <strong>
+                                        Email Status:
+                                    </strong>
+
+
+                                    <span>
+
+                                        {
+                                            selectedPayslip.emailStatus
+                                        }
+
+                                    </span>
+
+
+                                    {selectedPayslip.message && (
+
+                                        <p>
+
+                                            {
+                                                selectedPayslip.message
+                                            }
+
+                                        </p>
+
+                                    )}
+
+                                </div>
+
+                            )}
+
+
+                            {/* RESEND EMAIL */}
+
+                            {isHR && (
+
+                                <button
+                                    className="payslip-email-full-button"
+                                    onClick={() =>
+                                        handleSendEmail(
+                                            selectedPayslip.id
+                                        )
+                                    }
+                                >
+
+                                    ✉ Resend Payslip Email
+
+                                </button>
+
+                            )}
 
                         </div>
 
@@ -1376,5 +1808,6 @@ const fetchPayslips = async () => {
         </div>
     );
 }
+
 
 export default Payslips;

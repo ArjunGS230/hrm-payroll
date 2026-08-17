@@ -1,11 +1,14 @@
 package com.hrm.payroll.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class PayslipResponse {
 
@@ -17,13 +20,16 @@ public class PayslipResponse {
 
     private String employeeName;
 
+    private String email;
+
     private String department;
 
     private String designation;
 
+    private LocalDate joiningDate;
+
     private String payMonth;
 
-    // Earnings
     private BigDecimal basicSalary;
 
     private BigDecimal hra;
@@ -32,7 +38,6 @@ public class PayslipResponse {
 
     private BigDecimal grossSalary;
 
-    // Deductions
     private BigDecimal pf;
 
     private BigDecimal esi;
@@ -41,15 +46,21 @@ public class PayslipResponse {
 
     private BigDecimal totalDeductions;
 
-    // Leave summary
-    private int casualLeave;
-
-    private int sickLeave;
-
-    private int earnedLeave;
-
-    // Final amount
     private BigDecimal netSalary;
 
+    private Integer casualLeave;
+
+    private Integer sickLeave;
+
+    private Integer earnedLeave;
+
     private String status;
+
+    // =========================================================
+    // EMAIL INFORMATION
+    // =========================================================
+
+    private String emailStatus;
+
+    private String message;
 }

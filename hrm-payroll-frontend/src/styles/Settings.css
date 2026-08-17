@@ -1,0 +1,1199 @@
+/* =========================================================
+   SETTINGS PAGE
+   PAGE CONTENT ONLY
+   COMMON HRM SIDEBAR IS NOT TOUCHED
+   ========================================================= */
+
+.settings-page {
+    width: 100%;
+    min-height: 100vh;
+
+    margin: 0;
+    padding: 0;
+
+    background: #f5f7fb;
+
+    box-sizing: border-box;
+
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.settings-main {
+    width: 100%;
+    min-width: 0;
+    min-height: 100vh;
+
+    margin: 0;
+    padding: 0 42px 50px;
+
+    box-sizing: border-box;
+
+    background: #f5f7fb;
+}
+
+
+/* =========================================================
+   TOPBAR
+   ========================================================= */
+
+.settings-topbar {
+    width: 100%;
+    min-height: 108px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    box-sizing: border-box;
+
+    border-bottom: 1px solid #dfe5ee;
+}
+
+
+.settings-overline {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #527dff;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 2px;
+}
+
+
+.settings-topbar h1 {
+    margin: 0;
+
+    color: #14213d;
+
+    font-family: "Manrope", "Inter", sans-serif;
+
+    font-size: 34px;
+    line-height: 1.1;
+
+    font-weight: 800;
+
+    letter-spacing: -1px;
+}
+
+
+/* =========================================================
+   TOP ACTIONS
+   ========================================================= */
+
+.settings-top-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+/* SEARCH */
+
+.settings-search {
+    width: 225px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 0 14px;
+
+    border: 1px solid #dbe2ec;
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #8a9ab2;
+
+    font-family: inherit;
+    font-size: 12px;
+
+    cursor: text;
+}
+
+
+.settings-search span {
+    font-size: 15px;
+}
+
+
+/* NOTIFICATION */
+
+.settings-notification {
+    position: relative;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #dbe2ec;
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #71829c;
+
+    cursor: pointer;
+}
+
+
+.settings-notification b {
+    position: absolute;
+
+    top: -6px;
+    right: -5px;
+
+    width: 18px;
+    height: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #4d7cf7;
+
+    color: #ffffff;
+
+    font-size: 9px;
+}
+
+
+/* USER */
+
+.settings-user {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding-left: 4px;
+}
+
+
+.settings-avatar {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #edf2ff;
+
+    color: #527dff;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+.settings-user strong {
+    display: block;
+
+    color: #18243a;
+
+    font-size: 13px;
+}
+
+
+.settings-user span {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #8291a7;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   SETTINGS CONTENT
+   ========================================================= */
+
+.settings-content {
+    width: 100%;
+
+    padding: 32px 0 50px;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   PAGE HEADING
+   ========================================================= */
+
+.settings-heading {
+    margin-bottom: 30px;
+}
+
+
+.settings-heading > span {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #527dff;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 2px;
+}
+
+
+.settings-heading h2 {
+    margin: 0;
+
+    color: #14213d;
+
+    font-family: "Manrope", "Inter", sans-serif;
+
+    font-size: 30px;
+
+    line-height: 1.15;
+
+    font-weight: 800;
+
+    letter-spacing: -1px;
+}
+
+
+.settings-heading p {
+    margin: 8px 0 0;
+
+    color: #687b96;
+
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   SETTINGS LAYOUT
+   ========================================================= */
+
+.settings-layout {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns: 230px minmax(0, 1fr);
+
+    gap: 20px;
+
+    align-items: start;
+}
+
+
+/* =========================================================
+   SETTINGS MENU
+   ========================================================= */
+
+.settings-menu {
+    width: 100%;
+
+    padding: 10px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #dfe6ef;
+
+    border-radius: 14px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 8px 25px rgba(20, 33, 61, 0.03);
+}
+
+
+.settings-menu-button {
+    width: 100%;
+    min-height: 44px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 3px;
+
+    padding: 0 14px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: #52647c;
+
+    font-family: inherit;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.settings-menu-button:last-child {
+    margin-bottom: 0;
+}
+
+
+.settings-menu-button:hover {
+    background: #f3f6fb;
+
+    color: #527dff;
+}
+
+
+.settings-menu-button.active {
+    background: #edf2ff;
+
+    color: #527dff;
+
+    font-weight: 700;
+}
+
+
+.settings-menu-button span {
+    flex: 1;
+}
+
+
+/* =========================================================
+   SETTINGS PANEL
+   ========================================================= */
+
+.settings-panel {
+    width: 100%;
+    min-width: 0;
+
+    padding: 30px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #dfe6ef;
+
+    border-radius: 16px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 8px 25px rgba(20, 33, 61, 0.03);
+}
+
+
+.settings-panel h3 {
+    margin: 0;
+
+    color: #17243b;
+
+    font-family: "Manrope", "Inter", sans-serif;
+
+    font-size: 22px;
+
+    font-weight: 700;
+}
+
+
+.settings-description {
+    margin: 8px 0 28px;
+
+    color: #687b96;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.settings-form-grid {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+}
+
+
+.settings-field {
+    min-width: 0;
+}
+
+
+.settings-field label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #334155;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+
+.settings-field input,
+.settings-field select {
+    width: 100%;
+    height: 44px;
+
+    padding: 0 13px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #dbe2ea;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    background: #ffffff;
+
+    color: #172033;
+
+    font-family: inherit;
+
+    font-size: 14px;
+}
+
+
+.settings-field input:focus,
+.settings-field select:focus {
+    border-color: #527dff;
+
+    box-shadow:
+        0 0 0 3px rgba(82, 125, 255, 0.08);
+}
+
+
+.settings-field input:disabled {
+    background: #f1f5f9;
+
+    color: #64748b;
+}
+
+
+/* =========================================================
+   TOGGLE
+   ========================================================= */
+
+.settings-toggle-row {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 18px 0;
+
+    border-bottom: 1px solid #e5e7eb;
+}
+
+
+.settings-toggle-row strong {
+    color: #334155;
+
+    font-size: 14px;
+}
+
+
+.settings-toggle-row p {
+    margin: 5px 0 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+.settings-toggle-row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+
+    flex-shrink: 0;
+
+    accent-color: #527dff;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   SAVE BUTTON
+   ========================================================= */
+
+.settings-save-button {
+    margin-top: 20px;
+
+    padding: 11px 22px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #4d78ed;
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 20px rgba(77, 120, 237, 0.18);
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.settings-save-button:hover {
+    background: #3f69dd;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .settings-main {
+        padding-left: 32px;
+        padding-right: 32px;
+    }
+
+    .settings-layout {
+        grid-template-columns: 210px minmax(0, 1fr);
+    }
+
+}
+
+
+@media (max-width: 900px) {
+
+    .settings-main {
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+
+    .settings-topbar {
+        min-height: 95px;
+    }
+
+    .settings-top-actions {
+        gap: 8px;
+    }
+
+    .settings-search {
+        width: 190px;
+    }
+
+    .settings-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-menu {
+        display: grid;
+
+        grid-template-columns:
+            repeat(5, minmax(0, 1fr));
+
+        gap: 5px;
+    }
+
+    .settings-menu-button {
+        justify-content: center;
+
+        padding: 0 8px;
+
+        margin-bottom: 0;
+
+        font-size: 12px;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .settings-main {
+        padding:
+            0 18px 35px;
+    }
+
+    .settings-topbar {
+        flex-direction: column;
+
+        align-items: flex-start;
+        justify-content: center;
+
+        gap: 15px;
+
+        padding: 20px 0;
+    }
+
+    .settings-top-actions {
+        width: 100%;
+    }
+
+    .settings-search {
+        flex: 1;
+    }
+
+    .settings-content {
+        padding-top: 25px;
+    }
+
+    .settings-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-menu {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .settings-menu-button {
+        justify-content: flex-start;
+
+        padding: 0 12px;
+    }
+
+    .settings-panel {
+        padding: 22px;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .settings-main {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .settings-heading h2 {
+        font-size: 26px;
+    }
+
+    .settings-top-actions {
+        flex-wrap: wrap;
+    }
+
+    .settings-search {
+        width: 100%;
+        flex: none;
+    }
+
+}
+/* =========================================================
+   SETTINGS SEARCH
+   ========================================================= */
+
+.settings-search-wrapper {
+    position: relative;
+}
+
+
+.settings-search {
+    width: 230px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 0 13px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #dbe2ea;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #64748b;
+
+    cursor: text;
+}
+
+
+.settings-search input {
+    width: 100%;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    color: #172033;
+
+    font-family: inherit;
+
+    font-size: 13px;
+}
+
+
+.settings-search input::placeholder {
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   SEARCH RESULTS
+   ========================================================= */
+
+.settings-search-results {
+    position: absolute;
+
+    top: 48px;
+
+    right: 0;
+
+    width: 330px;
+
+    max-height: 420px;
+
+    overflow-y: auto;
+
+    z-index: 1000;
+
+    padding: 7px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    border: 1px solid #e1e7ef;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+
+.settings-search-result {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px;
+
+    box-sizing: border-box;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease;
+}
+
+
+.settings-search-result:hover {
+    background: #f5f7fb;
+}
+
+
+.settings-search-avatar {
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: #eef4ff;
+
+    color: #2563eb;
+
+    font-size: 15px;
+}
+
+
+.settings-search-info {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.settings-search-info strong {
+    color: #172033;
+
+    font-size: 13px;
+}
+
+
+.settings-search-info span {
+    color: #64748b;
+
+    font-size: 11px;
+
+    line-height: 1.4;
+}
+
+
+.settings-search-no-result {
+    padding: 18px 10px;
+
+    text-align: center;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   NOTIFICATIONS
+   ========================================================= */
+
+.settings-notification-wrapper {
+    position: relative;
+}
+
+
+.settings-notification {
+    position: relative;
+
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: #475569;
+
+    font-size: 18px;
+
+    cursor: pointer;
+}
+
+
+.settings-notification:hover {
+    background: #f5f7fb;
+}
+
+
+.settings-notification b {
+    position: absolute;
+
+    top: 2px;
+    right: 1px;
+
+    min-width: 16px;
+    height: 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 4px;
+
+    box-sizing: border-box;
+
+    border-radius: 20px;
+
+    background: #ef4444;
+
+    color: #ffffff;
+
+    font-size: 9px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   NOTIFICATION DROPDOWN
+   ========================================================= */
+
+.settings-notification-dropdown {
+    position: absolute;
+
+    top: 48px;
+
+    right: 0;
+
+    width: 330px;
+
+    z-index: 1000;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e1e7ef;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+
+.settings-notification-header {
+    padding: 15px;
+
+    border-bottom: 1px solid #edf1f5;
+}
+
+
+.settings-notification-header strong {
+    display: block;
+
+    color: #172033;
+
+    font-size: 14px;
+}
+
+
+.settings-notification-header span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #64748b;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   NOTIFICATION ITEM
+   ========================================================= */
+
+.settings-notification-item {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 11px;
+
+    padding: 14px;
+
+    border-bottom: 1px solid #edf1f5;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease;
+}
+
+
+.settings-notification-item:hover {
+    background: #f8fafc;
+}
+
+
+.settings-notification-icon {
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+}
+
+
+.settings-notification-icon.yellow {
+    background: #fff7df;
+
+    color: #d99a00;
+}
+
+
+.settings-notification-icon.purple {
+    background: #f3e8ff;
+
+    color: #9333ea;
+}
+
+
+.settings-notification-item strong {
+    display: block;
+
+    color: #334155;
+
+    font-size: 13px;
+}
+
+
+.settings-notification-item span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #64748b;
+
+    font-size: 11px;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   EMPTY NOTIFICATION
+   ========================================================= */
+
+.settings-notification-empty {
+    padding: 25px 15px;
+
+    text-align: center;
+}
+
+
+.settings-notification-empty > div {
+    margin-bottom: 7px;
+
+    color: #16a34a;
+
+    font-size: 22px;
+}
+
+
+.settings-notification-empty strong {
+    display: block;
+
+    color: #334155;
+
+    font-size: 13px;
+}
+
+
+.settings-notification-empty span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #64748b;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .settings-search {
+        width: 190px;
+    }
+
+
+    .settings-search-results {
+        width: 290px;
+    }
+
+
+    .settings-notification-dropdown {
+        width: 290px;
+    }
+
+}
+
+
+@media (max-width: 520px) {
+
+    .settings-search {
+        width: 150px;
+    }
+
+
+    .settings-search-results {
+        right: -50px;
+
+        width: 280px;
+    }
+
+
+    .settings-notification-dropdown {
+        right: -40px;
+
+        width: 280px;
+    }
+
+}
+.settings-page .dashboard-overline {
+  margin-top: 25px;
+}

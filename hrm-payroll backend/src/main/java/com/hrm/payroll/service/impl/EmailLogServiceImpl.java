@@ -8,7 +8,6 @@ import com.hrm.payroll.exception.ResourceNotFoundException;
 import com.hrm.payroll.repository.EmailLogRepository;
 import com.hrm.payroll.service.EmailLogService;
 import com.hrm.payroll.service.EmailService;
-import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,39 +19,70 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class EmailLogServiceImpl implements EmailLogService {
+public class EmailLogServiceImpl
+        implements EmailLogService {
 
-	private final EmailLogRepository emailLogRepository;
+    private final EmailLogRepository emailLogRepository;
 
-	private final EmailService emailService;
-	@Override
-	@Transactional
-	public void retryEmail(Long id) {
+    private final EmailService emailService;
 
-	    EmailLog emailLog = emailLogRepository
-	            .findById(id)
-	            .orElseThrow(() ->
-	                    new ResourceNotFoundException(
-	                            "Email log not found with id: " + id
-	                    )
-	            );
 
-	    if (!"FAILED".equalsIgnoreCase(emailLog.getStatus())) {
+    // =========================================================
+    // RETRY EMAIL
+    // =========================================================
 
-	        throw new IllegalStateException(
-	                "Only failed emails can be retried"
-	        );
-	    }
+    @Override
+    public void retryEmail(Long id) {
 
-	    Employee employee = emailLog.getEmployee();
+        EmailLog emailLog =
+                emailLogRepository
+                        .findById(id)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Email log not found with id: "
+                                                + id
+                                )
+                        );
 
-	    Payslip payslip = emailLog.getPayslip();
 
-	    emailService.sendPayslipEmail(
-	            employee,
-	            payslip
-	    );
-	}
+        if (!"FAILED".equalsIgnoreCase(
+                emailLog.getStatus()
+        )) {
+
+            throw new IllegalStateException(
+                    "Only failed emails can be retried"
+            );
+        }
+
+
+        if (
+                emailLog.getRetryCount() != null
+                        && emailLog.getRetryCount() >= 3
+        ) {
+
+            throw new IllegalStateException(
+                    "Maximum email retry limit reached"
+            );
+        }
+
+
+        Employee employee =
+                emailLog.getEmployee();
+
+        Payslip payslip =
+                emailLog.getPayslip();
+
+
+        emailService.sendPayslipEmail(
+                employee,
+                payslip
+        );
+    }
+
+
+    // =========================================================
+    // GET ALL EMAIL LOGS
+    // =========================================================
 
     @Override
     public List<EmailLogResponse> getAllEmailLogs() {
@@ -65,6 +95,10 @@ public class EmailLogServiceImpl implements EmailLogService {
     }
 
 
+    // =========================================================
+    // GET ALL LOGS
+    // =========================================================
+
     @Override
     public List<EmailLogResponse> getAllLogs() {
 
@@ -76,6 +110,10 @@ public class EmailLogServiceImpl implements EmailLogService {
     }
 
 
+    // =========================================================
+    // GET BY ID
+    // =========================================================
+
     @Override
     public EmailLogResponse getById(Long id) {
 
@@ -84,20 +122,29 @@ public class EmailLogServiceImpl implements EmailLogService {
                         .findById(id)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
-                                        "Email log not found with id: " + id
+                                        "Email log not found with id: "
+                                                + id
                                 )
                         );
+
 
         return mapToResponse(emailLog);
     }
 
 
+    // =========================================================
+    // ENTITY → RESPONSE
+    // =========================================================
+
     private EmailLogResponse mapToResponse(
             EmailLog emailLog) {
 
-        Employee employee = emailLog.getEmployee();
+        Employee employee =
+                emailLog.getEmployee();
 
-        Payslip payslip = emailLog.getPayslip();
+        Payslip payslip =
+                emailLog.getPayslip();
+
 
         return EmailLogResponse.builder()
 

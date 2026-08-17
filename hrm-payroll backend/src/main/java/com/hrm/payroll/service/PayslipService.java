@@ -18,5 +18,11 @@ public interface PayslipService {
     );
 
     List<PayslipResponse> getAllPayslips();
+
     void sendPayslipEmail(Long payslipId);
+
+    // Employee's own payslips
+    List<PayslipResponse> getMyPayslips(
+            String username
+    );
 }

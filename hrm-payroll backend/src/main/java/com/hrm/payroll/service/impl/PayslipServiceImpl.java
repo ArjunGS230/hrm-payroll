@@ -1,25 +1,32 @@
 package com.hrm.payroll.service.impl;
 
 import com.hrm.payroll.dto.PayslipResponse;
+
+import com.hrm.payroll.entity.EmailLog;
 import com.hrm.payroll.entity.Employee;
 import com.hrm.payroll.entity.LeaveBalance;
 import com.hrm.payroll.entity.Payroll;
 import com.hrm.payroll.entity.Payslip;
 import com.hrm.payroll.entity.SalaryStructure;
+import com.hrm.payroll.entity.User;
 
 import com.hrm.payroll.exception.BadRequestException;
 import com.hrm.payroll.exception.DuplicateResourceException;
 import com.hrm.payroll.exception.ResourceNotFoundException;
 
+import com.hrm.payroll.repository.EmailLogRepository;
 import com.hrm.payroll.repository.EmployeeRepository;
 import com.hrm.payroll.repository.LeaveBalanceRepository;
 import com.hrm.payroll.repository.PayrollRepository;
 import com.hrm.payroll.repository.PayslipRepository;
 import com.hrm.payroll.repository.SalaryStructureRepository;
+import com.hrm.payroll.repository.UserRepository;
 
 import com.hrm.payroll.service.EmailService;
 import com.hrm.payroll.service.PayslipService;
 import com.hrm.payroll.service.PdfService;
+
+import jakarta.persistence.EntityManager;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,7 +43,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class PayslipServiceImpl implements PayslipService {
+public class PayslipServiceImpl
+        implements PayslipService {
+
 
     private final EmployeeRepository employeeRepository;
 
@@ -48,9 +57,15 @@ public class PayslipServiceImpl implements PayslipService {
 
     private final PayslipRepository payslipRepository;
 
+    private final EmailLogRepository emailLogRepository;
+
     private final PdfService pdfService;
 
     private final EmailService emailService;
+
+    private final UserRepository userRepository;
+
+    private final EntityManager entityManager;
 
 
     // =========================================================
@@ -61,6 +76,7 @@ public class PayslipServiceImpl implements PayslipService {
     public PayslipResponse generatePayslip(
             Long employeeId,
             String payPeriod) {
+
 
         // =====================================================
         // 1. VALIDATE EMPLOYEE ID
@@ -87,12 +103,15 @@ public class PayslipServiceImpl implements PayslipService {
         }
 
 
-        payPeriod = payPeriod.trim();
+        payPeriod =
+                payPeriod.trim();
 
 
         try {
 
-            YearMonth.parse(payPeriod);
+            YearMonth.parse(
+                    payPeriod
+            );
 
         } catch (DateTimeParseException e) {
 
@@ -108,7 +127,8 @@ public class PayslipServiceImpl implements PayslipService {
         // =====================================================
 
         Employee employee =
-                employeeRepository.findById(employeeId)
+                employeeRepository
+                        .findById(employeeId)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
                                         "Employee not found with id: "
@@ -173,7 +193,9 @@ public class PayslipServiceImpl implements PayslipService {
 
         LeaveBalance leaveBalance =
                 leaveBalanceRepository
-                        .findByEmployeeId(employeeId)
+                        .findByEmployeeId(
+                                employeeId
+                        )
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
                                         "Leave balance not found "
@@ -266,6 +288,13 @@ public class PayslipServiceImpl implements PayslipService {
 
 
         // =====================================================
+        // FLUSH PAYSLIP
+        // =====================================================
+
+        entityManager.flush();
+
+
+        // =====================================================
         // 13. CREATE RESPONSE
         // =====================================================
 
@@ -308,7 +337,9 @@ public class PayslipServiceImpl implements PayslipService {
         );
 
         savedPayslip.setFileName(
-                new File(pdfPath).getName()
+                new File(
+                        pdfPath
+                ).getName()
         );
 
 
@@ -329,10 +360,174 @@ public class PayslipServiceImpl implements PayslipService {
 
 
         // =====================================================
-        // 17. RETURN RESPONSE
+        // 17. GET EMAIL STATUS
+        // =====================================================
+
+        EmailLog emailLog =
+                emailLogRepository
+                        .findByPayslipId(
+                                savedPayslip.getId()
+                        )
+                        .orElse(null);
+
+
+        if (emailLog != null) {
+
+            response.setEmailStatus(
+                    emailLog.getStatus()
+            );
+
+
+            if ("SENT".equalsIgnoreCase(
+                    emailLog.getStatus()
+            )) {
+
+                response.setMessage(
+                        "Payslip generated and emailed successfully."
+                );
+
+            } else if ("FAILED".equalsIgnoreCase(
+                    emailLog.getStatus()
+            )) {
+
+                response.setMessage(
+                        "Payslip generated, but email delivery failed. "
+                                + "It will be retried automatically."
+                );
+
+            } else {
+
+                response.setMessage(
+                        "Payslip generated successfully."
+                );
+            }
+
+        } else {
+
+            response.setEmailStatus(
+                    "NOT_SENT"
+            );
+
+            response.setMessage(
+                    "Payslip generated successfully."
+            );
+        }
+
+
+        // =====================================================
+        // 18. RETURN RESPONSE
         // =====================================================
 
         return response;
+    }
+
+
+    // =========================================================
+    // GET MY PAYSLIPS
+    // =========================================================
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PayslipResponse> getMyPayslips(
+            String username) {
+
+
+        User user =
+                userRepository
+                        .findByUsername(username)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "User not found: "
+                                                + username
+                                )
+                        );
+
+
+        Employee employee =
+                employeeRepository
+                        .findByEmail(
+                                user.getEmail()
+                        )
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Employee profile not found for user: "
+                                                + username
+                                )
+                        );
+
+
+        return payslipRepository
+                .findByPayroll_Employee_Id(
+                        employee.getId()
+                )
+                .stream()
+                .map(payslip -> {
+
+                    Payroll payroll =
+                            payslip.getPayroll();
+
+
+                    if (payroll == null) {
+
+                        throw new ResourceNotFoundException(
+                                "Payroll not found for payslip: "
+                                        + payslip.getId()
+                        );
+                    }
+
+
+                    Employee payslipEmployee =
+                            payroll.getEmployee();
+
+
+                    if (payslipEmployee == null) {
+
+                        throw new ResourceNotFoundException(
+                                "Employee not found for payslip: "
+                                        + payslip.getId()
+                        );
+                    }
+
+
+                    SalaryStructure salaryStructure =
+                            salaryStructureRepository
+                                    .findTopByEmployeeIdOrderByEffectiveFromDesc(
+                                            payslipEmployee.getId()
+                                    )
+                                    .orElseThrow(() ->
+                                            new ResourceNotFoundException(
+                                                    "Salary structure not found "
+                                                            + "for employee: "
+                                                            + payslipEmployee.getId()
+                                            )
+                                    );
+
+
+                    LeaveBalance leaveBalance =
+                            leaveBalanceRepository
+                                    .findByEmployeeId(
+                                            payslipEmployee.getId()
+                                    )
+                                    .orElseThrow(() ->
+                                            new ResourceNotFoundException(
+                                                    "Leave balance not found "
+                                                            + "for employee: "
+                                                            + payslipEmployee.getId()
+                                            )
+                                    );
+
+
+                    return mapToResponse(
+                            payslip,
+                            payslipEmployee,
+                            salaryStructure,
+                            leaveBalance,
+                            payroll.getTotalDeductions(),
+                            payroll.getNetSalary()
+                    );
+
+                })
+                .toList();
     }
 
 
@@ -354,7 +549,8 @@ public class PayslipServiceImpl implements PayslipService {
 
 
         Payslip payslip =
-                payslipRepository.findById(id)
+                payslipRepository
+                        .findById(id)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
                                         "Payslip not found with id: "
@@ -430,6 +626,7 @@ public class PayslipServiceImpl implements PayslipService {
 
     // =========================================================
     // GET EMPLOYEE PAYSLIPS
+    // HR
     // =========================================================
 
     @Override
@@ -446,7 +643,8 @@ public class PayslipServiceImpl implements PayslipService {
 
 
         if (!employeeRepository.existsById(
-                employeeId)) {
+                employeeId
+        )) {
 
             throw new ResourceNotFoundException(
                     "Employee not found with id: "
@@ -549,15 +747,14 @@ public class PayslipServiceImpl implements PayslipService {
 
 
         Payslip payslip =
-                payslipRepository.findById(
-                        payslipId
-                )
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Payslip not found with id: "
-                                        + payslipId
-                        )
-                );
+                payslipRepository
+                        .findById(payslipId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Payslip not found with id: "
+                                                + payslipId
+                                )
+                        );
 
 
         if (payslip.getPayroll() == null) {
@@ -583,7 +780,9 @@ public class PayslipServiceImpl implements PayslipService {
         }
 
 
-        // Make sure PDF exists
+        // =====================================================
+        // CHECK PDF
+        // =====================================================
 
         if (payslip.getFilePath() == null ||
                 payslip.getFilePath().trim().isEmpty()) {
@@ -619,6 +818,7 @@ public class PayslipServiceImpl implements PayslipService {
 
     // =========================================================
     // GET ALL PAYSLIPS
+    // HR
     // =========================================================
 
     @Override
@@ -734,12 +934,20 @@ public class PayslipServiceImpl implements PayslipService {
                         employee.getName()
                 )
 
+                .email(
+                        employee.getEmail()
+                )
+
                 .department(
                         employee.getDepartment()
                 )
 
                 .designation(
                         employee.getDesignation()
+                )
+
+                .joiningDate(
+                        employee.getJoiningDate()
                 )
 
                 .payMonth(
@@ -755,8 +963,7 @@ public class PayslipServiceImpl implements PayslipService {
                 )
 
                 .specialAllowance(
-                        salaryStructure
-                                .getSpecialAllowance()
+                        salaryStructure.getSpecialAllowance()
                 )
 
                 .grossSalary(
@@ -772,8 +979,7 @@ public class PayslipServiceImpl implements PayslipService {
                 )
 
                 .professionalTax(
-                        salaryStructure
-                                .getProfessionalTax()
+                        salaryStructure.getProfessionalTax()
                 )
 
                 .totalDeductions(

@@ -1,10 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/Dashboard.css";
+import axios from "axios";
+
+import "../styles/Reports.css";
 
 function Reports() {
 
   const navigate = useNavigate();
+
+  // =====================================================
+  // USER
+  // =====================================================
 
   const username =
     localStorage.getItem("username") || "User";
@@ -13,580 +19,726 @@ function Reports() {
     localStorage.getItem("role") || "HR";
 
 
+  // =====================================================
+  // SEARCH
+  // =====================================================
+
+  const [searchText, setSearchText] = useState("");
+
+
+  // =====================================================
+  // NOTIFICATIONS
+  // =====================================================
+
+  const [pendingLeaves, setPendingLeaves] = useState(0);
+
+  const [payslipsGenerated, setPayslipsGenerated] =
+    useState(0);
+
+  const [showNotifications, setShowNotifications] =
+    useState(false);
+
+
+  // =====================================================
+  // REPORT ITEMS
+  // =====================================================
+
+  const reportItems = [
+
+    {
+      id: "payroll",
+      title: "Payroll Report",
+      description:
+        "View payroll information including gross salary, deductions and net salary.",
+      icon: "💰",
+      keywords:
+        "payroll salary gross deductions net",
+      path: "/reports/payroll"
+    },
+
+    {
+      id: "leave",
+      title: "Leave Report",
+      description:
+        "View employee leave applications, leave types, days and approval status.",
+      icon: "📅",
+      keywords:
+        "leave applications leave type days approval status",
+      path: "/reports/leave"
+    },
+
+    {
+      id: "payslip",
+      title: "Payslip Report",
+      description:
+        "View generated payslips and employee payroll information.",
+      icon: "📄",
+      keywords:
+        "payslip payslips generated payroll employee",
+      path: "/reports/payslips"
+    },
+
+    {
+      id: "email",
+      title: "Email Report",
+      description:
+        "View email delivery status, failed emails and retry information.",
+      icon: "📧",
+      keywords:
+        "email delivery failed retry information",
+      path: "/email-logs"
+    }
+
+  ];
+
+
+  // =====================================================
+  // LOAD REAL NOTIFICATIONS
+  // =====================================================
+
   useEffect(() => {
 
-    const token = localStorage.getItem("token");
+    const token =
+      localStorage.getItem("token");
+
 
     if (!token) {
+
       navigate("/login");
+
+      return;
+
     }
+
+
+    const config = {
+
+      headers: {
+
+        Authorization:
+          `Bearer ${token}`
+
+      }
+
+    };
+
+
+    const loadNotifications =
+      async () => {
+
+        try {
+
+          const response =
+            await axios.get(
+              "http://localhost:8090/api/dashboard/summary",
+              config
+            );
+
+
+          setPendingLeaves(
+            response.data.pendingLeaves || 0
+          );
+
+
+          setPayslipsGenerated(
+            response.data.payslipsGenerated || 0
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            "Reports notification error:",
+            error
+          );
+
+        }
+
+      };
+
+
+    loadNotifications();
 
   }, [navigate]);
 
 
-  const handleLogout = () => {
+  // =====================================================
+  // SEARCH
+  // =====================================================
 
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    localStorage.removeItem("role");
+  const search =
+    searchText
+      .trim()
+      .toLowerCase();
 
-    navigate("/login");
-  };
 
+  const filteredReports =
+    reportItems.filter((report) => {
+
+      if (!search) {
+        return true;
+      }
+
+
+      return (
+
+        report.title
+          .toLowerCase()
+          .includes(search)
+
+        ||
+
+        report.description
+          .toLowerCase()
+          .includes(search)
+
+        ||
+
+        report.keywords
+          .toLowerCase()
+          .includes(search)
+
+      );
+
+    });
+
+
+  // =====================================================
+  // NOTIFICATION COUNT
+  // =====================================================
+
+  const notificationCount =
+    pendingLeaves + payslipsGenerated;
+
+
+  // =====================================================
+  // RETURN
+  // =====================================================
 
   return (
 
-    <div className="dashboard-page">
+    <div className="reports-page">
 
-      {/* ================= SIDEBAR ================= */}
 
-      <aside className="dashboard-sidebar">
+      {/* =====================================================
+          TOP BAR
+          ===================================================== */}
 
-        <div className="dashboard-brand">
+      <header className="reports-topbar">
 
-          <div className="dashboard-brand-logo">
-            H
-          </div>
 
-          <div>
-            <strong>HRM</strong>
+        {/* ===================================================
+            LEFT
+            =================================================== */}
 
-            <span>
-              PAYROLL AUTOMATION
-            </span>
-          </div>
+        <div className="reports-topbar-left">
+
+          <span className="reports-overline">
+
+            HR WORKSPACE
+
+          </span>
+
+
+          <h1>
+
+            Reports
+
+          </h1>
 
         </div>
 
 
-        <nav className="dashboard-navigation">
+        {/* ===================================================
+            TOP ACTIONS
+            =================================================== */}
 
-          <button
-            type="button"
-            className="dashboard-menu-item"
-            onClick={() => navigate("/dashboard")}
-          >
-            <span className="dashboard-menu-icon">⌂</span>
-            <span className="dashboard-menu-text">
-              Dashboard
-            </span>
-          </button>
+        <div className="reports-top-actions">
 
 
-          <button
-            type="button"
-            className="dashboard-menu-item"
-            onClick={() => navigate("/employees")}
-          >
-            <span className="dashboard-menu-icon">♙</span>
-            <span className="dashboard-menu-text">
-              Employees
-            </span>
-          </button>
+          {/* =================================================
+              SEARCH
+          ================================================= */}
+
+          <div className="reports-search-wrapper">
 
 
-          <button
-            type="button"
-            className="dashboard-menu-item"
-            onClick={() => navigate("/salary-structures")}
-          >
-            <span className="dashboard-menu-icon">₹</span>
-            <span className="dashboard-menu-text">
-              Salary Structures
-            </span>
-          </button>
+            <div className="reports-search">
+
+              <span>
+                ⌕
+              </span>
 
 
-          <button
-            type="button"
-            className="dashboard-menu-item"
-            onClick={() => navigate("/leave-management")}
-          >
-            <span className="dashboard-menu-icon">◷</span>
-            <span className="dashboard-menu-text">
-              Leave Management
-            </span>
-          </button>
+              <input
+                type="text"
+                value={searchText}
+                onChange={(e) =>
+                  setSearchText(
+                    e.target.value
+                  )
+                }
+                placeholder="Search anything..."
+              />
+
+            </div>
 
 
-          <button
-            type="button"
-            className="dashboard-menu-item"
-            onClick={() => navigate("/payroll")}
-          >
-            <span className="dashboard-menu-icon">▣</span>
-            <span className="dashboard-menu-text">
-              Payroll
-            </span>
-          </button>
+            {/* =================================================
+                SEARCH RESULTS
+            ================================================= */}
+
+            {searchText.trim() && (
+
+              <div className="reports-search-results">
 
 
-          <button
-            type="button"
-            className="dashboard-menu-item"
-            onClick={() => navigate("/payslips")}
-          >
-            <span className="dashboard-menu-icon">▤</span>
-            <span className="dashboard-menu-text">
-              Payslips
-            </span>
-          </button>
+                {filteredReports.length > 0 ? (
+
+                  filteredReports.map(
+                    (report) => (
+
+                      <div
+                        key={report.id}
+                        className="reports-search-result"
+                        onClick={() => {
+
+                          setSearchText("");
+
+                          navigate(
+                            report.path
+                          );
+
+                        }}
+                      >
+
+                        <div className="reports-search-avatar">
+
+                          {report.icon}
+
+                        </div>
 
 
-          <button
-            type="button"
-            className="dashboard-menu-item"
-            onClick={() => navigate("/email-logs")}
-          >
-            <span className="dashboard-menu-icon">✉</span>
-            <span className="dashboard-menu-text">
-              Email Logs
-            </span>
-          </button>
+                        <div className="reports-search-info">
+
+                          <strong>
+
+                            {report.title}
+
+                          </strong>
 
 
-          {/* REPORTS - ACTIVE */}
+                          <span>
 
-          <button
-            type="button"
-            className="dashboard-menu-item active"
-            onClick={() => navigate("/reports")}
-          >
-            <span className="dashboard-menu-icon">▥</span>
-            <span className="dashboard-menu-text">
-              Reports
-            </span>
-          </button>
+                            {report.description}
+
+                          </span>
+
+                        </div>
+
+                      </div>
+
+                    )
+                  )
+
+                ) : (
+
+                  <div className="reports-search-no-result">
+
+                    No matching report found.
+
+                  </div>
+
+                )}
+
+              </div>
+
+            )}
+
+          </div>
 
 
-          <button
-            type="button"
-            className="dashboard-menu-item"
-            onClick={() => navigate("/settings")}
-          >
-            <span className="dashboard-menu-icon">⚙</span>
-            <span className="dashboard-menu-text">
-              Settings
-            </span>
-          </button>
+          {/* =================================================
+              NOTIFICATIONS
+          ================================================= */}
 
-        </nav>
+          <div className="reports-notification-wrapper">
 
 
-        {/* SIDEBAR FOOTER */}
+            <button
+              type="button"
+              className="reports-notification"
+              onClick={() =>
+                setShowNotifications(
+                  !showNotifications
+                )
+              }
+            >
 
-        <div className="dashboard-sidebar-footer">
+              ♧
 
-          <div className="dashboard-user">
 
-            <div className="dashboard-avatar">
+              {notificationCount > 0 && (
+
+                <b>
+
+                  {notificationCount}
+
+                </b>
+
+              )}
+
+            </button>
+
+
+            {/* =================================================
+                NOTIFICATION DROPDOWN
+            ================================================= */}
+
+            {showNotifications && (
+
+              <div className="reports-notification-dropdown">
+
+
+                {/* =============================================
+                    HEADER
+                ============================================= */}
+
+                <div className="reports-notification-header">
+
+                  <div>
+
+                    <strong>
+
+                      Notifications
+
+                    </strong>
+
+
+                    <span>
+
+                      HR workspace updates
+
+                    </span>
+
+                  </div>
+
+                </div>
+
+
+                {/* =============================================
+                    PENDING LEAVES
+                ============================================= */}
+
+                {pendingLeaves > 0 && (
+
+                  <div
+                    className="reports-notification-item"
+                    onClick={() => {
+
+                      setShowNotifications(false);
+
+                      navigate(
+                        "/leave-management"
+                      );
+
+                    }}
+                  >
+
+                    <div className="reports-notification-icon yellow">
+
+                      ◷
+
+                    </div>
+
+
+                    <div>
+
+                      <strong>
+
+                        Pending leave requests
+
+                      </strong>
+
+
+                      <span>
+
+                        {pendingLeaves}
+
+                        {" "}
+
+                        leave request
+                        {pendingLeaves !== 1
+                          ? "s"
+                          : ""}
+
+                        {" "}awaiting approval
+
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                )}
+
+
+                {/* =============================================
+                    PAYSLIPS
+                ============================================= */}
+
+                {payslipsGenerated > 0 && (
+
+                  <div
+                    className="reports-notification-item"
+                    onClick={() => {
+
+                      setShowNotifications(false);
+
+                      navigate(
+                        "/payslips"
+                      );
+
+                    }}
+                  >
+
+                    <div className="reports-notification-icon purple">
+
+                      ▧
+
+                    </div>
+
+
+                    <div>
+
+                      <strong>
+
+                        Payslips generated
+
+                      </strong>
+
+
+                      <span>
+
+                        {payslipsGenerated}
+
+                        {" "}
+
+                        payslip
+                        {payslipsGenerated !== 1
+                          ? "s"
+                          : ""}
+
+                        {" "}generated this month
+
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                )}
+
+
+                {/* =============================================
+                    NO NOTIFICATIONS
+                ============================================= */}
+
+                {pendingLeaves === 0 &&
+                  payslipsGenerated === 0 && (
+
+                    <div className="reports-notification-empty">
+
+                      <div>
+
+                        ✓
+
+                      </div>
+
+
+                      <strong>
+
+                        You're all caught up
+
+                      </strong>
+
+
+                      <span>
+
+                        No new notifications.
+
+                      </span>
+
+                    </div>
+
+                  )}
+
+              </div>
+
+            )}
+
+          </div>
+
+
+          {/* =================================================
+              USER
+          ================================================= */}
+
+          <div className="reports-user">
+
+
+            <div className="reports-avatar">
+
               {username
                 .substring(0, 2)
                 .toUpperCase()}
+
             </div>
+
 
             <div>
 
               <strong>
+
                 {username}
+
               </strong>
 
+
               <span>
+
                 {role}
+
               </span>
 
             </div>
 
+
           </div>
 
-
-          <button
-            className="logout-button"
-            onClick={handleLogout}
-          >
-            <span>↪</span>
-            Logout
-          </button>
 
         </div>
 
-      </aside>
+      </header>
 
 
-      {/* ================= MAIN CONTENT ================= */}
+      {/* =====================================================
+          REPORTS CONTENT
+          ===================================================== */}
 
-      <main className="dashboard-main">
-
-
-        {/* TOPBAR */}
-
-        <header className="dashboard-topbar">
-
-          <div>
-
-            <span className="dashboard-overline">
-              HR WORKSPACE
-            </span>
-
-            <h1>
-              Reports
-            </h1>
-
-          </div>
+      <main className="reports-content">
 
 
-          <div className="dashboard-top-actions">
-
-            <button className="dashboard-search">
-              <span>⌕</span>
-              Search anything...
-            </button>
+        <div className="reports-heading">
 
 
-            <button className="notification-button">
-              ♧
+          <span>
 
-              <b>
-                3
-              </b>
+            REPORTS
 
-            </button>
+          </span>
 
 
-            <div className="topbar-user">
+          <h2>
 
-              <div className="dashboard-avatar">
-                {username
-                  .substring(0, 2)
-                  .toUpperCase()}
-              </div>
+            Reports
 
-              <div>
-
-                <strong>
-                  {username}
-                </strong>
-
-                <span>
-                  {role}
-                </span>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </header>
+          </h2>
 
 
-        {/* ================= REPORTS ================= */}
+          <p>
 
-        <section
-          style={{
-            padding: "32px"
-          }}
-        >
+            View and analyze your HRM payroll data
 
-          <div
-            style={{
-              marginBottom: "30px"
-            }}
-          >
-
-            <span
-              style={{
-                color: "#2563eb",
-                fontSize: "12px",
-                fontWeight: "700",
-                letterSpacing: "2px"
-              }}
-            >
-              REPORTS
-            </span>
-
-            <h2
-              style={{
-                fontSize: "32px",
-                margin: "8px 0",
-                color: "#172033"
-              }}
-            >
-              Reports
-            </h2>
-
-            <p
-              style={{
-                color: "#64748b",
-                margin: 0,
-                fontSize: "16px"
-              }}
-            >
-              View and analyze your HRM payroll data
-            </p>
-
-          </div>
+          </p>
 
 
-          {/* REPORT CARDS */}
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "repeat(4, minmax(0, 1fr))",
-              gap: "22px"
-            }}
-          >
+        </div>
 
 
-            {/* PAYROLL REPORT */}
+        {/* ===================================================
+            REPORT CARDS
+            =================================================== */}
 
-            <div
-              style={{
-                background: "#ffffff",
-                padding: "25px",
-                borderRadius: "14px",
-                boxShadow:
-                  "0 3px 12px rgba(0,0,0,0.08)"
-              }}
-            >
+        <section className="reports-grid">
 
-              <div
-                style={{
-                  fontSize: "32px",
-                  marginBottom: "20px"
-                }}
-              >
-                💰
-              </div>
 
-              <h3
-                style={{
-                  color: "#172033",
-                  fontSize: "20px",
-                  marginBottom: "10px"
-                }}
-              >
-                Payroll Report
+          {filteredReports.length > 0 ? (
+
+            filteredReports.map(
+              (report) => (
+
+                <div
+                  className="report-card"
+                  key={report.id}
+                >
+
+                  <div className="report-icon">
+
+                    {report.icon}
+
+                  </div>
+
+
+                  <h3>
+
+                    {report.title}
+
+                  </h3>
+
+
+                  <p>
+
+                    {report.description}
+
+                  </p>
+
+
+                  <button
+                    onClick={() =>
+                      navigate(
+                        report.path
+                      )
+                    }
+                  >
+
+                    View Report
+
+                  </button>
+
+                </div>
+
+              )
+            )
+
+          ) : (
+
+            <div className="reports-no-results">
+
+              <h3>
+                No reports found
               </h3>
 
-              <p
-                style={{
-                  color: "#64748b",
-                  lineHeight: "1.6",
-                  minHeight: "52px"
-                }}
-              >
-                View payroll information including
-                gross salary, deductions and net salary.
+              <p>
+                Try searching for Payroll, Leave,
+                Payslip or Email.
               </p>
-
-              <button
-                onClick={() => navigate("/reports/payroll")}
-                style={{
-                  background: "#2563eb",
-                  color: "#ffffff",
-                  border: "none",
-                  padding: "11px 20px",
-                  borderRadius: "6px",
-                  fontWeight: "600",
-                  cursor: "pointer"
-                }}
-              >
-                View Report
-              </button>
 
             </div>
 
-
-            {/* LEAVE REPORT */}
-
-            <div
-              style={{
-                background: "#ffffff",
-                padding: "25px",
-                borderRadius: "14px",
-                boxShadow:
-                  "0 3px 12px rgba(0,0,0,0.08)"
-              }}
-            >
-
-              <div
-                style={{
-                  fontSize: "32px",
-                  marginBottom: "20px"
-                }}
-              >
-                📅
-              </div>
-
-              <h3
-                style={{
-                  color: "#172033",
-                  fontSize: "20px",
-                  marginBottom: "10px"
-                }}
-              >
-                Leave Report
-              </h3>
-
-              <p
-                style={{
-                  color: "#64748b",
-                  lineHeight: "1.6",
-                  minHeight: "52px"
-                }}
-              >
-                View employee leave applications,
-                leave types, days and approval status.
-              </p>
-
-              <button
-                onClick={() => navigate("/reports/leave")}
-                style={{
-                  background: "#2563eb",
-                  color: "#ffffff",
-                  border: "none",
-                  padding: "11px 20px",
-                  borderRadius: "6px",
-                  fontWeight: "600",
-                  cursor: "pointer"
-                }}
-              >
-                View Report
-              </button>
-
-            </div>
-
-
-            {/* PAYSLIP REPORT */}
-
-            <div
-              style={{
-                background: "#ffffff",
-                padding: "25px",
-                borderRadius: "14px",
-                boxShadow:
-                  "0 3px 12px rgba(0,0,0,0.08)"
-              }}
-            >
-
-              <div
-                style={{
-                  fontSize: "32px",
-                  marginBottom: "20px"
-                }}
-              >
-                📄
-              </div>
-
-              <h3
-                style={{
-                  color: "#172033",
-                  fontSize: "20px",
-                  marginBottom: "10px"
-                }}
-              >
-                Payslip Report
-              </h3>
-
-              <p
-                style={{
-                  color: "#64748b",
-                  lineHeight: "1.6",
-                  minHeight: "52px"
-                }}
-              >
-                View generated payslips and employee
-                payroll information.
-              </p>
-
-              <button
-                onClick={() => navigate("/reports/payslips")}
-                style={{
-                  background: "#2563eb",
-                  color: "#ffffff",
-                  border: "none",
-                  padding: "11px 20px",
-                  borderRadius: "6px",
-                  fontWeight: "600",
-                  cursor: "pointer"
-                }}
-              >
-                View Report
-              </button>
-
-            </div>
-
-
-            {/* EMAIL REPORT */}
-
-            <div
-              style={{
-                background: "#ffffff",
-                padding: "25px",
-                borderRadius: "14px",
-                boxShadow:
-                  "0 3px 12px rgba(0,0,0,0.08)"
-              }}
-            >
-
-              <div
-                style={{
-                  fontSize: "32px",
-                  marginBottom: "20px"
-                }}
-              >
-                📧
-              </div>
-
-              <h3
-                style={{
-                  color: "#172033",
-                  fontSize: "20px",
-                  marginBottom: "10px"
-                }}
-              >
-                Email Report
-              </h3>
-
-              <p
-                style={{
-                  color: "#64748b",
-                  lineHeight: "1.6",
-                  minHeight: "52px"
-                }}
-              >
-                View email delivery status, failed
-                emails and retry information.
-              </p>
-
-              <button
-                onClick={() => navigate("/email-logs")}
-                style={{
-                  background: "#2563eb",
-                  color: "#ffffff",
-                  border: "none",
-                  padding: "11px 20px",
-                  borderRadius: "6px",
-                  fontWeight: "600",
-                  cursor: "pointer"
-                }}
-              >
-                View Report
-              </button>
-
-            </div>
-
-          </div>
+          )}
 
         </section>
 
+
       </main>
 
+
     </div>
+
   );
+
 }
+
 
 export default Reports;

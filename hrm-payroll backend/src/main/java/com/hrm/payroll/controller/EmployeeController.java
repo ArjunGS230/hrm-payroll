@@ -67,4 +67,38 @@ public class EmployeeController {
                 "Employee deactivated successfully"
         );
     }
+ // =========================================================
+ // APPROVE EMPLOYEE
+ // =========================================================
+
+ @PutMapping("/{id}/approve")
+ public ResponseEntity<EmployeeResponse> approveEmployee(
+         @PathVariable Long id) {
+
+     return ResponseEntity.ok(
+             employeeService.approveEmployee(id)
+     );
+ }
+
+
+ // =========================================================
+ // REJECT EMPLOYEE
+ // =========================================================
+
+ @PutMapping("/{id}/reject")
+ public ResponseEntity<EmployeeResponse> rejectEmployee(
+         @PathVariable Long id) {
+
+     return ResponseEntity.ok(
+             employeeService.rejectEmployee(id)
+     );
+ }
+    @PutMapping("/{id}/reactivate")
+    public ResponseEntity<EmployeeResponse> reactivateEmployee(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                employeeService.reactivateEmployee(id)
+        );
+    }
 }

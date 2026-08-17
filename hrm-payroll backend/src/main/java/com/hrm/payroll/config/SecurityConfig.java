@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.http.HttpMethod;
+
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -52,14 +54,22 @@ public class SecurityConfig {
         CorsConfiguration configuration =
                 new CorsConfiguration();
 
-        // React frontend
+
+        // =================================================
+        // FRONTEND ORIGIN
+        // =================================================
+
         configuration.setAllowedOrigins(
                 List.of(
                         "http://localhost:5173"
                 )
         );
 
-        // HTTP methods
+
+        // =================================================
+        // HTTP METHODS
+        // =================================================
+
         configuration.setAllowedMethods(
                 List.of(
                         "GET",
@@ -71,26 +81,43 @@ public class SecurityConfig {
                 )
         );
 
-        // Request headers
+
+        // =================================================
+        // REQUEST HEADERS
+        // =================================================
+
         configuration.setAllowedHeaders(
                 List.of(
                         "Authorization",
                         "Content-Type",
-                        "Accept"
+                        "Accept",
+                        "Origin",
+                        "X-Requested-With"
                 )
         );
 
-        // Allow browser to read response headers
+
+        // =================================================
+        // EXPOSED RESPONSE HEADERS
+        // =================================================
+
         configuration.setExposedHeaders(
                 List.of(
                         "Authorization"
                 )
         );
 
-        // We are using JWT in Authorization header,
-        // so browser cookies are not required.
+
+        // =================================================
+        // JWT DOES NOT USE COOKIES
+        // =================================================
+
         configuration.setAllowCredentials(false);
 
+
+        // =================================================
+        // REGISTER CORS
+        // =================================================
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
@@ -99,6 +126,7 @@ public class SecurityConfig {
                 "/**",
                 configuration
         );
+
 
         return source;
     }
@@ -115,13 +143,16 @@ public class SecurityConfig {
 
         http
 
+
                 // =================================================
                 // CORS
                 // =================================================
 
-                .cors(cors -> cors.configurationSource(
-                        corsConfigurationSource()
-                ))
+                .cors(cors ->
+                        cors.configurationSource(
+                                corsConfigurationSource()
+                        )
+                )
 
 
                 // =================================================
@@ -170,13 +201,28 @@ public class SecurityConfig {
 
 
                         // =========================================
+                        // CORS PREFLIGHT REQUESTS
+                        // =========================================
+
+                        .requestMatchers(
+                                HttpMethod.OPTIONS,
+                                "/**"
+                        ).permitAll()
+
+
+                        // =========================================
                         // PUBLIC APIs
                         // =========================================
 
                         .requestMatchers(
-                                "/api/auth/**",
+                                "/api/auth/register",
+                                "/api/auth/login",
                                 "/api/test"
                         ).permitAll()
+
+                        .requestMatchers(
+                                "/api/auth/change-password"
+                        ).authenticated()
 
 
                         // =========================================
@@ -215,9 +261,10 @@ public class SecurityConfig {
                         // =========================================
                         // PAYROLL APIs
                         // =========================================
-
+                        .requestMatchers("/api/payrolls/my")
+                        .hasAnyRole("HR", "EMPLOYEE")
                         .requestMatchers(
-                                "/api/payroll/**"
+                                "/api/payrolls/**"
                         ).hasRole("HR")
 
 
@@ -225,9 +272,24 @@ public class SecurityConfig {
                         // PAYSLIP APIs
                         // =========================================
 
+                        .requestMatchers("/api/payslips/my")
+                        .hasAnyRole("HR", "EMPLOYEE")
+
+                        .requestMatchers("/api/payslips/**")
+                        .hasRole("HR")
+
+
+                        // =========================================
+                        // DASHBOARD APIs
+                        // =========================================
+
                         .requestMatchers(
-                                "/api/payslips/**"
-                        ).hasRole("HR")
+                                "/api/dashboard/**"
+                        )
+                        .hasAnyRole(
+                                "HR",
+                                "EMPLOYEE"
+                        )
 
 
                         // =========================================
@@ -264,4 +326,5 @@ public class SecurityConfig {
 
         return configuration.getAuthenticationManager();
     }
+
 }

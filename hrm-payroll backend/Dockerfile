@@ -30,7 +30,7 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
 # Render provides the PORT environment variable
-EXPOSE 8090
+EXPOSE 8080
 
 # Start Spring Boot
-ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT:-8090}"]
+ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT:-8080}"]

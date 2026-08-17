@@ -105,7 +105,7 @@ function Dashboard() {
 
         const summaryResponse =
           await axios.get(
-            "http://localhost:8090/api/dashboard/summary",
+            "https://hrm-payroll-backend.onrender.com/api/dashboard/summary",
             config
           );
 
@@ -121,7 +121,7 @@ function Dashboard() {
 
         const payrollResponse =
           await axios.get(
-            "http://localhost:8090/api/dashboard/recent-payroll",
+            "https://hrm-payroll-backend.onrender.com/api/dashboard/recent-payroll",
             config
           );
 
@@ -137,7 +137,7 @@ function Dashboard() {
 
         const employeeResponse =
           await axios.get(
-            "http://localhost:8090/api/employees",
+            "https://hrm-payroll-backend.onrender.com/api/employees",
             config
           );
 

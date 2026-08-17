@@ -312,7 +312,7 @@ function Settings() {
 
       const response =
         await axios.put(
-          "http://localhost:8090/api/auth/change-password",
+          "https://hrm-payroll-backend.onrender.com/api/auth/change-password",
 
           {
             currentPassword:

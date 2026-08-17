@@ -130,7 +130,7 @@ function Reports() {
 
           const response =
             await axios.get(
-              "http://localhost:8090/api/dashboard/summary",
+              "https://hrm-payroll-backend.onrender.com/api/dashboard/summary",
               config
             );
 

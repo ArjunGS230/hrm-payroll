@@ -209,7 +209,7 @@ function SignUp() {
       setLoading(true);
 
       const response = await axios.post(
-        "http://localhost:8090/api/auth/register",
+        "https://hrm-payroll-backend.onrender.com/api/auth/register",
         {
           name:
             formData.name.trim(),

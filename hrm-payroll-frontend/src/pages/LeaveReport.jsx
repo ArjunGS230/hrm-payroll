@@ -29,7 +29,7 @@ function LeaveReport() {
 
       // First get all employees
       const employeeResponse = await axios.get(
-        "http://localhost:8090/api/employees",
+        "https://hrm-payroll-backend.onrender.com/api/employees",
         authConfig
       );
 
@@ -38,7 +38,7 @@ function LeaveReport() {
       // Get leave records for every employee
       const leaveRequests = employees.map((employee) =>
         axios.get(
-          `http://localhost:8090/api/leaves/employee/${employee.id}`,
+          `https://hrm-payroll-backend.onrender.com/api/leaves/employee/${employee.id}`,
           authConfig
         )
       );

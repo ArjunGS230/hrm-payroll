@@ -109,7 +109,7 @@ function Payroll() {
 
             const response =
                 await axios.get(
-                    "http://localhost:8090/api/payrolls",
+                    "https://hrm-payroll-backend.onrender.com/api/payrolls",
                     authConfig
                 );
 
@@ -200,7 +200,7 @@ function Payroll() {
 
             const response =
                 await axios.get(
-                    "http://localhost:8090/api/payroll-schedule",
+                    "https://hrm-payroll-backend.onrender.com/api/payroll-schedule",
                     authConfig
                 );
 
@@ -331,7 +331,7 @@ function Payroll() {
 
             const response =
                 await axios.put(
-                    "http://localhost:8090/api/payroll-schedule",
+                    "https://hrm-payroll-backend.onrender.com/api/payroll-schedule",
                     requestData,
                     authConfig
                 );
@@ -443,7 +443,7 @@ function Payroll() {
 
             const response =
                 await axios.post(
-                    "http://localhost:8090/api/payroll-schedule/run-now",
+                    "https://hrm-payroll-backend.onrender.com/api/payroll-schedule/run-now",
                     {},
                     authConfig
                 );
@@ -583,7 +583,7 @@ function Payroll() {
 
             const response =
                 await axios.get(
-                    "http://localhost:8090/api/payrolls/export",
+                    "https://hrm-payroll-backend.onrender.com/api/payrolls/export",
                     {
                         headers: {
 

@@ -53,7 +53,7 @@ function EmployeeDashboard() {
 
         const payrollResponse =
           await axios.get(
-            "http://localhost:8090/api/payrolls/my",
+            "https://hrm-payroll-backend.onrender.com/api/payrolls/my",
             config
           );
 
@@ -71,7 +71,7 @@ function EmployeeDashboard() {
 
         const employeeResponse =
           await axios.get(
-            "http://localhost:8090/api/employees",
+            "https://hrm-payroll-backend.onrender.com/api/employees",
             config
           );
 
@@ -101,7 +101,7 @@ function EmployeeDashboard() {
 
             const leaveResponse =
               await axios.get(
-                `http://localhost:8090/api/leaves/balance/${employee.id}`,
+                `https://hrm-payroll-backend.onrender.com/api/leaves/balance/${employee.id}`,
                 config
               );
 

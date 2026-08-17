@@ -62,7 +62,7 @@ function SalaryStructures() {
     try {
 
       const response = await axios.get(
-        "http://localhost:8090/api/employees",
+        "https://hrm-payroll-backend.onrender.com/api/employees",
         authConfig
       );
 
@@ -111,7 +111,7 @@ function SalaryStructures() {
       setError("");
 
       const response = await axios.get(
-        "http://localhost:8090/api/salary-structures",
+        "https://hrm-payroll-backend.onrender.com/api/salary-structures",
         authConfig
       );
 
@@ -436,7 +436,7 @@ function SalaryStructures() {
       if (editingId) {
 
         response = await axios.put(
-          `http://localhost:8090/api/salary-structures/${editingId}`,
+          `https://hrm-payroll-backend.onrender.com/api/salary-structures/${editingId}`,
           requestData,
           authConfig
         );
@@ -454,7 +454,7 @@ function SalaryStructures() {
       else {
 
         response = await axios.post(
-          "http://localhost:8090/api/salary-structures",
+          "https://hrm-payroll-backend.onrender.com/api/salary-structures",
           requestData,
           authConfig
         );

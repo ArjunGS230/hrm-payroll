@@ -54,7 +54,7 @@ function EmailLogs() {
 
             const response =
                 await axios.get(
-                    "http://localhost:8090/api/email-logs",
+                    "https://hrm-payroll-backend.onrender.com/api/email-logs",
                     authConfig
                 );
 
@@ -115,7 +115,7 @@ function EmailLogs() {
 
             await axios.post(
 
-                `http://localhost:8090/api/email-logs/${id}/retry`,
+                `https://hrm-payroll-backend.onrender.com/api/email-logs/${id}/retry`,
 
                 {},
 

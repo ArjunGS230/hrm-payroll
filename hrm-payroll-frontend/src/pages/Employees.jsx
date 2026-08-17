@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import "../styles/Employees.css";
 
-const API_URL = "http://localhost:8090/api/employees";
+const API_URL = "https://hrm-payroll-backend.onrender.com/api/employees";
 
 function Employees() {
 

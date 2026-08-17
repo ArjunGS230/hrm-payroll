@@ -24,7 +24,7 @@ function PayrollReport() {
       setError("");
 
       const response = await axios.get(
-        "http://localhost:8090/api/payrolls",
+        "https://hrm-payroll-backend.onrender.com/api/payrolls",
         authConfig
       );
 

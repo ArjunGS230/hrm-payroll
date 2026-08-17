@@ -24,7 +24,7 @@ function PayslipReport() {
       setError("");
 
       const response = await axios.get(
-        "http://localhost:8090/api/payslips",
+        "https://hrm-payroll-backend.onrender.com/api/payslips",
         authConfig
       );
 

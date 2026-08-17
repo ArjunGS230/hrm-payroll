@@ -45,7 +45,7 @@ function LeaveManagement() {
   const fetchEmployees = async () => {
 
     const response = await axios.get(
-      "http://localhost:8090/api/employees",
+      "https://hrm-payroll-backend.onrender.com/api/employees",
       authConfig
     );
 
@@ -65,7 +65,7 @@ function LeaveManagement() {
       employeeList.map(
         (employee) =>
           axios.get(
-            `http://localhost:8090/api/leaves/balance/${employee.id}`,
+            `https://hrm-payroll-backend.onrender.com/api/leaves/balance/${employee.id}`,
             authConfig
           )
       );
@@ -88,7 +88,7 @@ function LeaveManagement() {
   const fetchPendingLeaves = async () => {
 
     const response = await axios.get(
-      "http://localhost:8090/api/leaves/pending",
+      "https://hrm-payroll-backend.onrender.com/api/leaves/pending",
       authConfig
     );
 
@@ -318,7 +318,7 @@ function LeaveManagement() {
 
 
       await axios.post(
-        "http://localhost:8090/api/leaves",
+        "https://hrm-payroll-backend.onrender.com/api/leaves",
         requestData,
         authConfig
       );
@@ -400,7 +400,7 @@ function LeaveManagement() {
 
 
       await axios.put(
-        `http://localhost:8090/api/leaves/${leaveId}/approve`,
+        `https://hrm-payroll-backend.onrender.com/api/leaves/${leaveId}/approve`,
         {},
         authConfig
       );
@@ -459,7 +459,7 @@ function LeaveManagement() {
 
 
       await axios.put(
-        `http://localhost:8090/api/leaves/${leaveId}/reject`,
+        `https://hrm-payroll-backend.onrender.com/api/leaves/${leaveId}/reject`,
         {},
         authConfig
       );

@@ -77,7 +77,7 @@ function MyLeave() {
 
     const response =
       await axios.get(
-        "http://localhost:8090/api/employees",
+        "https://hrm-payroll-backend.onrender.com/api/employees",
         authConfig
       );
 
@@ -142,7 +142,7 @@ function MyLeave() {
 
     const response =
       await axios.get(
-        `http://localhost:8090/api/leaves/balance/${employeeId}`,
+        `https://hrm-payroll-backend.onrender.com/api/leaves/balance/${employeeId}`,
         authConfig
       );
 
@@ -163,7 +163,7 @@ function MyLeave() {
 
     const response =
       await axios.get(
-        `http://localhost:8090/api/leaves/employee/${employeeId}`,
+        `https://hrm-payroll-backend.onrender.com/api/leaves/employee/${employeeId}`,
         authConfig
       );
 
@@ -430,7 +430,7 @@ function MyLeave() {
 
 
       await axios.post(
-        "http://localhost:8090/api/leaves",
+        "https://hrm-payroll-backend.onrender.com/api/leaves",
         payload,
         authConfig
       );

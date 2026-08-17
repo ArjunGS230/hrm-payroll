@@ -84,7 +84,7 @@ function Payslips() {
 
         const response =
             await axios.get(
-                "http://localhost:8090/api/employees",
+                "https://hrm-payroll-backend.onrender.com/api/employees",
                 authConfig
             );
 
@@ -106,8 +106,8 @@ function Payslips() {
 
         const url =
             isHR
-                ? "http://localhost:8090/api/payslips"
-                : "http://localhost:8090/api/payslips/my";
+                ? "https://hrm-payroll-backend.onrender.com/api/payslips"
+                : "https://hrm-payroll-backend.onrender.com/api/payslips/my";
 
 
         const response =
@@ -346,7 +346,7 @@ function Payslips() {
             const response =
                 await axios.post(
 
-                    `http://localhost:8090/api/payslips/generate/${formData.employeeId}?payPeriod=${formData.payPeriod}`,
+                    `https://hrm-payroll-backend.onrender.com/api/payslips/generate/${formData.employeeId}?payPeriod=${formData.payPeriod}`,
 
                     {},
 
@@ -570,7 +570,7 @@ function Payslips() {
 
             await axios.post(
 
-                `http://localhost:8090/api/payslips/${id}/send-email`,
+                `https://hrm-payroll-backend.onrender.com/api/payslips/${id}/send-email`,
 
                 {},
 

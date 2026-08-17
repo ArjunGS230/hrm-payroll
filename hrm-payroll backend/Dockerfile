@@ -32,8 +32,8 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
 # Default local container port
-EXPOSE 8090
+EXPOSE 8080
 
 # SnapDeploy provides PORT in deployment.
 # Locally it falls back to 8090.
-ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT:-8090}"]
+ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT:-8080}"]
